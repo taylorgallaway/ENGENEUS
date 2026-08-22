@@ -107,7 +107,7 @@ export default function ProfileTab({ user }) {
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginBottom: 20 }}>
         <div
           onClick={handleAvatarClick}
           style={{
@@ -138,7 +138,7 @@ export default function ProfileTab({ user }) {
           style={{ display: 'none' }}
         />
         <div>
-          <h1 style={{ color: '#1B4332', margin: 0, fontSize: 20 }}>Edit Profile</h1>
+          <h1 style={{ color: '#1B4332', margin: 0 }}>Edit Profile</h1>
           {uploading && <p style={{ fontSize: 12, color: '#9ca3af', margin: '4px 0 0' }}>Uploading...</p>}
         </div>
       </div>
