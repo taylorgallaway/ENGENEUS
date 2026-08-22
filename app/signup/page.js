@@ -10,9 +10,11 @@ export default function SignUp() {
 
   const handleSignUp = async () => {
     setMessage('Creating account...');
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) {
       setMessage(`Error: ${error.message}`);
+    } else if (data.session) {
+      setMessage('Success! You are signed up and logged in.');
     } else {
       setMessage('Success! Check your email to confirm your account.');
     }
