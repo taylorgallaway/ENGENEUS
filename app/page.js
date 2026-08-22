@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { User, Heart } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import ProfileTab from '../components/ProfileTab';
 import MatchesTab from '../components/MatchesTab';
@@ -75,8 +76,8 @@ export default function Home() {
   }
 
   const tabs = [
-    { id: 'profile', label: 'Profile', emoji: '👤' },
-    { id: 'matches', label: 'Matches', emoji: '💚' },
+    { id: 'profile', label: 'Profile', Icon: User },
+    { id: 'matches', label: 'Matches', Icon: Heart },
   ];
 
   return (
@@ -99,10 +100,10 @@ export default function Home() {
           padding: '10px 0',
         }}
       >
-        {tabs.map((tab) => (
+        {tabs.map(({ id, label, Icon }) => (
           <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            key={id}
+            onClick={() => setActiveTab(id)}
             style={{
               background: 'none',
               border: 'none',
@@ -110,22 +111,16 @@ export default function Home() {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              color: activeTab === tab.id ? '#2D6A4F' : '#9ca3af',
-              fontWeight: activeTab === tab.id ? 700 : 400,
-              fontSize: 12,
+              gap: 2,
+              color: activeTab === id ? '#2D6A4F' : '#9ca3af',
+              fontWeight: activeTab === id ? 700 : 400,
+              fontSize: 11,
             }}
           >
-            <span style={{ fontSize: 20 }}>{tab.emoji}</span>
-            {tab.label}
+            <Icon size={20} strokeWidth={activeTab === id ? 2.5 : 2} />
+            {label}
           </button>
         ))}
-        <button
-          onClick={handleLogout}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#9ca3af', fontSize: 12 }}
-        >
-          <span style={{ fontSize: 20 }}>🚪</span>
-          Log Out
-        </button>
       </nav>
     </div>
   );
