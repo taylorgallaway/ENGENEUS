@@ -102,4 +102,11 @@ export default function Profile() {
 
       <button
         onClick={handleSave}
-        style={{ padding: '10px 20px',
+        style={{ padding: '10px 20px', background: '#2D6A4F', color: 'white', border: 'none', borderRadius: 8 }}
+      >
+        Save
+      </button>
+      <p style={{ marginTop: 15 }}>{message}</p>
+    </main>
+  );
+}
