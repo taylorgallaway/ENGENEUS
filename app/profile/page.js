@@ -12,6 +12,7 @@ export default function Profile() {
   const [bio, setBio] = useState('');
   const [favSong, setFavSong] = useState('');
   const [favArtist, setFavArtist] = useState('');
+  const [followedArtists, setFollowedArtists] = useState('');
 
   useEffect(() => {
     async function loadProfile() {
@@ -37,6 +38,7 @@ export default function Profile() {
         setBio(data.bio || '');
         setFavSong(data.fav_song || '');
         setFavArtist(data.fav_artist || '');
+        setFollowedArtists((data.followed_artists || []).join(', '));
       }
       setLoading(false);
     }
@@ -55,6 +57,7 @@ export default function Profile() {
         bio,
         fav_song: favSong,
         fav_artist: favArtist,
+        followed_artists: followedArtists.split(',').map(a => a.trim()).filter(Boolean),
       })
       .eq('id', user.id);
 
@@ -94,13 +97,9 @@ export default function Profile() {
       <label>Favorite Artist</label>
       <input value={favArtist} onChange={(e) => setFavArtist(e.target.value)} style={inputStyle} />
 
+      <label>Following (comma-separated for now)</label>
+      <input value={followedArtists} onChange={(e) => setFollowedArtists(e.target.value)} style={inputStyle} placeholder="Stray Kids, CORTIS, Big Ocean" />
+
       <button
         onClick={handleSave}
-        style={{ padding: '10px 20px', background: '#2D6A4F', color: 'white', border: 'none', borderRadius: 8 }}
-      >
-        Save
-      </button>
-      <p style={{ marginTop: 15 }}>{message}</p>
-    </main>
-  );
-}
+        style={{ padding: '10px 20px',
