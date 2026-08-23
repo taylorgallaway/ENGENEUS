@@ -3,7 +3,56 @@
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
-const STICKER_OPTIONS = ['🐥', '🐰', '🦊', '🐻', '🐱', '🐶', '🐼', '🦁', '🐯', '🐨'];
+const STICKER_OPTIONS = [
+  { emoji: '🐥', label: 'Chick' }, { emoji: '🐔', label: 'Chicken' }, { emoji: '🐺', label: 'Wolf' },
+  { emoji: '🦊', label: 'Fox' }, { emoji: '🐰', label: 'Bunny' }, { emoji: '🐱', label: 'Cat' },
+  { emoji: '🐻', label: 'Bear' }, { emoji: '🐶', label: 'Dog' }, { emoji: '🐼', label: 'Panda' },
+  { emoji: '🦁', label: 'Lion' }, { emoji: '🐯', label: 'Tiger' }, { emoji: '🐨', label: 'Koala' },
+  { emoji: '🐹', label: 'Hamster' }, { emoji: '🐭', label: 'Mouse' }, { emoji: '🐀', label: 'Rat' },
+  { emoji: '🐷', label: 'Pig' }, { emoji: '🐮', label: 'Cow' }, { emoji: '🐸', label: 'Frog' },
+  { emoji: '🐵', label: 'Monkey' }, { emoji: '🦄', label: 'Unicorn' }, { emoji: '🐉', label: 'Dragon' },
+  { emoji: '🦖', label: 'T-Rex' }, { emoji: '🦕', label: 'Sauropod' }, { emoji: '🦉', label: 'Owl' },
+  { emoji: '🕊️', label: 'Dove' }, { emoji: '🦤', label: 'Dodo' }, { emoji: '🦚', label: 'Peacock' },
+  { emoji: '🦩', label: 'Flamingo' }, { emoji: '🦃', label: 'Turkey' }, { emoji: '🐓', label: 'Rooster' },
+  { emoji: '🦜', label: 'Parrot' }, { emoji: '🐦', label: 'Bird' }, { emoji: '🦅', label: 'Eagle' },
+  { emoji: '🐧', label: 'Penguin' }, { emoji: '🦆', label: 'Duck' }, { emoji: '🦢', label: 'Swan' },
+  { emoji: '🦋', label: 'Butterfly' }, { emoji: '🐢', label: 'Turtle' }, { emoji: '🐬', label: 'Dolphin' },
+  { emoji: '🐳', label: 'Whale' }, { emoji: '🦈', label: 'Shark' }, { emoji: '🦭', label: 'Seal' },
+  { emoji: '🐡', label: 'Pufferfish' }, { emoji: '🐠', label: 'Tropical Fish' }, { emoji: '🐟', label: 'Fish' },
+  { emoji: '🐙', label: 'Octopus' }, { emoji: '🦑', label: 'Squid' }, { emoji: '🦀', label: 'Crab' },
+  { emoji: '🦐', label: 'Shrimp' }, { emoji: '🦞', label: 'Lobster' }, { emoji: '🐝', label: 'Bee' },
+  { emoji: '🐞', label: 'Ladybug' }, { emoji: '🐛', label: 'Caterpillar' }, { emoji: '🦟', label: 'Mosquito' },
+  { emoji: '🪱', label: 'Worm' }, { emoji: '🦗', label: 'Cricket' }, { emoji: '🕷️', label: 'Spider' },
+  { emoji: '🦂', label: 'Scorpion' }, { emoji: '🐜', label: 'Ant' }, { emoji: '🦫', label: 'Quokka' },
+  { emoji: '🦔', label: 'Hedgehog' }, { emoji: '🦦', label: 'Otter' }, { emoji: '🦥', label: 'Sloth' },
+  { emoji: '🦨', label: 'Skunk' }, { emoji: '🦡', label: 'Badger' }, { emoji: '🦒', label: 'Giraffe' },
+  { emoji: '🦓', label: 'Zebra' }, { emoji: '🐘', label: 'Elephant' }, { emoji: '🦛', label: 'Hippo' },
+  { emoji: '🦏', label: 'Rhino' }, { emoji: '🐴', label: 'Horse' }, { emoji: '🐎', label: 'Racehorse' },
+  { emoji: '🦌', label: 'Deer' }, { emoji: '🐐', label: 'Goat' }, { emoji: '🐑', label: 'Sheep' },
+  { emoji: '🦙', label: 'Llama' }, { emoji: '🐫', label: 'Camel' }, { emoji: '🐊', label: 'Alligator' },
+  { emoji: '🐍', label: 'Snake' }, { emoji: '🦎', label: 'Lizard' }, { emoji: '🐌', label: 'Snail' },
+  { emoji: '🐿️', label: 'Squirrel' }, { emoji: '🦇', label: 'Bat' }, { emoji: '🐗', label: 'Boar' },
+  { emoji: '🦘', label: 'Kangaroo' }, { emoji: '🐆', label: 'Leopard' },
+];
+
+function toCodePoint(emoji) {
+  return [...emoji]
+    .map((c) => c.codePointAt(0).toString(16))
+    .filter((cp) => cp !== 'fe0f')
+    .join('-');
+}
+
+function StickerImg({ emoji, size = 22 }) {
+  return (
+    <img
+      src={`https://cdn.jsdelivr.net/npm/twemoji@14.0.2/2/72x72/${toCodePoint(emoji)}.png`}
+      alt={emoji}
+      width={size}
+      height={size}
+      style={{ display: 'inline-block' }}
+    />
+  );
+}
 
 export default function ProfileTab({ user }) {
   const [loading, setLoading] = useState(true);
@@ -18,6 +67,7 @@ export default function ProfileTab({ user }) {
   const [favArtist, setFavArtist] = useState('');
   const [followedArtists, setFollowedArtists] = useState('');
   const [biasSticker, setBiasSticker] = useState('🐥');
+  const [stickerSearch, setStickerSearch] = useState('');
 
   useEffect(() => {
     async function loadProfile() {
@@ -110,6 +160,10 @@ export default function ProfileTab({ user }) {
 
   const inputStyle = { display: 'block', width: '100%', padding: 10, marginTop: 5, marginBottom: 15, boxSizing: 'border-box' };
 
+  const filteredStickers = stickerSearch.trim()
+    ? STICKER_OPTIONS.filter((s) => s.label.toLowerCase().includes(stickerSearch.toLowerCase()))
+    : STICKER_OPTIONS;
+
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginBottom: 20 }}>
@@ -163,14 +217,36 @@ export default function ProfileTab({ user }) {
       <input value={username} onChange={(e) => setUsername(e.target.value)} style={inputStyle} />
 
       <label>Bias Sticker</label>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8, marginBottom: 15 }}>
-        {STICKER_OPTIONS.map((emoji) => (
+      <input
+        value={stickerSearch}
+        onChange={(e) => setStickerSearch(e.target.value)}
+        placeholder="Search animals..."
+        style={{ ...inputStyle, marginBottom: 8 }}
+      />
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 8,
+          marginBottom: 15,
+          maxHeight: 180,
+          overflowY: 'auto',
+          padding: 4,
+          border: '1px solid #f3f4f6',
+          borderRadius: 10,
+        }}
+      >
+        {filteredStickers.map(({ emoji, label }) => (
           <button
             key={emoji}
             type="button"
             onClick={() => setBiasSticker(emoji)}
+            title={label}
             style={{
-              fontSize: 22,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 2,
               padding: 8,
               borderRadius: 10,
               border: biasSticker === emoji ? '2px solid #2D6A4F' : '2px solid #e5e7eb',
@@ -178,9 +254,13 @@ export default function ProfileTab({ user }) {
               cursor: 'pointer',
             }}
           >
-            {emoji}
+            <StickerImg emoji={emoji} />
+            <span style={{ fontSize: 9, color: '#6b7280' }}>{label}</span>
           </button>
         ))}
+        {filteredStickers.length === 0 && (
+          <p style={{ fontSize: 12, color: '#9ca3af', padding: 8 }}>No animals match that search.</p>
+        )}
       </div>
 
       <label>Bio</label>
