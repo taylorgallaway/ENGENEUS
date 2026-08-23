@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '../lib/supabaseClient';
 
 const STICKER_OPTIONS = [
@@ -232,6 +233,7 @@ function StickerImg({ emoji, size = 20 }) {
 }
 
 export default function ProfileTab({ user }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [message, setMessage] = useState('');
@@ -291,6 +293,11 @@ export default function ProfileTab({ user }) {
       setMessage('Saved!');
       setProfile((prev) => ({ ...prev, username, bio, fav_song: favSong, fav_artist: favArtist, bias_sticker: biasSticker }));
     }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/';
   };
 
   const addArtist = (name) => {
@@ -575,6 +582,54 @@ export default function ProfileTab({ user }) {
         Save
       </button>
       <p style={{ marginTop: 15 }}>{message}</p>
+
+      <div style={{ marginTop: 40, paddingTop: 20, borderTop: '1px solid #eee' }}>
+        <h2
+          style={{
+            color: '#1B4332',
+            margin: '0 0 12px',
+            fontSize: 20,
+            fontWeight: 900,
+            textTransform: 'uppercase',
+          }}
+        >
+          Account
+        </h2>
+        <button
+          onClick={handleLogout}
+          style={{
+            display: 'block',
+            width: '100%',
+            padding: '10px 20px',
+            background: '#f3f4f6',
+            color: '#374151',
+            border: 'none',
+            borderRadius: 8,
+            cursor: 'pointer',
+            marginBottom: 8,
+          }}
+        >
+          Log Out
+        </button>
+        <p style={{ fontSize: 11, color: '#9ca3af', margin: '0 0 12px' }}>
+          To switch accounts, log out, then log back in with the other account.
+        </p>
+        <a
+          href='/signup'
+          style={{
+            display: 'block',
+            textAlign: 'center',
+            padding: '10px 20px',
+            background: 'white',
+            color: '#2D6A4F',
+            border: '1px solid #2D6A4F',
+            borderRadius: 8,
+            textDecoration: 'none',
+          }}
+        >
+          Create Another Account
+        </a>
+      </div>
     </div>
   );
 }
