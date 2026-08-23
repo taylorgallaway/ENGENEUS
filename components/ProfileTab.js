@@ -45,6 +45,169 @@ const STICKER_OPTIONS = [
   { emoji: '🕷️', label: 'Spider' },
 ];
 
+const ARTIST_DATABASE = [
+  "1Team", "1the9", "1TYM", "1Verse",
+  "2AM", "2Eyes", "2NB", "2NE1",
+  "2PM", "2Yoon", "3YE", "4L",
+  "4Men", "4Minute", "4Ten", "5urprise",
+  "8Eight", "8Turn", "14U", "15&",
+  "015B", "24Hours", "24K+", "82Major",
+  "100%", "2000 Won", "A-Jax", "A-Prince",
+  "A.C.E", "A.cian", "AA", "AB6IX",
+  "Ablume", "Acid Angel from Asia", "aespa", "After School",
+  "AHOF", "Aimers", "AKMU", "ALFA",
+  "Alice", "All(H)Ours", "AllDay Project", "Almeng",
+  "Alpha Drive One", "Am8ic", "Ampers&One", "And2ble",
+  "AOA", "AOA Cream", "Apink", "April",
+  "Argon", "Ariaz", "ARrC", "Artms",
+  "As One", "Astro", "ATBO", "ATEEZ",
+  "AtHeart", "AxMxP", "B.A.P", "B.D.U",
+  "B.I.G", "B.O.Y", "B1A4", "Baby Dont Cry",
+  "Baby Vox", "Baby Vox Re.V", "BABYMONSTER", "Badvillain",
+  "BAE173", "Baechigi", "Bastarz", "Battle",
+  "BB Girls", "BDC", "Be.A", "Beatwin",
+  "Berry Good", "Bestie", "BIGBANG", "Big Brain",
+  "Big Mama", "Big Ocean", "Big Star", "Bigflo",
+  "Billlie", "Black Beat", "Black Pearl", "BLACKPINK",
+  "Blackswan", "Blady", "Blank2y", "Blitzers",
+  "Block B", "Bob Girls", "Bohemian", "BOL4",
+  "The Boss", "Botopass", "Boyfriend", "BOYNEXTDOOR",
+  "Boys Generally Asian", "Boys Republic", "The Boyz", "Brave Girls",
+  "Brown Eyed Girls", "Brown Eyed Soul", "Brown Eyes", "BSS",
+  "BtoB", "BtoB 4U", "BtoB Blue", "BTS",
+  "BugAboo", "Bulldog Mansion", "Busters", "Buzz",
+  "Bvndit", "BXB", "Bye Bye Sea", "C-REAL",
+  "Can", "Candy Shop", "Chakra", "Champs",
+  "Cherry Bullet", "Cherry Filter", "Chocolat", "Cignature",
+  "Ciipher", "CIX", "Classy", "CLC",
+  "Cleo", "Click-B", "Close Your Eyes", "Clover",
+  "CNBLUE", "CocoSori", "Coed School", "Cool",
+  "CORTIS", "Cravity", "Craxy", "Crayon Pop",
+  "Cross Gene", "CSR", "D-Crunch", "D-Unit",
+  "D.Holic", "D1ce", "Daily:Direction", "Dal Shabet",
+  "Davichi", "Day6", "Deux", "DIA",
+  "Diva", "DK X Seungkwan", "DKB", "DKZ",
+  "DMTN", "Double S 301", "Dreamcatcher", "DreamNote",
+  "Drippin", "Dxmon", "Dynamic Duo", "E'Last",
+  "El7z Up", "ENHYPEN", "ENOi", "Epex",
+  "Eternity", "Everglow", "Evnne", "EvoL",
+  "EXID", "EXO", "EXO-CBX", "EXO-SC",
+  "F-ve Dolls", "F.Cuz", "F.T. Island", "f(x)",
+  "Fanatics", "Fantasy Boys", "Fanxy Red", "Favorite",
+  "Fiestar", "Fifty Fifty", "Fin.K.L", "Flare U",
+  "Fly to the Sky", "Forte di Quattro", "Fromis_9", "Gangkiz",
+  "Gavy NJ", "GD & TOP", "GD X Taeyang", "Geenius",
+  "Genblue", "GFriend", "Ghost9", "GI",
+  "Girl Friends", "Girl's Day", "Girls' Generation", "Girls' Generation-TTS",
+  "Glam", "Golden Child", "Golden Girls", "Goofy",
+  "Got the Beat", "GOT7", "GP Basic", "The Grace",
+  "GreatGuys", "Gugudan", "Gugudan SeMiNa", "GWSN",
+  "H.O.T.", "H1-KEY", "HALO", "H&D",
+  "HeartB", "Hearts2Hearts", "Hello Venus", "Hi Suhyun",
+  "Highlight", "Hiipe Princess", "Hinapia", "History",
+  "HITGS", "HNB", "Homme", "Honey Popcorn",
+  "Hooni Yongi", "Hoshi X Woozi", "Hot Issue", "Hotshot",
+  "Humming Urban Stereo", "Hyeongseop X Euiwoong", "Hyukoh", "I.B.I",
+  "I.O.I", "Ichillin'", "Idid", "idntt",
+  "Ifeye", "iKON", "ILLIT", "ILY:1",
+  "Imfact", "Infinite", "Infinite F", "Infinite H",
+  "Irris", "ITZY", "IVE", "IZ",
+  "Iz*One", "IZNA", "J-Walk", "JBJ",
+  "Jeonghan X Wonwoo", "Jewelry", "Jinjin & Rocky", "JJ Project",
+  "JJCC", "JQT", "JtL", "Jus2",
+  "Just B", "JX", "JYJ", "K/DA",
+  "Kaachi", "Kangta & Vanness", "KARA", "Kard",
+  "Kenta Sanggyun", "Kep1er", "Keyveatz", "KickFlip",
+  "KiiiKiii", "Kiiras", "Kim Heechul & Kim Jungmo", "The KingDom",
+  "Kiss", "Kiss of Life", "KNK", "Koyote",
+  "Krystal Eyes", "Laboum", "Ladies' Code", "Lady",
+  "Lapillus", "Latency", "Laysha", "LE SSERAFIM",
+  "Led Apple", "The Legend", "Lightsum", "Lip Service",
+  "Lngshot", "Longguo & Shihyun", "LOONA", "Loossemble",
+  "Lovelyz", "Luminous", "Lun8", "Lunafly",
+  "Lunarsolar", "Luv", "M.O.N.T", "M4M",
+  "Madein", "Madtown", "MAMAMOO", "MAP6",
+  "Mave:", "Maywish", "MBLAQ", "MCND",
+  "Meovv", "Milk", "Mimiirose", "Mirae",
+  "Miss A", "Miss S", "MODYSSEY", "Momoland",
+  "Monday Kiz", "MONSTA X", "Moonbin & Sanha", "Mr.Mr",
+  "MSG Wannabe", "MustB", "MXM", "MyB",
+  "Myname", "Myteen", "N-Sonic", "N-Train",
+  "N.Flying", "N.SSign", "Namgida Band", "Nasty Nasty",
+  "Nature", "NCT", "NCT DoJaeJung", "NCT JNJM",
+  "NCT U", "NCT 127", "NCT DREAM", "WayV",
+  "NeonPunch", "Newbeat", "NewJeans", "Newkidd",
+  "Nine Muses", "Nine Muses A", "Nmixx", "Noel",
+  "Noir", "NOMAD", "Nouera", "Nowz",
+  "NTB", "NTX", "NU'EST", "NU'EST W",
+  "Odd Youth", "Oh My Girl", "Oh!GG", "Omega X",
+  "One Day", "One Pact", "ONEUS", "Onewe",
+  "ONF", "OnlyOneOf", "Orange Caramel", "Ourbirthday",
+  "OWIS", "P1Harmony", "Page", "Papaya",
+  "PENTAGON", "Peppertones", "Pink Fantasy", "Pixy",
+  "PLAVE", "Play the Siren", "Playback", "Primrose",
+  "Pristin", "Pristin V", "Project K", "Puretty",
+  "Purple Kiss", "Purplebeck", "QWER", "R.ef",
+  "Rainbow", "Rainz", "Red Velvet", "Red Velvet – Irene & Seulgi",
+  "Redsquare", "Refund Sisters", "Rescene", "Rhythm Power",
+  "RIIZE", "Rocket Punch", "Romeo", "Roo'ra",
+  "The Rose", "Royal Pirates", "Rubber Soul", "S.Coups X Mingyu",
+  "S.E.S.", "S.I.S", "Saturday", "Say My Name",
+  "Second Moon", "Secret", "Secret Number", "Seo Taiji and Boys",
+  "Seven O'Clock", "SEVENTEEN", "Sevenus", "SG Wannabe",
+  "Sharp", "She'z", "SHINee", "Shinhwa",
+  "Shinvi", "Shownu X Hyungwon", "Shu-I", "Sistar",
+  "Sistar19", "Skarf", "Skye", "SM Rookies",
+  "SM the Ballad", "SM The Performance", "SM Town", "Snuper",
+  "Sobangcha", "Sonamoo", "Soohyun & Hoon", "Sorea Band",
+  "SOS", "Soul People", "Spectrum", "Speed",
+  "Spica", "SS501", "SSAK3", "STAYC",
+  "Stellar", "Strawberry Milk", "Stray Kids", "Sunny Hill",
+  "Super Junior", "Super Junior-D&E", "Super Junior-K.R.Y.", "Super Junior-M",
+  "Super Junior-T", "Superkind", "Supernova", "T-ara",
+  "T-max", "Tahiti", "TAN", "Target",
+  "Tasty", "TDYA", "Teen Teen", "Teen Top",
+  "TEMPEST", "TFN", "Tin Tin Five", "Tiny-G",
+  "TIOT", "TNX", "TO1", "Toheart",
+  "TXT", "Tomorrow X Together", "Topp Dogg", "Touch",
+  "Toy", "A Train To Autumn", "Trainee A", "TRCNG",
+  "Treasure", "TRENDZ", "Tri.be", "Triple H",
+  "tripleS", "Tritops", "Trouble Maker", "Troy",
+  "TST", "Tuide", "TVXQ", "TWICE",
+  "Two X", "TWS", "Typhoon", "U-KISS",
+  "UAU", "UN", "UNB", "Unchild",
+  "Uni.T", "Unicorn", "Uniq", "Unis",
+  "UNVS", "Up10tion", "Urban Zakapa", "V8",
+  "Vanner", "Varsity", "VAV", "Verivery",
+  "Victon", "Viviz", "VIXX", "VIXX LR",
+  "Vromance", "VVUP", "W24", "Waker",
+  "Wanna One", "Wanted", "Wassup", "Waterfire",
+  "We Girls", "We in the Zone", "Weeekly", "WEi",
+  "Weki Meki", "The Wind", "Wings", "WINNER",
+  "WJMK", "WJSN", "Wonder Boyz", "Wonder Girls",
+  "Wooah", "Wooseok x Kuanlin", "WSG Wannabe", "X:IN",
+  "X1", "Xdinary Heroes", "Xikers", "XG",
+  "Xlov", "Xodiac", "Year 7 Class 1", "Young Posse",
+  "Young Turks Club", "Younite", "Yuhz", "Yurisangja",
+  "ZE:A", "ZEROBASEONE", "Katseye", "KEYVITUP",
+  "WAYF BOYS", "Klass", "Park Byeong Hoon", "AKUGETSU",
+  "BL8M", "from20", "OVUS", "idoltillidie",
+  "NBG", "NEXZ", "&TEAM", "IU",
+  "Taeyeon", "BoA", "Rain", "PSY",
+  "Sunmi", "Chungha", "Hwasa", "Zico",
+  "G-Dragon", "CL", "Heize", "Crush",
+  "Dean", "Jay Park", "Jessi", "Somi",
+  "Se7en", "Wheesung", "Epik High", "Dawn",
+  "Loco", "AOMG", "Simon Dominic", "Gray",
+  "pH-1", "Sik-K", "Kang Daniel", "Ha Sung-woon",
+  "Kim Jaehwan", "Ong Seong-wu", "Yoon Ji-sung", "Kang Yuchan",
+  "Taemin", "Baekhyun", "Chen", "Kai",
+  "Suho", "D.O.", "Xiumin", "Lay",
+  "Sakura Miyawaki", "Kwon Eun-bi", "Jang Won-young", "Miyeon",
+  "Soyeon", "Yuqi", "Minnie", "Shuhua",
+  "Rubyeye", "6FU", "C!naH"
+];
+
 function toCodePoint(emoji) {
   return [...emoji]
     .map((c) => c.codePointAt(0).toString(16))
@@ -130,9 +293,9 @@ export default function ProfileTab({ user }) {
     }
   };
 
-  const addArtist = () => {
-    const trimmed = artistInput.trim();
-    if (trimmed && !followedArtists.includes(trimmed)) {
+  const addArtist = (name) => {
+    const trimmed = name.trim();
+    if (trimmed && !followedArtists.some((a) => a.toLowerCase() === trimmed.toLowerCase())) {
       setFollowedArtists([...followedArtists, trimmed]);
     }
     setArtistInput('');
@@ -190,6 +353,16 @@ export default function ProfileTab({ user }) {
   const filteredStickers = stickerSearch.trim()
     ? STICKER_OPTIONS.filter((s) => s.label.toLowerCase().includes(stickerSearch.toLowerCase()))
     : [];
+
+  const filteredArtists = artistInput.trim()
+    ? ARTIST_DATABASE.filter(
+        (a) =>
+          a.toLowerCase().includes(artistInput.toLowerCase()) &&
+          !followedArtists.some((f) => f.toLowerCase() === a.toLowerCase())
+      ).slice(0, 8)
+    : [];
+
+  const exactMatchExists = ARTIST_DATABASE.some((a) => a.toLowerCase() === artistInput.trim().toLowerCase());
 
   return (
     <div>
@@ -305,25 +478,68 @@ export default function ProfileTab({ user }) {
       <input value={favArtist} onChange={(e) => setFavArtist(e.target.value)} style={inputStyle} />
 
       <label>Following</label>
-      <div style={{ display: 'flex', gap: 8, marginTop: 5, marginBottom: 10 }}>
-        <input
-          value={artistInput}
-          onChange={(e) => setArtistInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addArtist())}
-          placeholder="Type an artist name..."
-          style={{ ...inputStyle, marginTop: 0, marginBottom: 0, flex: 1 }}
-        />
-        <button
-          type="button"
-          onClick={addArtist}
-          style={{ padding: '0 18px', background: '#2D6A4F', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}
+      <input
+        value={artistInput}
+        onChange={(e) => setArtistInput(e.target.value)}
+        placeholder="Search for an artist..."
+        style={{ ...inputStyle, marginBottom: artistInput.trim() ? 0 : 10 }}
+      />
+      {artistInput.trim() && (
+        <div
+          style={{
+            border: '1px solid #f3f4f6',
+            borderRadius: 10,
+            marginBottom: 10,
+            maxHeight: 200,
+            overflowY: 'auto',
+          }}
         >
-          Add
-        </button>
-      </div>
+          {filteredArtists.map((name) => (
+            <button
+              key={name}
+              type="button"
+              onClick={() => addArtist(name)}
+              style={{
+                display: 'block',
+                width: '100%',
+                textAlign: 'left',
+                padding: '8px 12px',
+                border: 'none',
+                borderBottom: '1px solid #f9fafb',
+                background: 'white',
+                cursor: 'pointer',
+                fontSize: 13,
+                color: '#374151',
+              }}
+            >
+              {name}
+            </button>
+          ))}
+          {filteredArtists.length === 0 && !exactMatchExists && (
+            <button
+              type="button"
+              onClick={() => addArtist(artistInput)}
+              style={{
+                display: 'block',
+                width: '100%',
+                textAlign: 'left',
+                padding: '8px 12px',
+                border: 'none',
+                background: 'white',
+                cursor: 'pointer',
+                fontSize: 13,
+                color: '#2D6A4F',
+                fontWeight: 600,
+              }}
+            >
+              Add "{artistInput.trim()}" anyway
+            </button>
+          )}
+        </div>
+      )}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 15 }}>
         {followedArtists.length === 0 && (
-          <span style={{ fontSize: 12, color: '#9ca3af' }}>Not following anyone yet — add one above.</span>
+          <span style={{ fontSize: 12, color: '#9ca3af' }}>Not following anyone yet — search above to add.</span>
         )}
         {followedArtists.map((artist) => (
           <span
