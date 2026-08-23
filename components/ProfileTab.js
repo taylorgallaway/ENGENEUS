@@ -138,7 +138,16 @@ export default function ProfileTab({ user }) {
           style={{ display: 'none' }}
         />
         <div style={{ marginTop: 8 }}>
-          <h1 style={{ color: '#1B4332', margin: 0, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+          <h1
+            style={{
+              color: '#1B4332',
+              margin: 0,
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              letterSpacing: '0.03em',
+              WebkitTextStroke: '0.5px #1B4332',
+            }}
+          >
             Edit Profile
           </h1>
           {uploading && <p style={{ fontSize: 12, color: '#9ca3af', margin: '4px 0 0' }}>Uploading...</p>}
