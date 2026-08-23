@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
+const STICKER_OPTIONS = ['🐥', '🐰', '🦊', '🐻', '🐱', '🐶', '🐼', '🦁', '🐯', '🐨'];
+
 export default function ProfileTab({ user }) {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
@@ -15,6 +17,7 @@ export default function ProfileTab({ user }) {
   const [favSong, setFavSong] = useState('');
   const [favArtist, setFavArtist] = useState('');
   const [followedArtists, setFollowedArtists] = useState('');
+  const [biasSticker, setBiasSticker] = useState('🐥');
 
   useEffect(() => {
     async function loadProfile() {
@@ -33,6 +36,7 @@ export default function ProfileTab({ user }) {
         setFavSong(data.fav_song || '');
         setFavArtist(data.fav_artist || '');
         setFollowedArtists((data.followed_artists || []).join(', '));
+        setBiasSticker(data.bias_sticker || '🐥');
       }
       setLoading(false);
     }
@@ -49,6 +53,7 @@ export default function ProfileTab({ user }) {
         fav_song: favSong,
         fav_artist: favArtist,
         followed_artists: followedArtists.split(',').map((a) => a.trim()).filter(Boolean),
+        bias_sticker: biasSticker,
       })
       .eq('id', user.id);
 
@@ -56,7 +61,7 @@ export default function ProfileTab({ user }) {
       setMessage(`Error saving: ${error.message}`);
     } else {
       setMessage('Saved!');
-      setProfile((prev) => ({ ...prev, username, bio, fav_song: favSong, fav_artist: favArtist }));
+      setProfile((prev) => ({ ...prev, username, bio, fav_song: favSong, fav_artist: favArtist, bias_sticker: biasSticker }));
     }
   };
 
@@ -156,6 +161,27 @@ export default function ProfileTab({ user }) {
 
       <label>Username</label>
       <input value={username} onChange={(e) => setUsername(e.target.value)} style={inputStyle} />
+
+      <label>Bias Sticker</label>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8, marginBottom: 15 }}>
+        {STICKER_OPTIONS.map((emoji) => (
+          <button
+            key={emoji}
+            type="button"
+            onClick={() => setBiasSticker(emoji)}
+            style={{
+              fontSize: 22,
+              padding: 8,
+              borderRadius: 10,
+              border: biasSticker === emoji ? '2px solid #2D6A4F' : '2px solid #e5e7eb',
+              background: biasSticker === emoji ? '#2D6A4F1A' : 'white',
+              cursor: 'pointer',
+            }}
+          >
+            {emoji}
+          </button>
+        ))}
+      </div>
 
       <label>Bio</label>
       <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} style={inputStyle} />
