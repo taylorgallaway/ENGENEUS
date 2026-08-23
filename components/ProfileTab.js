@@ -611,10 +611,9 @@ export default function ProfileTab({ user }) {
         >
           Log Out
         </button>
-        <p style={{ fontSize: 11, color: '#9ca3af', margin: '0 0 12px' }}>
+        <p style={{ fontSize: 11, color: '#9ca3af', margin: 0 }}>
           To switch accounts, log out, then log back in with the other account.
         </p>
-        <a
       </div>
     </div>
   );
