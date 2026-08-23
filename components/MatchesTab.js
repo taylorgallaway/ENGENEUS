@@ -109,9 +109,9 @@ export default function MatchesTab({ user }) {
                 <img src={person.avatar_url} alt={person.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               )}
             </div>
-<p style={{ fontWeight: 'bold', fontSize: 17, margin: 0, display: 'flex', alignItems: 'center', gap: 9 }}>
-              {person.username}
+<p style={{ fontWeight: 'bold', fontSize: 17, margin: 0, display: 'flex', alignItems: 'center', gap: 7 }}>
               {person.bias_sticker && <StickerImg emoji={person.bias_sticker} size={14} />}
+              {person.username}
             </p>
           </div>
           <p style={{ fontSize: 13, color: '#666', margin: '8px 0 0' }}>{person.bio}</p>
