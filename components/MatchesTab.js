@@ -54,7 +54,19 @@ export default function MatchesTab({ user }) {
 
   return (
     <div>
-      <h1 style={{ color: '#1B4332' }}>Fandom Matches</h1>
+      <h1
+        style={{
+          color: '#1B4332',
+          margin: 0,
+          fontSize: 36,
+          fontWeight: 900,
+          textTransform: 'uppercase',
+          WebkitTextStroke: '1px #1B4332',
+          marginBottom: 20,
+        }}
+      >
+        Fandom Matches
+      </h1>
       {message && <p>{message}</p>}
       {matches.map((person) => (
         <div key={person.id} style={{ border: '1px solid #eee', borderRadius: 12, padding: 15, marginTop: 15 }}>
