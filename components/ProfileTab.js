@@ -53,9 +53,13 @@ function toCodePoint(emoji) {
 }
 
 function StickerImg({ emoji, size = 20 }) {
+  const cp = toCodePoint(emoji);
+  const base = cp === '1fabc'
+    ? 'https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72'
+    : 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72';
   return (
     <img
-      src={`https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/${toCodePoint(emoji)}.png`}
+      src={`${base}/${cp}.png`}
       alt={emoji}
       width={size}
       height={size}
