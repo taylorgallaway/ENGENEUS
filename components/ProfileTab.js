@@ -615,20 +615,6 @@ export default function ProfileTab({ user }) {
           To switch accounts, log out, then log back in with the other account.
         </p>
         <a
-          href='/signup'
-          style={{
-            display: 'block',
-            textAlign: 'center',
-            padding: '10px 20px',
-            background: 'white',
-            color: '#2D6A4F',
-            border: '1px solid #2D6A4F',
-            borderRadius: 8,
-            textDecoration: 'none',
-          }}
-        >
-          Create Another Account
-        </a>
       </div>
     </div>
   );
