@@ -36,7 +36,7 @@ const STICKER_OPTIONS = [
   { emoji: '🦭', label: 'Seal' }, { emoji: '🦭', label: 'Sea Lion' }, { emoji: '🦭', label: 'Walrus' },
   { emoji: '🐙', label: 'Octopus' }, { emoji: '🦑', label: 'Squid' }, { emoji: '🪼', label: 'Jellyfish' },
   { emoji: '🦀', label: 'Crab' }, { emoji: '🦞', label: 'Lobster' }, { emoji: '🐠', label: 'Seahorse' },
-  { emoji: '🐙', label: 'Axolotl' },
+  { emoji: '🦑', label: 'Axolotl' },
   { emoji: '🐉', label: 'Dragon' }, { emoji: '🦅', label: 'Phoenix' }, { emoji: '🦄', label: 'Unicorn' },
   { emoji: '🧜', label: 'Mermaid' }, { emoji: '🦁', label: 'Griffin' }, { emoji: '🦄', label: 'Pegasus' },
   { emoji: '🦖', label: 'T-Rex' }, { emoji: '🦕', label: 'Brachiosaurus' },
@@ -79,7 +79,8 @@ export default function ProfileTab({ user }) {
   const [bio, setBio] = useState('');
   const [favSong, setFavSong] = useState('');
   const [favArtist, setFavArtist] = useState('');
-  const [followedArtists, setFollowedArtists] = useState('');
+  const [followedArtists, setFollowedArtists] = useState([]);
+  const [artistInput, setArtistInput] = useState('');
   const [biasSticker, setBiasSticker] = useState('🐥');
   const [stickerSearch, setStickerSearch] = useState('');
 
@@ -99,7 +100,7 @@ export default function ProfileTab({ user }) {
         setBio(data.bio || '');
         setFavSong(data.fav_song || '');
         setFavArtist(data.fav_artist || '');
-        setFollowedArtists((data.followed_artists || []).join(', '));
+        setFollowedArtists(data.followed_artists || []);
         setBiasSticker(data.bias_sticker || '🐥');
       }
       setLoading(false);
@@ -116,7 +117,7 @@ export default function ProfileTab({ user }) {
         bio,
         fav_song: favSong,
         fav_artist: favArtist,
-        followed_artists: followedArtists.split(',').map((a) => a.trim()).filter(Boolean),
+        followed_artists: followedArtists,
         bias_sticker: biasSticker,
       })
       .eq('id', user.id);
@@ -127,6 +128,18 @@ export default function ProfileTab({ user }) {
       setMessage('Saved!');
       setProfile((prev) => ({ ...prev, username, bio, fav_song: favSong, fav_artist: favArtist, bias_sticker: biasSticker }));
     }
+  };
+
+  const addArtist = () => {
+    const trimmed = artistInput.trim();
+    if (trimmed && !followedArtists.includes(trimmed)) {
+      setFollowedArtists([...followedArtists, trimmed]);
+    }
+    setArtistInput('');
+  };
+
+  const removeArtist = (name) => {
+    setFollowedArtists(followedArtists.filter((a) => a !== name));
   };
 
   const handleAvatarClick = () => {
@@ -291,13 +304,53 @@ export default function ProfileTab({ user }) {
       <label>Favorite Artist</label>
       <input value={favArtist} onChange={(e) => setFavArtist(e.target.value)} style={inputStyle} />
 
-      <label>Following (comma-separated for now)</label>
-      <input
-        value={followedArtists}
-        onChange={(e) => setFollowedArtists(e.target.value)}
-        style={inputStyle}
-        placeholder="Stray Kids, CORTIS, Big Ocean"
-      />
+      <label>Following</label>
+      <div style={{ display: 'flex', gap: 8, marginTop: 5, marginBottom: 10 }}>
+        <input
+          value={artistInput}
+          onChange={(e) => setArtistInput(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addArtist())}
+          placeholder="Type an artist name..."
+          style={{ ...inputStyle, marginTop: 0, marginBottom: 0, flex: 1 }}
+        />
+        <button
+          type="button"
+          onClick={addArtist}
+          style={{ padding: '0 18px', background: '#2D6A4F', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer' }}
+        >
+          Add
+        </button>
+      </div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 15 }}>
+        {followedArtists.length === 0 && (
+          <span style={{ fontSize: 12, color: '#9ca3af' }}>Not following anyone yet — add one above.</span>
+        )}
+        {followedArtists.map((artist) => (
+          <span
+            key={artist}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              background: '#2D6A4F1A',
+              color: '#1B4332',
+              fontSize: 12,
+              fontWeight: 600,
+              padding: '6px 10px',
+              borderRadius: 999,
+            }}
+          >
+            {artist}
+            <button
+              type="button"
+              onClick={() => removeArtist(artist)}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#1B4332', fontWeight: 900, padding: 0, lineHeight: 1 }}
+            >
+              ×
+            </button>
+          </span>
+        ))}
+      </div>
 
       <button
         onClick={handleSave}
