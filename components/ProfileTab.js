@@ -299,6 +299,27 @@ export default function ProfileTab({ user }) {
     await supabase.auth.signOut();
     window.location.href = '/';
   };
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm(
+      'This permanently deletes your account and everything tied to it. This cannot be undone. Are you sure?'
+    );
+    if (!confirmed) return;
+
+    setMessage('Deleting account...');
+    const res = await fetch('/api/delete-account', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: user.id }),
+    });
+
+    if (res.ok) {
+      await supabase.auth.signOut();
+      window.location.href = '/';
+    } else {
+      const data = await res.json();
+      setMessage(`Error deleting account: ${data.error || 'unknown error'}`);
+    }
+  };
 
   const addArtist = (name) => {
     const trimmed = name.trim();
@@ -611,9 +632,24 @@ export default function ProfileTab({ user }) {
         >
           Log Out
         </button>
-        <p style={{ fontSize: 11, color: '#9ca3af', margin: 0 }}>
+<p style={{ fontSize: 11, color: '#9ca3af', margin: '0 0 16px' }}>
           To switch accounts, log out, then log back in with the other account.
         </p>
+        <button
+          onClick={handleDeleteAccount}
+          style={{
+            display: 'block',
+            width: '100%',
+            padding: '10px 20px',
+            background: 'white',
+            color: '#dc2626',
+            border: '1px solid #dc2626',
+            borderRadius: 8,
+            cursor: 'pointer',
+          }}
+        >
+          Delete Account
+        </button>
       </div>
     </div>
   );
