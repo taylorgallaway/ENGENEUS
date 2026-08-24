@@ -78,8 +78,8 @@ export default function Home() {
   const tabs = [
     { id: 'profile', label: 'Profile', Icon: User },
     { id: 'matches', label: 'Matches', Icon: Heart },
-     { id: 'news', label: 'News', Icon: Newspaper },
-        { id: 'chats', label: 'Chats', Icon: MessageCircle },
+    { id: 'news', label: 'News', Icon: Newspaper },
+    { id: 'chats', label: 'Chats', Icon: MessageCircle },
   ];
 
   return (
@@ -87,7 +87,7 @@ export default function Home() {
       <div style={{ maxWidth: 500, margin: '0 auto', padding: '16px 20px 0', display: 'flex', justifyContent: 'flex-end' }}>
         <InfoModal />
       </div>
-     <div style={{ maxWidth: 500, margin: '0 auto', padding: '10px 20px 30px' }}>
+      <div style={{ maxWidth: 500, margin: '0 auto', padding: '10px 20px 30px' }}>
         {chatWithUser ? (
           <ChatWindow currentUser={user} otherUser={chatWithUser} onBack={() => setChatWithUser(null)} />
         ) : (
@@ -100,41 +100,43 @@ export default function Home() {
         )}
       </div>
 
-      <nav
-        style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          background: 'white',
-          borderTop: '1px solid #eee',
-          display: 'flex',
-          justifyContent: 'space-around',
-          padding: '10px 0',
-        }}
-      >
-        {tabs.map(({ id, label, Icon }) => (
-          <button
-            key={id}
-            onClick={() => setActiveTab(id)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 2,
-              color: activeTab === id ? '#2D6A4F' : '#9ca3af',
-              fontWeight: activeTab === id ? 700 : 400,
-              fontSize: 11,
-            }}
-          >
-            <Icon size={20} strokeWidth={activeTab === id ? 2.5 : 2} />
-            {label}
-          </button>
-        ))}
-      </nav>
+      {!chatWithUser && (
+        <nav
+          style={{
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background: 'white',
+            borderTop: '1px solid #eee',
+            display: 'flex',
+            justifyContent: 'space-around',
+            padding: '10px 0',
+          }}
+        >
+          {tabs.map(({ id, label, Icon }) => (
+            <button
+              key={id}
+              onClick={() => setActiveTab(id)}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 2,
+                color: activeTab === id ? '#2D6A4F' : '#9ca3af',
+                fontWeight: activeTab === id ? 700 : 400,
+                fontSize: 11,
+              }}
+            >
+              <Icon size={20} strokeWidth={activeTab === id ? 2.5 : 2} />
+              {label}
+            </button>
+          ))}
+        </nav>
+      )}
     </div>
   );
 }
