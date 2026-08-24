@@ -1,5 +1,7 @@
 'use client';
 
+import BadgesSection from './BadgesSection';
+
 function toCodePoint(emoji) {
   return [...emoji]
     .map((c) => c.codePointAt(0).toString(16))
@@ -105,6 +107,8 @@ export default function UserProfileView({ profile, onBack }) {
           </button>
         ))}
       </div>
+
+      <BadgesSection userId={profile.id} />
     </div>
   );
 }
