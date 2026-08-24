@@ -394,7 +394,7 @@ export default function ProfileTab({ user }) {
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginBottom: 20 }}>
+<div style={{ display: 'flex', alignItems: 'center', gap: 24, marginTop: 16, marginBottom: 20 }}>
         <div
           onClick={handleAvatarClick}
           style={{
