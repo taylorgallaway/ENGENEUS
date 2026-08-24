@@ -85,10 +85,16 @@ export default function Home() {
       <div style={{ maxWidth: 500, margin: '0 auto', padding: '16px 20px 0', display: 'flex', justifyContent: 'flex-end' }}>
         <InfoModal />
       </div>
-      <div style={{ maxWidth: 500, margin: '0 auto', padding: '10px 20px 30px' }}>
-        {activeTab === 'profile' && <ProfileTab user={user} />}
-        {activeTab === 'matches' && <MatchesTab user={user} />}
-        {activeTab === 'chats' && <ChatsTab user={user} onOpenChat={() => {}} />}
+     <div style={{ maxWidth: 500, margin: '0 auto', padding: '10px 20px 30px' }}>
+        {chatWithUser ? (
+          <ChatWindow currentUser={user} otherUser={chatWithUser} onBack={() => setChatWithUser(null)} />
+        ) : (
+          <>
+            {activeTab === 'profile' && <ProfileTab user={user} />}
+            {activeTab === 'matches' && <MatchesTab user={user} onMessage={(person) => setChatWithUser(person)} />}
+            {activeTab === 'chats' && <ChatsTab user={user} onOpenChat={(person) => setChatWithUser(person)} />}
+          </>
+        )}
       </div>
 
       <nav
