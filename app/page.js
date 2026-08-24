@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { User, Heart } from 'lucide-react';
+import { User, Heart, MessageCircle } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import ProfileTab from '../components/ProfileTab';
 import MatchesTab from '../components/MatchesTab';
+import ChatsTab from '../components/ChatsTab';
 import InfoModal from '../components/InfoModal';
 
 export default function Home() {
