@@ -1,9 +1,8 @@
 'use client';
 
-// Wraps the badge art in a soft circular backdrop slightly larger than the image
-// itself — this turns the thin leftover cropping border into an intentional frame
-// instead of a stray edge, and gives room to breathe.
-export default function BadgeIcon({ badge, size = 76 }) {
+// A soft circular backdrop holding the badge art — the subtle background turns
+// any leftover edge from the source art into an intentional frame.
+export default function BadgeIcon({ badge, size = 96 }) {
   return (
     <div
       style={{
@@ -12,7 +11,7 @@ export default function BadgeIcon({ badge, size = 76 }) {
         borderRadius: '50%',
         background: '#fafafa',
         border: '1px solid #f0f0f0',
-        padding: size * 0.1,
+        padding: size * 0.08,
         boxSizing: 'border-box',
         display: 'flex',
         alignItems: 'center',
