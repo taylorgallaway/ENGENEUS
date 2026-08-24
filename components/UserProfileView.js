@@ -24,7 +24,7 @@ function StickerImg({ emoji, size = 20 }) {
 }
 
 function fallbackSearchUrl(artist) {
-  return `https://www.google.com/search?q=${encodeURIComponent(artist + ' kprofiles kpop profile')}`;
+  return `https://www.google.com/search?q=${encodeURIComponent(artist + ' K-pop profile')}`;
 }
 
 async function openArtistPage(artist) {
