@@ -52,14 +52,14 @@ export default function BadgeCelebration({ badgeIds, onDismiss }) {
         onClick={(e) => e.stopPropagation()}
         style={{ background: 'white', borderRadius: 24, padding: 28, textAlign: 'center', maxWidth: 320, position: 'relative' }}
       >
-        <p style={{ fontSize: 12, fontWeight: 700, color: '#84A98C', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 16px' }}>
+        <p style={{ fontSize: 12, fontWeight: 700, color: '#84A98C', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 18px' }}>
           Badge Earned!
         </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 18, marginBottom: 18 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 20, marginBottom: 20 }}>
           {badges.map((badge) => (
-            <div key={badge.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 100 }}>
-              <BadgeIcon badge={badge} size={80} />
-              <p style={{ fontSize: 12, fontWeight: 800, color: '#1B4332', marginTop: 4 }}>{badge.name}</p>
+            <div key={badge.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 108 }}>
+              <BadgeIcon badge={badge} size={92} />
+              <p style={{ fontSize: 14, fontWeight: 800, color: '#1B4332', marginTop: 8 }}>{badge.name}</p>
             </div>
           ))}
         </div>
