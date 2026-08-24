@@ -85,7 +85,7 @@ export default function MatchesTab({ user }) {
           fontWeight: 900,
           textTransform: 'uppercase',
           WebkitTextStroke: '1px #1B4332',
-          marginBottom: 20,
+          marginBottom: 28,
         }}
       >
         Fandom Matches
