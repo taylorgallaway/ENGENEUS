@@ -80,7 +80,7 @@ export default function MatchesTab({ user }) {
       <h1
         style={{
           color: '#1B4332',
-          margin: 0,
+          margin: 16,
           fontSize: 36,
           fontWeight: 900,
           textTransform: 'uppercase',
