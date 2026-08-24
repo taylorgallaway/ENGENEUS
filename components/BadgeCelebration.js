@@ -2,6 +2,9 @@
 
 import { useEffect } from 'react';
 import { BADGES } from '../lib/badges';
+import { starClipPath } from '../lib/badgeShape';
+
+const SHAPE = starClipPath(10, 50, 36);
 
 export default function BadgeCelebration({ badgeIds, onDismiss }) {
   useEffect(() => {
@@ -13,7 +16,7 @@ export default function BadgeCelebration({ badgeIds, onDismiss }) {
   const badges = badgeIds.map((id) => BADGES[id]).filter(Boolean);
   if (badges.length === 0) return null;
 
-  const colors = ['#2D6A4F', '#84A98C', '#FBBF24', '#F87171', '#60A5FA'];
+  const confettiColors = ['#2D6A4F', '#84A98C', '#FBBF24', '#F87171', '#60A5FA'];
 
   return (
     <div
@@ -39,7 +42,7 @@ export default function BadgeCelebration({ badgeIds, onDismiss }) {
               top: '-10px',
               width: 6,
               height: 12,
-              background: colors[i % colors.length],
+              background: confettiColors[i % confettiColors.length],
               borderRadius: 2,
               animation: `badgeConfetti ${1.6 + (i % 5) * 0.2}s linear ${(i % 6) * 0.15}s infinite`,
             }}
@@ -51,40 +54,27 @@ export default function BadgeCelebration({ badgeIds, onDismiss }) {
         onClick={(e) => e.stopPropagation()}
         style={{ background: 'white', borderRadius: 24, padding: 28, textAlign: 'center', maxWidth: 320, position: 'relative' }}
       >
-        <p style={{ fontSize: 12, fontWeight: 700, color: '#84A98C', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 12px' }}>
+        <p style={{ fontSize: 12, fontWeight: 700, color: '#84A98C', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 16px' }}>
           Badge Earned!
         </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 16, marginBottom: 16 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 18, marginBottom: 18 }}>
           {badges.map((badge) => (
-            <div key={badge.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 90 }}>
+            <div key={badge.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 96 }}>
               <div
                 style={{
-                  width: 72,
-                  height: 72,
-                  borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #1B4332, #2D6A4F, #84A98C)',
-                  padding: 4,
+                  width: 84,
+                  height: 84,
+                  clipPath: starClipPath(10, 50, 36),
+                  background: `linear-gradient(135deg, ${badge.colors[0]}, ${badge.colors[1]}, ${badge.colors[2]})`,
+                  boxShadow: `0 4px 14px ${badge.colors[1]}77`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <div
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    borderRadius: '50%',
-                    background: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 34,
-                  }}
-                >
-                  {badge.emoji}
-                </div>
+                <span style={{ fontSize: 36 }}>{badge.emoji}</span>
               </div>
-              <p style={{ fontSize: 12, fontWeight: 800, color: '#1B4332', marginTop: 8 }}>{badge.name}</p>
+              <p style={{ fontSize: 12, fontWeight: 800, color: '#1B4332', marginTop: 10 }}>{badge.name}</p>
             </div>
           ))}
         </div>
