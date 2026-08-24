@@ -77,7 +77,7 @@ export default function NewsTab({ user }) {
         <p style={{ fontSize: 13, color: '#9ca3af' }}>No recent news found for your followed artists — check back soon.</p>
       )}
       {newsItems.map((item) => (
-        
+        <a
           key={item.link}
           href={item.link}
           target="_blank"
