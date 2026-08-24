@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { BADGES } from '../lib/badges';
+import { starClipPath } from '../lib/badgeShape';
+
+const SHAPE = starClipPath(10, 50, 36);
 
 export default function BadgesSection({ userId }) {
   const [loading, setLoading] = useState(true);
@@ -30,40 +33,27 @@ export default function BadgesSection({ userId }) {
       {earned.length === 0 ? (
         <p style={{ fontSize: 12, color: '#9ca3af' }}>No badges earned yet.</p>
       ) : (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
           {earned.map(({ badge_id }) => {
             const badge = BADGES[badge_id];
             if (!badge) return null;
             return (
-              <div key={badge_id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 70 }} title={badge.description}>
+              <div key={badge_id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 72 }} title={badge.description}>
                 <div
                   style={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #1B4332, #2D6A4F, #84A98C)',
-                    padding: 3,
+                    width: 60,
+                    height: 60,
+                    clipPath: SHAPE,
+                    background: `linear-gradient(135deg, ${badge.colors[0]}, ${badge.colors[1]}, ${badge.colors[2]})`,
+                    boxShadow: `0 3px 10px ${badge.colors[1]}66`,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
                 >
-                  <div
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: '50%',
-                      background: 'white',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: 26,
-                    }}
-                  >
-                    {badge.emoji}
-                  </div>
+                  <span style={{ fontSize: 24 }}>{badge.emoji}</span>
                 </div>
-                <p style={{ fontSize: 10, fontWeight: 700, color: '#1B4332', textAlign: 'center', marginTop: 6, lineHeight: 1.2 }}>
+                <p style={{ fontSize: 10, fontWeight: 700, color: '#1B4332', textAlign: 'center', marginTop: 8, lineHeight: 1.2 }}>
                   {badge.name}
                 </p>
               </div>
