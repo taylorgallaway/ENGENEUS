@@ -86,6 +86,7 @@ export default function Home() {
       <div style={{ maxWidth: 500, margin: '0 auto', padding: '10px 20px 30px' }}>
         {activeTab === 'profile' && <ProfileTab user={user} />}
         {activeTab === 'matches' && <MatchesTab user={user} />}
+        {activeTab === 'chats' && <ChatsTab user={user} onOpenChat={() => {}} />}
       </div>
 
       <nav
