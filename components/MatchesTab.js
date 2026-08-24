@@ -26,7 +26,7 @@ function StickerImg({ emoji, size = 16 }) {
   );
 }
 
-export default function MatchesTab({ user }) {
+export default function MatchesTab({ user, onMessage }) {
   const [loading, setLoading] = useState(true);
   const [matches, setMatches] = useState([]);
   const [message, setMessage] = useState('');
@@ -80,7 +80,7 @@ export default function MatchesTab({ user }) {
       <h1
         style={{
           color: '#1B4332',
-          margin: 16,
+          marginTop: 16,
           fontSize: 36,
           fontWeight: 900,
           textTransform: 'uppercase',
@@ -109,13 +109,27 @@ export default function MatchesTab({ user }) {
                 <img src={person.avatar_url} alt={person.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               )}
             </div>
-<p style={{ fontWeight: 'bold', fontSize: 20, letterSpacing: '0.03em', margin: 0, display: 'flex', alignItems: 'center', gap: 7 }}>
+            <p style={{ fontWeight: 'bold', fontSize: 20, letterSpacing: '0.03em', margin: 0, display: 'flex', alignItems: 'center', gap: 7 }}>
               {person.bias_sticker && <StickerImg emoji={person.bias_sticker} size={14} />}
               {person.username}
             </p>
           </div>
           <p style={{ fontSize: 13, color: '#666', margin: '8px 0 0' }}>{person.bio}</p>
-          <p style={{ fontSize: 13, color: '#2D6A4F', margin: '4px 0 0' }}>Shared: {person.shared.join(', ')}</p>
+          <p style={{ fontSize: 13, color: '#2D6A4F', margin: '4px 0 12px' }}>Shared: {person.shared.join(', ')}</p>
+          <button
+            onClick={() => onMessage(person)}
+            style={{
+              padding: '8px 16px',
+              background: '#2D6A4F',
+              color: 'white',
+              border: 'none',
+              borderRadius: 8,
+              cursor: 'pointer',
+              fontSize: 13,
+            }}
+          >
+            Message
+          </button>
         </div>
       ))}
       {!loading && matches.length === 0 && !message && <p>No matches yet — no one else shares your followed artists.</p>}
