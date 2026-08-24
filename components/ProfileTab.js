@@ -266,13 +266,16 @@ export default function ProfileTab({ user }) {
         setFavSong(data.fav_song || '');
         setFavArtist(data.fav_artist || '');
         setFollowedArtists(data.followed_artists || []);
-setBiasSticker(data.bias_sticker || '🐥');
+        setBiasSticker(data.bias_sticker || '🐥');
+
+        await supabase.from('user_badges').insert({ user_id: user.id, badge_id: 'welcome' });
 
         const accountAgeDays = (Date.now() - new Date(data.created_at).getTime()) / (1000 * 60 * 60 * 24);
         if (accountAgeDays >= 365) {
           await supabase.from('user_badges').insert({ user_id: user.id, badge_id: 'one_year' });
-          // Duplicate inserts are silently rejected by the database's unique rule.
         }
+        // Duplicate inserts are silently rejected by the database's unique rule —
+        // this is safe to run on every profile load, not just once.
       }
       setLoading(false);
     }
@@ -299,10 +302,11 @@ if (error) {
       setMessage('Saved!');
       setProfile((prev) => ({ ...prev, username, bio, fav_song: favSong, fav_artist: favArtist, bias_sticker: biasSticker }));
 
-      if (followedArtists.length > 0) {
-        await supabase.from('user_badges').insert({ user_id: user.id, badge_id: 'first_artist' });
-        // If this badge was already earned, the database's unique rule quietly
-        // rejects the duplicate — nothing else needs to happen here.
+      const followThresholds = [1, 5, 10, 20, 50, 100];
+      for (const threshold of followThresholds) {
+        if (followedArtists.length >= threshold) {
+          await supabase.from('user_badges').insert({ user_id: user.id, badge_id: `follow_${threshold}` });
+        }
       }
     }
   };
