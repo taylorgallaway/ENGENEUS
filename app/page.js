@@ -75,6 +75,7 @@ export default function Home() {
   const tabs = [
     { id: 'profile', label: 'Profile', Icon: User },
     { id: 'matches', label: 'Matches', Icon: Heart },
+        { id: 'chats', label: 'Chats', Icon: MessageCircle },
   ];
 
   return (
