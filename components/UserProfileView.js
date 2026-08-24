@@ -2,6 +2,24 @@
 
 import BadgesSection from './BadgesSection';
 
+function fallbackSearchUrl(artist) {
+  return `https://www.google.com/search?q=${encodeURIComponent(artist + ' K-pop profile')}`;
+}
+
+async function openArtistPage(artist) {
+  try {
+    const res = await fetch(`/api/artist-lookup?name=${encodeURIComponent(artist)}`);
+    const data = await res.json();
+    if (data.url) {
+      window.open(data.url, '_blank', 'noopener,noreferrer');
+      return;
+    }
+  } catch (e) {
+    // fall through to the backup search below
+  }
+  window.open(fallbackSearchUrl(artist), '_blank', 'noopener,noreferrer');
+}
+
 function toCodePoint(emoji) {
   return [...emoji]
     .map((c) => c.codePointAt(0).toString(16))
@@ -23,24 +41,6 @@ function StickerImg({ emoji, size = 20 }) {
       style={{ display: 'inline-block' }}
     />
   );
-}
-
-function fallbackSearchUrl(artist) {
-  return `https://www.google.com/search?q=${encodeURIComponent(artist + ' K-pop profile')}`;
-}
-
-async function openArtistPage(artist) {
-  try {
-    const res = await fetch(`/api/artist-lookup?name=${encodeURIComponent(artist)}`);
-    const data = await res.json();
-    if (data.url) {
-      window.open(data.url, '_blank', 'noopener,noreferrer');
-      return;
-    }
-  } catch (e) {
-    // fall through to the backup search below
-  }
-  window.open(fallbackSearchUrl(artist), '_blank', 'noopener,noreferrer');
 }
 
 export default function UserProfileView({ profile, onBack }) {
@@ -84,7 +84,7 @@ export default function UserProfileView({ profile, onBack }) {
       </p>
 
       <p style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Following</p>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, margin: 0, padding: 0 }}>
         {(profile.followed_artists || []).length === 0 && (
           <span style={{ fontSize: 12, color: '#9ca3af' }}>Not following anyone yet.</span>
         )}
@@ -98,9 +98,11 @@ export default function UserProfileView({ profile, onBack }) {
               fontSize: 12,
               fontWeight: 600,
               padding: '6px 10px',
+              margin: 0,
               borderRadius: 999,
               border: 'none',
               cursor: 'pointer',
+              fontFamily: 'inherit',
             }}
           >
             {artist}
