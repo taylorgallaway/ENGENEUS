@@ -6,12 +6,14 @@ import { supabase } from '../lib/supabaseClient';
 import ProfileTab from '../components/ProfileTab';
 import MatchesTab from '../components/MatchesTab';
 import ChatsTab from '../components/ChatsTab';
+import ChatWindow from '../components/ChatWindow';
 import InfoModal from '../components/InfoModal';
 
 export default function Home() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('profile');
+  const [chatWithUser, setChatWithUser] = useState(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
