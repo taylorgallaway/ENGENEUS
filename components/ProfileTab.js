@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../lib/supabaseClient';
+import BadgeCelebration from './BadgeCelebration';
 
 const STICKER_OPTIONS = [
   { emoji: '🐱', label: 'Cat' }, { emoji: '🐯', label: 'Tiger' }, { emoji: '🦁', label: 'Lion' },
@@ -248,6 +249,18 @@ export default function ProfileTab({ user }) {
   const [artistInput, setArtistInput] = useState('');
   const [biasSticker, setBiasSticker] = useState('🐥');
   const [stickerSearch, setStickerSearch] = useState('');
+  const [newBadges, setNewBadges] = useState([]);
+
+  const awardBadge = async (badgeId) => {
+    const { error } = await supabase.from('user_badges').insert({ user_id: user.id, badge_id: badgeId });
+    if (!error) {
+      setNewBadges((prev) => [...prev, badgeId]);
+    } else if (error.code !== '23505') {
+      // 23505 = duplicate key, meaning they already had it — anything else is a
+      // real problem worth surfacing instead of silently swallowing.
+      setMessage(`Badge error: ${error.message}`);
+    }
+  };
 
   useEffect(() => {
     async function loadProfile() {
@@ -268,14 +281,12 @@ export default function ProfileTab({ user }) {
         setFollowedArtists(data.followed_artists || []);
         setBiasSticker(data.bias_sticker || '🐥');
 
-        await supabase.from('user_badges').insert({ user_id: user.id, badge_id: 'welcome' });
+        await awardBadge('welcome');
 
         const accountAgeDays = (Date.now() - new Date(data.created_at).getTime()) / (1000 * 60 * 60 * 24);
         if (accountAgeDays >= 365) {
-          await supabase.from('user_badges').insert({ user_id: user.id, badge_id: 'one_year' });
+          await awardBadge('one_year');
         }
-        // Duplicate inserts are silently rejected by the database's unique rule —
-        // this is safe to run on every profile load, not just once.
       }
       setLoading(false);
     }
@@ -296,7 +307,7 @@ export default function ProfileTab({ user }) {
       })
       .eq('id', user.id);
 
-if (error) {
+    if (error) {
       setMessage(`Error saving: ${error.message}`);
     } else {
       setMessage('Saved!');
@@ -305,7 +316,7 @@ if (error) {
       const followThresholds = [1, 5, 10, 20, 50, 100];
       for (const threshold of followThresholds) {
         if (followedArtists.length >= threshold) {
-          await supabase.from('user_badges').insert({ user_id: user.id, badge_id: `follow_${threshold}` });
+          await awardBadge(`follow_${threshold}`);
         }
       }
     }
@@ -668,6 +679,8 @@ if (error) {
           Delete Account
         </button>
       </div>
+
+      <BadgeCelebration badgeIds={newBadges} onDismiss={() => setNewBadges([])} />
     </div>
   );
 }
