@@ -8,6 +8,7 @@ import MatchesTab from '../components/MatchesTab';
 import ChatsTab from '../components/ChatsTab';
 import ChatWindow from '../components/ChatWindow';
 import NewsTab from '../components/NewsTab';
+import UserProfileView from '../components/UserProfileView';
 import InfoModal from '../components/InfoModal';
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('profile');
   const [chatWithUser, setChatWithUser] = useState(null);
+  const [viewingProfile, setViewingProfile] = useState(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -82,6 +84,8 @@ export default function Home() {
     { id: 'chats', label: 'Chats', Icon: MessageCircle },
   ];
 
+  const overlayActive = !!chatWithUser || !!viewingProfile;
+
   return (
     <div style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: 'white', paddingBottom: 80 }}>
       <div style={{ maxWidth: 500, margin: '0 auto', padding: '16px 20px 0', display: 'flex', justifyContent: 'flex-end' }}>
@@ -90,17 +94,25 @@ export default function Home() {
       <div style={{ maxWidth: 500, margin: '0 auto', padding: '10px 20px 30px' }}>
         {chatWithUser ? (
           <ChatWindow currentUser={user} otherUser={chatWithUser} onBack={() => setChatWithUser(null)} />
+        ) : viewingProfile ? (
+          <UserProfileView profile={viewingProfile} onBack={() => setViewingProfile(null)} />
         ) : (
           <>
             {activeTab === 'profile' && <ProfileTab user={user} />}
-            {activeTab === 'matches' && <MatchesTab user={user} onMessage={(person) => setChatWithUser(person)} />}
+            {activeTab === 'matches' && (
+              <MatchesTab
+                user={user}
+                onMessage={(person) => setChatWithUser(person)}
+                onViewProfile={(person) => setViewingProfile(person)}
+              />
+            )}
             {activeTab === 'news' && <NewsTab user={user} />}
             {activeTab === 'chats' && <ChatsTab user={user} onOpenChat={(person) => setChatWithUser(person)} />}
           </>
         )}
       </div>
 
-      {!chatWithUser && (
+      {!overlayActive && (
         <nav
           style={{
             position: 'fixed',
