@@ -26,7 +26,7 @@ function StickerImg({ emoji, size = 16 }) {
   );
 }
 
-export default function MatchesTab({ user, onMessage }) {
+export default function MatchesTab({ user, onMessage, onViewProfile }) {
   const [loading, setLoading] = useState(true);
   const [matches, setMatches] = useState([]);
   const [message, setMessage] = useState('');
@@ -93,7 +93,10 @@ export default function MatchesTab({ user, onMessage }) {
       {message && <p>{message}</p>}
       {matches.map((person) => (
         <div key={person.id} style={{ border: '1px solid #eee', borderRadius: 12, padding: 15, marginTop: 15 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <button
+            onClick={() => onViewProfile(person)}
+            style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'none', border: 'none', cursor: 'pointer', padding: 0, width: '100%', textAlign: 'left' }}
+          >
             <div
               style={{
                 width: 40,
@@ -113,7 +116,7 @@ export default function MatchesTab({ user, onMessage }) {
               {person.bias_sticker && <StickerImg emoji={person.bias_sticker} size={14} />}
               {person.username}
             </p>
-          </div>
+          </button>
           <p style={{ fontSize: 13, color: '#666', margin: '8px 0 0' }}>{person.bio}</p>
           <p style={{ fontSize: 13, color: '#2D6A4F', margin: '4px 0 20px' }}>Shared: {person.shared.join(', ')}</p>
           <button
