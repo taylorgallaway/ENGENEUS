@@ -53,7 +53,7 @@ export default function InfoModal() {
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ color: '#1B4332', fontWeight: 900, fontSize: 20, margin: 0 }}>Community Rules &amp; Guidelines</h2>
+              <h2 style={{ color: '#1B4332', fontWeight: 900, fontSize: 20, margin: 0 }}>About ENGENEUS</h2>
               <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af' }}>
                 <X size={18} />
               </button>
