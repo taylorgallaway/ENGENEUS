@@ -3,9 +3,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { BADGES } from '../lib/badges';
-import { starClipPath } from '../lib/badgeShape';
-
-const SHAPE = starClipPath(10, 50, 36);
+import BadgeIcon from './BadgeIcon';
 
 export default function BadgesSection({ userId }) {
   const [loading, setLoading] = useState(true);
@@ -38,22 +36,9 @@ export default function BadgesSection({ userId }) {
             const badge = BADGES[badge_id];
             if (!badge) return null;
             return (
-              <div key={badge_id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 72 }} title={badge.description}>
-                <div
-                  style={{
-                    width: 60,
-                    height: 60,
-                    clipPath: SHAPE,
-                    background: `linear-gradient(135deg, ${badge.colors[0]}, ${badge.colors[1]}, ${badge.colors[2]})`,
-                    boxShadow: `0 3px 10px ${badge.colors[1]}66`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <span style={{ fontSize: 24 }}>{badge.emoji}</span>
-                </div>
-                <p style={{ fontSize: 10, fontWeight: 700, color: '#1B4332', textAlign: 'center', marginTop: 8, lineHeight: 1.2 }}>
+              <div key={badge_id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 76 }} title={badge.description}>
+                <BadgeIcon badge={badge} size={64} />
+                <p style={{ fontSize: 10, fontWeight: 700, color: '#1B4332', textAlign: 'center', marginTop: 4, lineHeight: 1.2 }}>
                   {badge.name}
                 </p>
               </div>
