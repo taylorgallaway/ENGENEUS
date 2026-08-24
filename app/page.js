@@ -5,6 +5,7 @@ import { User, Heart } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import ProfileTab from '../components/ProfileTab';
 import MatchesTab from '../components/MatchesTab';
+import InfoModal from '../components/InfoModal';
 
 export default function Home() {
   const [user, setUser] = useState(null);
