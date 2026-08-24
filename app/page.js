@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { User, Heart, MessageCircle } from 'lucide-react';
+import { User, Heart, MessageCircle, Newspaper } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import ProfileTab from '../components/ProfileTab';
 import MatchesTab from '../components/MatchesTab';
 import ChatsTab from '../components/ChatsTab';
 import ChatWindow from '../components/ChatWindow';
+import NewsTab from '../components/NewsTab';
 import InfoModal from '../components/InfoModal';
 
 export default function Home() {
@@ -77,6 +78,7 @@ export default function Home() {
   const tabs = [
     { id: 'profile', label: 'Profile', Icon: User },
     { id: 'matches', label: 'Matches', Icon: Heart },
+     { id: 'news', label: 'News', Icon: Newspaper },
         { id: 'chats', label: 'Chats', Icon: MessageCircle },
   ];
 
@@ -92,6 +94,7 @@ export default function Home() {
           <>
             {activeTab === 'profile' && <ProfileTab user={user} />}
             {activeTab === 'matches' && <MatchesTab user={user} onMessage={(person) => setChatWithUser(person)} />}
+            {activeTab === 'news' && <NewsTab user={user} />}
             {activeTab === 'chats' && <ChatsTab user={user} onOpenChat={(person) => setChatWithUser(person)} />}
           </>
         )}
