@@ -23,7 +23,7 @@ export default function BadgesSection({ userId }) {
   if (loading) return null;
 
   return (
-    <div style={{ marginTop: 20, marginBottom: 20 }}>
+    <div style={{ marginTop: 32, marginBottom: 20 }}>
       <p style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 10px' }}>
         Badges
       </p>
