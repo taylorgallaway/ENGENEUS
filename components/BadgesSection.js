@@ -23,6 +23,9 @@ export default function BadgesSection({ userId }) {
 
   if (loading) return null;
 
+  const iconSize = 96;
+  const cardWidth = iconSize + 8;
+
   return (
     <div style={{ marginTop: 44, marginBottom: 20 }}>
       <p style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 20px' }}>
@@ -36,9 +39,21 @@ export default function BadgesSection({ userId }) {
             const badge = BADGES[badge_id];
             if (!badge) return null;
             return (
-              <div key={badge_id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 92 }} title={badge.description}>
-                <BadgeIcon badge={badge} size={80} />
-                <p style={{ fontSize: 13, fontWeight: 700, color: '#1B4332', textAlign: 'center', marginTop: 8, lineHeight: 1.25 }}>
+              <div key={badge_id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: cardWidth }} title={badge.description}>
+                <BadgeIcon badge={badge} size={iconSize} />
+                <p
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: '#1B4332',
+                    textAlign: 'center',
+                    marginTop: 8,
+                    width: '100%',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
                   {badge.name}
                 </p>
               </div>
