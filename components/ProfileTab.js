@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../lib/supabaseClient';
-import BadgesSection from './BadgesSection';
 
 const STICKER_OPTIONS = [
   { emoji: '🐱', label: 'Cat' }, { emoji: '🐯', label: 'Tiger' }, { emoji: '🦁', label: 'Lion' },
@@ -583,8 +582,6 @@ export default function ProfileTab({ user }) {
         Save
       </button>
       <p style={{ marginTop: 15 }}>{message}</p>
-
-      <BadgesSection userId={user.id} />
 
       <div style={{ marginTop: 40, paddingTop: 20, borderTop: '1px solid #eee' }}>
         <h2
