@@ -287,11 +287,17 @@ export default function ProfileTab({ user }) {
       })
       .eq('id', user.id);
 
-    if (error) {
+if (error) {
       setMessage(`Error saving: ${error.message}`);
     } else {
       setMessage('Saved!');
       setProfile((prev) => ({ ...prev, username, bio, fav_song: favSong, fav_artist: favArtist, bias_sticker: biasSticker }));
+
+      if (followedArtists.length > 0) {
+        await supabase.from('user_badges').insert({ user_id: user.id, badge_id: 'first_artist' });
+        // If this badge was already earned, the database's unique rule quietly
+        // rejects the duplicate — nothing else needs to happen here.
+      }
     }
   };
 
