@@ -2,9 +2,7 @@
 
 import { useEffect } from 'react';
 import { BADGES } from '../lib/badges';
-import { starClipPath } from '../lib/badgeShape';
-
-const SHAPE = starClipPath(10, 50, 36);
+import BadgeIcon from './BadgeIcon';
 
 export default function BadgeCelebration({ badgeIds, onDismiss }) {
   useEffect(() => {
@@ -59,22 +57,9 @@ export default function BadgeCelebration({ badgeIds, onDismiss }) {
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 18, marginBottom: 18 }}>
           {badges.map((badge) => (
-            <div key={badge.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 96 }}>
-              <div
-                style={{
-                  width: 84,
-                  height: 84,
-                  clipPath: starClipPath(10, 50, 36),
-                  background: `linear-gradient(135deg, ${badge.colors[0]}, ${badge.colors[1]}, ${badge.colors[2]})`,
-                  boxShadow: `0 4px 14px ${badge.colors[1]}77`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <span style={{ fontSize: 36 }}>{badge.emoji}</span>
-              </div>
-              <p style={{ fontSize: 12, fontWeight: 800, color: '#1B4332', marginTop: 10 }}>{badge.name}</p>
+            <div key={badge.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 100 }}>
+              <BadgeIcon badge={badge} size={80} />
+              <p style={{ fontSize: 12, fontWeight: 800, color: '#1B4332', marginTop: 4 }}>{badge.name}</p>
             </div>
           ))}
         </div>
