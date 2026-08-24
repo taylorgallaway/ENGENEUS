@@ -1,131 +1,138 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { User, Heart } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
-import ProfileTab from '../components/ProfileTab';
-import MatchesTab from '../components/MatchesTab';
-import InfoModal from '../components/InfoModal';
 
-export default function Home() {
-  const [user, setUser] = useState(null);
+function toCodePoint(emoji) {
+  return [...emoji]
+    .map((c) => c.codePointAt(0).toString(16))
+    .filter((cp) => cp !== 'fe0f')
+    .join('-');
+}
+
+function StickerImg({ emoji, size = 16 }) {
+  const cp = toCodePoint(emoji);
+  const base = cp === '1fabc'
+    ? 'https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/72x72'
+    : 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72';
+  return (
+    <img
+      src={`${base}/${cp}.png`}
+      alt={emoji}
+      width={size}
+      height={size}
+      style={{ display: 'inline-block' }}
+    />
+  );
+}
+
+export default function MatchesTab({ user, onMessage }) {
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('profile');
+  const [matches, setMatches] = useState([]);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user);
+    async function loadMatches() {
+      const { data: myProfile } = await supabase
+        .from('profiles')
+        .select('followed_artists')
+        .eq('id', user.id)
+        .single();
+
+      const myArtists = myProfile?.followed_artists || [];
+
+      if (myArtists.length === 0) {
+        setMessage('Add some followed artists on your profile first, then come back here.');
+        setLoading(false);
+        return;
+      }
+
+      const { data: everyone, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .neq('id', user.id);
+
+      if (error) {
+        setMessage(`Error: ${error.message}`);
+        setLoading(false);
+        return;
+      }
+
+      const withOverlap = (everyone || [])
+        .map((person) => {
+          const theirArtists = person.followed_artists || [];
+          const shared = theirArtists.filter((a) => myArtists.includes(a));
+          return { ...person, shared };
+        })
+        .filter((person) => person.shared.length > 0)
+        .sort((a, b) => b.shared.length - a.shared.length);
+
+      setMatches(withOverlap);
       setLoading(false);
-    });
-  }, []);
+    }
+    loadMatches();
+  }, [user.id]);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    window.location.reload();
-  };
-
-  if (loading) {
-    return <p style={{ fontFamily: 'sans-serif', margin: 40 }}>Loading...</p>;
-  }
-
-  if (!user) {
-    const navLinkStyle = {
-      display: 'block',
-      padding: '12px 20px',
-      background: '#2D6A4F',
-      color: 'white',
-      borderRadius: 8,
-      textDecoration: 'none',
-      marginTop: 10,
-      textAlign: 'center',
-    };
-    return (
-      <main
-        style={{
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: 'sans-serif',
-          background: 'white',
-          textAlign: 'center',
-          padding: '2rem',
-        }}
-      >
-        <h1
-          style={{
-            fontSize: '2.5rem',
-            fontWeight: 900,
-            margin: 0,
-            background: 'linear-gradient(90deg, #1B4332, #2D6A4F)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          ENGENEUS
-        </h1>
-        <p style={{ color: '#84A98C', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', fontSize: '0.75rem', marginTop: '0.25rem' }}>
-          Learn Through Music
-        </p>
-        <div style={{ width: '100%', maxWidth: 300, marginTop: 40 }}>
-          <a href="/login" style={navLinkStyle}>Log In</a>
-          <a href="/signup" style={navLinkStyle}>Sign Up</a>
-        </div>
-      </main>
-    );
-  }
-
-  const tabs = [
-    { id: 'profile', label: 'Profile', Icon: User },
-    { id: 'matches', label: 'Matches', Icon: Heart },
-  ];
+  if (loading) return <p>Loading...</p>;
 
   return (
-    <div style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: 'white', paddingBottom: 80 }}>
-      <div style={{ maxWidth: 500, margin: '0 auto', padding: '16px 20px 0', display: 'flex', justifyContent: 'flex-end' }}>
-        <InfoModal />
-      </div>
-      <div style={{ maxWidth: 500, margin: '0 auto', padding: '10px 20px 30px' }}>
-        {activeTab === 'profile' && <ProfileTab user={user} />}
-        {activeTab === 'matches' && <MatchesTab user={user} />}
-      </div>
-
-      <nav
+    <div>
+      <h1
         style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          background: 'white',
-          borderTop: '1px solid #eee',
-          display: 'flex',
-          justifyContent: 'space-around',
-          padding: '10px 0',
+          color: '#1B4332',
+          marginTop: 16,
+          fontSize: 36,
+          fontWeight: 900,
+          textTransform: 'uppercase',
+          WebkitTextStroke: '1px #1B4332',
+          marginBottom: 28,
         }}
       >
-        {tabs.map(({ id, label, Icon }) => (
+        Fandom Matches
+      </h1>
+      {message && <p>{message}</p>}
+      {matches.map((person) => (
+        <div key={person.id} style={{ border: '1px solid #eee', borderRadius: 12, padding: 15, marginTop: 15 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                background: '#f3f4f6',
+                border: '1px solid #e5e7eb',
+                overflow: 'hidden',
+                flexShrink: 0,
+              }}
+            >
+              {person.avatar_url && (
+                <img src={person.avatar_url} alt={person.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              )}
+            </div>
+            <p style={{ fontWeight: 'bold', fontSize: 20, letterSpacing: '0.03em', margin: 0, display: 'flex', alignItems: 'center', gap: 7 }}>
+              {person.bias_sticker && <StickerImg emoji={person.bias_sticker} size={14} />}
+              {person.username}
+            </p>
+          </div>
+          <p style={{ fontSize: 13, color: '#666', margin: '8px 0 0' }}>{person.bio}</p>
+          <p style={{ fontSize: 13, color: '#2D6A4F', margin: '4px 0 12px' }}>Shared: {person.shared.join(', ')}</p>
           <button
-            key={id}
-            onClick={() => setActiveTab(id)}
+            onClick={() => onMessage(person)}
             style={{
-              background: 'none',
+              padding: '8px 16px',
+              background: '#2D6A4F',
+              color: 'white',
               border: 'none',
+              borderRadius: 8,
               cursor: 'pointer',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 2,
-              color: activeTab === id ? '#2D6A4F' : '#9ca3af',
-              fontWeight: activeTab === id ? 700 : 400,
-              fontSize: 11,
+              fontSize: 13,
             }}
           >
-            <Icon size={20} strokeWidth={activeTab === id ? 2.5 : 2} />
-            {label}
+            Message
           </button>
-        ))}
-      </nav>
+        </div>
+      ))}
+      {!loading && matches.length === 0 && !message && <p>No matches yet — no one else shares your followed artists.</p>}
     </div>
   );
 }
