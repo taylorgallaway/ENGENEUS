@@ -15,6 +15,8 @@ export default function BadgeCelebration({ badgeIds, onDismiss }) {
   if (badges.length === 0) return null;
 
   const confettiColors = ['#2D6A4F', '#84A98C', '#FBBF24', '#F87171', '#60A5FA'];
+  const iconSize = 108;
+  const cardWidth = iconSize + 12;
 
   return (
     <div
@@ -50,16 +52,29 @@ export default function BadgeCelebration({ badgeIds, onDismiss }) {
 
       <div
         onClick={(e) => e.stopPropagation()}
-        style={{ background: 'white', borderRadius: 24, padding: 28, textAlign: 'center', maxWidth: 320, position: 'relative' }}
+        style={{ background: 'white', borderRadius: 24, padding: 28, textAlign: 'center', maxWidth: 340, position: 'relative' }}
       >
         <p style={{ fontSize: 12, fontWeight: 700, color: '#84A98C', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 18px' }}>
           Badge Earned!
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 20, marginBottom: 20 }}>
           {badges.map((badge) => (
-            <div key={badge.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 108 }}>
-              <BadgeIcon badge={badge} size={92} />
-              <p style={{ fontSize: 14, fontWeight: 800, color: '#1B4332', marginTop: 8 }}>{badge.name}</p>
+            <div key={badge.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: cardWidth }}>
+              <BadgeIcon badge={badge} size={iconSize} />
+              <p
+                style={{
+                  fontSize: 14,
+                  fontWeight: 800,
+                  color: '#1B4332',
+                  marginTop: 8,
+                  width: '100%',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {badge.name}
+              </p>
             </div>
           ))}
         </div>
