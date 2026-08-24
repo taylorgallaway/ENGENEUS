@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../lib/supabaseClient';
+import BadgesSection from './BadgesSection';
 
 const STICKER_OPTIONS = [
   { emoji: '🐱', label: 'Cat' }, { emoji: '🐯', label: 'Tiger' }, { emoji: '🦁', label: 'Lion' },
@@ -299,27 +300,6 @@ export default function ProfileTab({ user }) {
     await supabase.auth.signOut();
     window.location.href = '/';
   };
-  const handleDeleteAccount = async () => {
-    const confirmed = window.confirm(
-      'This permanently deletes your account and everything tied to it. This cannot be undone. Are you sure?'
-    );
-    if (!confirmed) return;
-
-    setMessage('Deleting account...');
-    const res = await fetch('/api/delete-account', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: user.id }),
-    });
-
-    if (res.ok) {
-      await supabase.auth.signOut();
-      window.location.href = '/';
-    } else {
-      const data = await res.json();
-      setMessage(`Error deleting account: ${data.error || 'unknown error'}`);
-    }
-  };
 
   const addArtist = (name) => {
     const trimmed = name.trim();
@@ -394,7 +374,7 @@ export default function ProfileTab({ user }) {
 
   return (
     <div>
-<div style={{ display: 'flex', alignItems: 'center', gap: 24, marginTop: 16, marginBottom: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginBottom: 20 }}>
         <div
           onClick={handleAvatarClick}
           style={{
@@ -604,6 +584,8 @@ export default function ProfileTab({ user }) {
       </button>
       <p style={{ marginTop: 15 }}>{message}</p>
 
+      <BadgesSection userId={user.id} />
+
       <div style={{ marginTop: 40, paddingTop: 20, borderTop: '1px solid #eee' }}>
         <h2
           style={{
@@ -632,24 +614,9 @@ export default function ProfileTab({ user }) {
         >
           Log Out
         </button>
-<p style={{ fontSize: 11, color: '#9ca3af', margin: '0 0 32px' }}>
+        <p style={{ fontSize: 11, color: '#9ca3af', margin: 0 }}>
           To switch accounts, log out, then log back in with the other account.
         </p>
-        <button
-          onClick={handleDeleteAccount}
-          style={{
-            display: 'block',
-            width: '100%',
-            padding: '10px 20px',
-            background: 'white',
-            color: '#dc2626',
-            border: '1px solid #dc2626',
-            borderRadius: 8,
-            cursor: 'pointer',
-          }}
-        >
-          Delete Account
-        </button>
       </div>
     </div>
   );
