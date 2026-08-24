@@ -67,7 +67,7 @@ export default function UserProfileView({ profile, onBack }) {
             <img src={profile.avatar_url} alt={profile.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           )}
         </div>
-        <p style={{ fontWeight: 900, fontSize: 20, letterSpacing: '0.03em', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <p style={{ fontWeight: 900, fontSize: 24, letterSpacing: '0.03em', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
           {profile.bias_sticker && <StickerImg emoji={profile.bias_sticker} size={18} />}
           {profile.username}
         </p>
