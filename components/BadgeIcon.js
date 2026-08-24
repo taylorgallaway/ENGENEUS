@@ -11,7 +11,7 @@ export default function BadgeIcon({ badge, size = 96 }) {
         borderRadius: '50%',
         background: '#fafafa',
         border: '1px solid #f0f0f0',
-        padding: size * 0.08,
+        padding: size * 0.03,
         boxSizing: 'border-box',
         display: 'flex',
         alignItems: 'center',
