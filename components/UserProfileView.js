@@ -23,10 +23,22 @@ function StickerImg({ emoji, size = 20 }) {
   );
 }
 
-// Searches for the artist on Kprofiles specifically, falling back automatically
-// to the next-best real source if Kprofiles doesn't have a page for them.
-function artistLookupUrl(artist) {
+function fallbackSearchUrl(artist) {
   return `https://www.google.com/search?q=${encodeURIComponent(artist + ' kprofiles kpop profile')}`;
+}
+
+async function openArtistPage(artist) {
+  try {
+    const res = await fetch(`/api/artist-lookup?name=${encodeURIComponent(artist)}`);
+    const data = await res.json();
+    if (data.url) {
+      window.open(data.url, '_blank', 'noopener,noreferrer');
+      return;
+    }
+  } catch (e) {
+    // fall through to the backup search below
+  }
+  window.open(fallbackSearchUrl(artist), '_blank', 'noopener,noreferrer');
 }
 
 export default function UserProfileView({ profile, onBack }) {
@@ -75,11 +87,9 @@ export default function UserProfileView({ profile, onBack }) {
           <span style={{ fontSize: 12, color: '#9ca3af' }}>Not following anyone yet.</span>
         )}
         {(profile.followed_artists || []).map((artist) => (
-          <a
+          <button
             key={artist}
-            href={artistLookupUrl(artist)}
-            target="_blank"
-            rel="noopener noreferrer"
+            onClick={() => openArtistPage(artist)}
             style={{
               background: '#2D6A4F1A',
               color: '#1B4332',
@@ -87,11 +97,12 @@ export default function UserProfileView({ profile, onBack }) {
               fontWeight: 600,
               padding: '6px 10px',
               borderRadius: 999,
-              textDecoration: 'none',
+              border: 'none',
+              cursor: 'pointer',
             }}
           >
             {artist}
-          </a>
+          </button>
         ))}
       </div>
     </div>
