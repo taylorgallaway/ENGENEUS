@@ -266,7 +266,13 @@ export default function ProfileTab({ user }) {
         setFavSong(data.fav_song || '');
         setFavArtist(data.fav_artist || '');
         setFollowedArtists(data.followed_artists || []);
-        setBiasSticker(data.bias_sticker || '🐥');
+setBiasSticker(data.bias_sticker || '🐥');
+
+        const accountAgeDays = (Date.now() - new Date(data.created_at).getTime()) / (1000 * 60 * 60 * 24);
+        if (accountAgeDays >= 365) {
+          await supabase.from('user_badges').insert({ user_id: user.id, badge_id: 'one_year' });
+          // Duplicate inserts are silently rejected by the database's unique rule.
+        }
       }
       setLoading(false);
     }
