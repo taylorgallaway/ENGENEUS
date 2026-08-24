@@ -23,6 +23,12 @@ function StickerImg({ emoji, size = 20 }) {
   );
 }
 
+// Searches for the artist on Kprofiles specifically, falling back automatically
+// to the next-best real source if Kprofiles doesn't have a page for them.
+function artistLookupUrl(artist) {
+  return `https://www.google.com/search?q=${encodeURIComponent(artist + ' kprofiles kpop profile')}`;
+}
+
 export default function UserProfileView({ profile, onBack }) {
   return (
     <div>
@@ -69,8 +75,11 @@ export default function UserProfileView({ profile, onBack }) {
           <span style={{ fontSize: 12, color: '#9ca3af' }}>Not following anyone yet.</span>
         )}
         {(profile.followed_artists || []).map((artist) => (
-          <span
+          <a
             key={artist}
+            href={artistLookupUrl(artist)}
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
               background: '#2D6A4F1A',
               color: '#1B4332',
@@ -78,10 +87,11 @@ export default function UserProfileView({ profile, onBack }) {
               fontWeight: 600,
               padding: '6px 10px',
               borderRadius: 999,
+              textDecoration: 'none',
             }}
           >
             {artist}
-          </span>
+          </a>
         ))}
       </div>
     </div>
