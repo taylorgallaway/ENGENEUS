@@ -83,7 +83,10 @@ export default function Home() {
 
   return (
     <div style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: 'white', paddingBottom: 80 }}>
-      <div style={{ maxWidth: 500, margin: '0 auto', padding: '30px 20px' }}>
+      <div style={{ maxWidth: 500, margin: '0 auto', padding: '16px 20px 0', display: 'flex', justifyContent: 'flex-end' }}>
+        <InfoModal />
+      </div>
+      <div style={{ maxWidth: 500, margin: '0 auto', padding: '10px 20px 30px' }}>
         {activeTab === 'profile' && <ProfileTab user={user} />}
         {activeTab === 'matches' && <MatchesTab user={user} />}
       </div>
