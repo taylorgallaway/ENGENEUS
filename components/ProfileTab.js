@@ -491,7 +491,8 @@ export default function ProfileTab({ user }) {
       {profile.current_streak > 0 && (
         <div
           style={{
-            display: 'inline-flex',
+            display: 'flex',
+            width: 'fit-content',
             alignItems: 'center',
             gap: 6,
             background: '#FEF3C7',
