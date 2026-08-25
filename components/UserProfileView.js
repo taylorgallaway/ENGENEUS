@@ -48,7 +48,18 @@ export default function UserProfileView({ profile, onBack }) {
     <div>
       <button
         onClick={onBack}
-        style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', fontSize: 13, marginBottom: 16, padding: 0 }}
+        style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          color: '#6b7280',
+          fontSize: 13,
+          marginBottom: 16,
+          padding: 0,
+          WebkitAppearance: 'none',
+          appearance: 'none',
+          fontFamily: 'inherit',
+        }}
       >
         ← Back
       </button>
@@ -69,7 +80,7 @@ export default function UserProfileView({ profile, onBack }) {
             <img src={profile.avatar_url} alt={profile.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           )}
         </div>
-        <p style={{ fontWeight: 900, fontSize: 24, letterSpacing: '0.03em', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <p style={{ fontWeight: 900, fontSize: 24, letterSpacing: '0.03em', margin: 0, color: '#111827', display: 'flex', alignItems: 'center', gap: 8 }}>
           {profile.bias_sticker && <StickerImg emoji={profile.bias_sticker} size={18} />}
           {profile.username}
         </p>
@@ -103,6 +114,8 @@ export default function UserProfileView({ profile, onBack }) {
               border: 'none',
               cursor: 'pointer',
               fontFamily: 'inherit',
+              WebkitAppearance: 'none',
+              appearance: 'none',
             }}
           >
             {artist}
