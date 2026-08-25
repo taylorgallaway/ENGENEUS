@@ -491,8 +491,7 @@ export default function ProfileTab({ user }) {
       {profile.current_streak > 0 && (
         <div
           style={{
-            display: 'flex',
-            width: 'fit-content',
+            display: 'inline-flex',
             alignItems: 'center',
             gap: 6,
             background: '#FEF3C7',
@@ -501,17 +500,17 @@ export default function ProfileTab({ user }) {
             fontWeight: 700,
             padding: '6px 12px',
             borderRadius: 999,
-            marginBottom: 40,
+            marginBottom: 20,
           }}
         >
           🔥 {profile.current_streak} day{profile.current_streak === 1 ? '' : 's'} streak
         </div>
       )}
 
-      <label>Username</label>
+      <label style={{ fontSize: 14 }}>Username</label>
       <input value={username} onChange={(e) => setUsername(e.target.value)} style={inputStyle} />
 
-      <label>Bias Sticker</label>
+      <label style={{ fontSize: 14, display: 'block', marginTop: 8 }}>Bias Sticker</label>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 5, marginBottom: 8 }}>
         <StickerImg emoji={biasSticker} size={24} />
         <span style={{ fontSize: 12, color: '#6b7280' }}>Current pick — search below to change</span>
@@ -563,16 +562,16 @@ export default function ProfileTab({ user }) {
         </div>
       )}
 
-      <label>Bio</label>
+      <label style={{ fontSize: 14, display: 'block', marginTop: 8 }}>Bio</label>
       <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} style={inputStyle} />
 
-      <label>Favorite Song</label>
+      <label style={{ fontSize: 14, display: 'block', marginTop: 8 }}>Favorite Song</label>
       <input value={favSong} onChange={(e) => setFavSong(e.target.value)} style={inputStyle} />
 
-      <label>Favorite Artist</label>
+      <label style={{ fontSize: 14, display: 'block', marginTop: 8 }}>Favorite Artist</label>
       <input value={favArtist} onChange={(e) => setFavArtist(e.target.value)} style={inputStyle} />
 
-      <label>Following</label>
+      <label style={{ fontSize: 14, display: 'block', marginTop: 8 }}>Following</label>
       <input
         value={artistInput}
         onChange={(e) => setArtistInput(e.target.value)}
