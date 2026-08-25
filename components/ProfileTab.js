@@ -488,6 +488,25 @@ export default function ProfileTab({ user }) {
         </div>
       </div>
 
+      {profile.current_streak > 0 && (
+        <div
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            background: '#FEF3C7',
+            color: '#92400E',
+            fontSize: 12,
+            fontWeight: 700,
+            padding: '6px 12px',
+            borderRadius: 999,
+            marginBottom: 20,
+          }}
+        >
+          🔥 {profile.current_streak} day{profile.current_streak === 1 ? '' : 's'} streak
+        </div>
+      )}
+
       <label>Username</label>
       <input value={username} onChange={(e) => setUsername(e.target.value)} style={inputStyle} />
 
