@@ -137,6 +137,7 @@ export default function StudioTab({ user, onLessonReady }) {
           style={{
             width: '100%',
             margin: 0,
+            marginLeft: -4,
             boxSizing: 'border-box',
             background: '#2D6A4F1A',
             color: '#1B4332',
