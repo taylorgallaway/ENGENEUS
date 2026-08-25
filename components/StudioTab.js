@@ -165,6 +165,8 @@ export default function StudioTab({ user }) {
       {hasKey && (
         <div
           style={{
+            width: '100%',
+            boxSizing: 'border-box',
             background: '#2D6A4F1A',
             color: '#1B4332',
             padding: '14px 16px',
