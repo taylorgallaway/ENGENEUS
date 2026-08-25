@@ -72,7 +72,7 @@ export default function ChatWindow({ currentUser, otherUser, onBack }) {
         <p style={{ fontWeight: 700, margin: 0 }}>{otherUser.username}</p>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '14px 0', display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ flex: 1, overflowY: 'auto', paddingTop: 24, paddingBottom: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
         {loading ? (
           <p style={{ color: '#9ca3af', fontSize: 13 }}>Loading...</p>
         ) : messages.length === 0 ? (
@@ -88,7 +88,7 @@ export default function ChatWindow({ currentUser, otherUser, onBack }) {
                   maxWidth: '75%',
                   background: isMine ? '#2D6A4F' : '#f3f4f6',
                   color: isMine ? 'white' : '#374151',
-                  padding: '8px 12px',
+                  padding: '10px 14px',
                   borderRadius: 14,
                   borderBottomRightRadius: isMine ? 4 : 14,
                   borderBottomLeftRadius: isMine ? 14 : 4,
