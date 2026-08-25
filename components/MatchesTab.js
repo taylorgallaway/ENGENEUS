@@ -127,7 +127,7 @@ export default function MatchesTab({ user, onMessage, onViewProfile }) {
                 <img src={person.avatar_url} alt={person.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               )}
             </div>
-            <p style={{ fontWeight: 'bold', fontSize: 24, margin: 0, color: '#111827', display: 'flex', alignItems: 'center', gap: 7 }}>
+            <p style={{ fontWeight: 900, fontSize: 24, WebkitTextStroke: '0.6px #111827', margin: 0, color: '#111827', display: 'flex', alignItems: 'center', gap: 7 }}>
               {person.bias_sticker && <StickerImg emoji={person.bias_sticker} size={14} />}
               {person.username}
             </p>
