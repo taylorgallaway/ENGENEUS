@@ -46,20 +46,25 @@ export async function POST(request) {
   }
 
   // 3. Not cached — generate it fresh using the user's own key
-  const prompt = `You are helping an English speaker learn Korean through K-pop lyrics.
-Break the following lyrics into individual lines. For each line, provide:
+  const prompt = `You are building real teaching content for a Duolingo-style app that teaches Korean through K-pop lyrics. Do NOT just romanize or transliterate the lyrics — extract genuine language-learning content.
+
+Do two things:
+
+1. Build a deduplicated VOCABULARY list of the meaningful, useful Korean words that appear in the song (skip pure filler/particles unless they're genuinely useful to learn). For each word give: "korean", "romanization", and "english" (a clear, simple meaning).
+
+2. Break the lyrics into individual LINES. For each line give:
 - "korean": the original line
-- "english": a natural English translation
+- "english": a natural, singable English translation of the full line
 - "skipReason": "english" if the line is already in English, "repeat" if it's an exact repeat of an earlier line, or null otherwise
-- "words": an array of the meaningful Korean words in that line, each with "korean", "romanization", and "english"
+- "wordKoreans": an array of the Korean words (from the vocabulary list above) that appear in this specific line
 
 Song: ${songName || 'Unknown'} by ${artist || 'Unknown'}
 
 Lyrics:
 ${lyrics}
 
-Respond with ONLY valid JSON in this exact shape, no markdown formatting, no commentary:
-{"songName": "...", "artist": "...", "lines": [{"korean": "...", "english": "...", "skipReason": null, "words": [{"korean": "...", "romanization": "...", "english": "..."}]}]}`;
+Respond with ONLY valid JSON in this exact shape, no markdown formatting, no commentary, no extra keys:
+{"songName": "...", "artist": "...", "vocabulary": [{"korean": "...", "romanization": "...", "english": "..."}], "lines": [{"korean": "...", "english": "...", "skipReason": null, "wordKoreans": ["..."]}]}`;
 
   let geminiRes;
   try {
