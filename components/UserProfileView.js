@@ -87,7 +87,7 @@ export default function UserProfileView({ profile, onBack }) {
       </div>
 
       <p style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 4px' }}>Bio</p>
-      <p style={{ fontSize: 14, color: '#374151', marginBottom: 20 }}>{profile.bio || '(no bio yet)'}</p>
+      <p style={{ fontSize: 14, color: '#374151', marginBottom: 20, whiteSpace: 'pre-wrap' }}>{profile.bio || '(no bio yet)'}</p>
 
       <p style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 2px' }}>Favorite Song</p>
       <p style={{ fontSize: 14, color: '#2D6A4F', fontWeight: 600, marginBottom: 20 }}>{profile.fav_song || 'none'}</p>
