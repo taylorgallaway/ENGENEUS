@@ -132,7 +132,7 @@ export default function MatchesTab({ user, onMessage, onViewProfile }) {
               {person.username}
             </p>
           </button>
-          <p style={{ fontSize: 13, color: '#666', margin: '8px 0 0' }}>{person.bio}</p>
+          <p style={{ fontSize: 13, color: '#666', margin: '8px 0 0', whiteSpace: 'pre-wrap' }}>{person.bio}</p>
           <p style={{ fontSize: 13, color: '#2D6A4F', margin: '4px 0 20px' }}>Shared: {person.shared.join(', ')}</p>
           <button
             onClick={() => onMessage(person)}
