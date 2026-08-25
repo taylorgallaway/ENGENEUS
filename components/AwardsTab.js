@@ -30,7 +30,7 @@ function MyBadges({ userId }) {
       {earned.length === 0 ? (
         <p style={{ fontSize: 13, color: '#9ca3af' }}>No badges earned yet — keep using ENGENEUS to unlock some!</p>
       ) : (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, marginLeft: -10 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, marginLeft: -8 }}>
           {earned.map(({ badge_id }) => {
             const badge = BADGES[badge_id];
             if (!badge) return null;
