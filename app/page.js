@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { User, Heart, MessageCircle, Newspaper, Trophy } from 'lucide-react';
+import { User, Heart, MessageCircle, Newspaper, Trophy, Music } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import ProfileTab from '../components/ProfileTab';
 import MatchesTab from '../components/MatchesTab';
@@ -11,6 +11,7 @@ import FandomChatWindow from '../components/FandomChatWindow';
 import NewsTab from '../components/NewsTab';
 import UserProfileView from '../components/UserProfileView';
 import AwardsTab from '../components/AwardsTab';
+import StudioTab from '../components/StudioTab';
 import InfoModal from '../components/InfoModal';
 
 export default function Home() {
@@ -82,6 +83,7 @@ export default function Home() {
 
   const tabs = [
     { id: 'profile', label: 'Profile', Icon: User },
+    { id: 'studio', label: 'Studio', Icon: Music },
     { id: 'matches', label: 'Matches', Icon: Heart },
     { id: 'news', label: 'News', Icon: Newspaper },
     { id: 'awards', label: 'Awards', Icon: Trophy },
@@ -105,6 +107,7 @@ export default function Home() {
         ) : (
           <>
             {activeTab === 'profile' && <ProfileTab user={user} />}
+            {activeTab === 'studio' && <StudioTab user={user} />}
             {activeTab === 'matches' && (
               <MatchesTab
                 user={user}
