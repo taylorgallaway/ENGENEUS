@@ -11,7 +11,7 @@ import FandomChatWindow from '../components/FandomChatWindow';
 import NewsTab from '../components/NewsTab';
 import UserProfileView from '../components/UserProfileView';
 import AwardsTab from '../components/AwardsTab';
-import StudioTab from '../components/StudioTab';
+import StudioSection from '../components/StudioSection';
 import LessonView from '../components/LessonView';
 import InfoModal from '../components/InfoModal';
 
@@ -107,11 +107,11 @@ export default function Home() {
         ) : viewingProfile ? (
           <UserProfileView profile={viewingProfile} onBack={() => setViewingProfile(null)} />
         ) : activeLesson ? (
-          <LessonView lesson={activeLesson} onBack={() => setActiveLesson(null)} />
+          <LessonView lesson={activeLesson} user={user} onBack={() => setActiveLesson(null)} />
         ) : (
           <>
             {activeTab === 'profile' && <ProfileTab user={user} />}
-            {activeTab === 'studio' && <StudioTab user={user} onLessonReady={(lesson) => setActiveLesson(lesson)} />}
+            {activeTab === 'studio' && <StudioSection user={user} onLessonReady={(lesson) => setActiveLesson(lesson)} />}
             {activeTab === 'matches' && (
               <MatchesTab
                 user={user}
