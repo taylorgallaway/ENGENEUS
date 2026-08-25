@@ -3,6 +3,106 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
+function LessonGenerator({ user }) {
+  const [songName, setSongName] = useState('');
+  const [artist, setArtist] = useState('');
+  const [lyrics, setLyrics] = useState('');
+  const [generating, setGenerating] = useState(false);
+  const [lesson, setLesson] = useState(null);
+  const [error, setError] = useState('');
+
+  const handleGenerate = async () => {
+    if (!lyrics.trim()) return;
+    setGenerating(true);
+    setError('');
+    setLesson(null);
+
+    try {
+      const res = await fetch('/api/generate-lesson', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, lyrics, songName, artist }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Something went wrong generating the lesson.');
+      } else {
+        setLesson(data.lesson);
+      }
+    } catch (e) {
+      setError('Network error — try again.');
+    }
+    setGenerating(false);
+  };
+
+  const inputStyle = { display: 'block', width: '100%', padding: 10, marginTop: 5, marginBottom: 15, boxSizing: 'border-box' };
+
+  return (
+    <div style={{ marginTop: 32, paddingTop: 24, borderTop: '1px solid #eee' }}>
+      <p style={{ fontSize: 20, fontWeight: 900, color: '#1B4332', marginBottom: 16 }}>Try generating a lesson</p>
+
+      <label style={{ fontSize: 14 }}>Song Name (optional)</label>
+      <input value={songName} onChange={(e) => setSongName(e.target.value)} style={inputStyle} />
+
+      <label style={{ fontSize: 14 }}>Artist (optional)</label>
+      <input value={artist} onChange={(e) => setArtist(e.target.value)} style={inputStyle} />
+
+      <label style={{ fontSize: 14 }}>Paste Lyrics</label>
+      <textarea value={lyrics} onChange={(e) => setLyrics(e.target.value)} rows={6} style={inputStyle} />
+
+      <button
+        onClick={handleGenerate}
+        disabled={generating || !lyrics.trim()}
+        style={{
+          padding: '10px 20px',
+          background: '#2D6A4F',
+          color: 'white',
+          border: 'none',
+          borderRadius: 8,
+          cursor: 'pointer',
+          opacity: generating || !lyrics.trim() ? 0.5 : 1,
+          WebkitAppearance: 'none',
+          appearance: 'none',
+        }}
+      >
+        {generating ? 'Generating...' : 'Generate Lesson'}
+      </button>
+
+      {error && <p style={{ marginTop: 15, fontSize: 13, color: '#dc2626' }}>{error}</p>}
+
+      {lesson && (
+        <div style={{ marginTop: 20 }}>
+          <p style={{ fontSize: 16, fontWeight: 800, color: '#1B4332' }}>
+            {lesson.songName || songName} — {lesson.artist || artist}
+          </p>
+          {(lesson.lines || []).map((line, i) => (
+            <div key={i} style={{ border: '1px solid #f3f4f6', borderRadius: 10, padding: 12, marginTop: 10 }}>
+              <p style={{ fontWeight: 700, margin: 0, color: '#1B4332' }}>{line.korean}</p>
+              <p style={{ fontSize: 13, color: '#666', margin: '4px 0 0' }}>{line.english}</p>
+              {line.skipReason && (
+                <p style={{ fontSize: 11, color: '#9ca3af', margin: '4px 0 0' }}>(skipped: {line.skipReason})</p>
+              )}
+              {line.words && line.words.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+                  {line.words.map((w, wi) => (
+                    <span
+                      key={wi}
+                      style={{ fontSize: 11, background: '#2D6A4F1A', color: '#1B4332', padding: '3px 8px', borderRadius: 999 }}
+                      title={`${w.romanization} — ${w.english}`}
+                    >
+                      {w.korean}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function StudioTab({ user }) {
   const [loading, setLoading] = useState(true);
   const [hasKey, setHasKey] = useState(false);
@@ -74,7 +174,7 @@ export default function StudioTab({ user }) {
             fontWeight: 600,
           }}
         >
-          ✓ AI Connected — lesson generation is coming in a future update. This just means your account is ready the moment it's built.
+          ✓ AI Connected
         </div>
       )}
 
@@ -134,6 +234,8 @@ export default function StudioTab({ user }) {
         {saving ? 'Saving...' : 'Save'}
       </button>
       {message && <p style={{ marginTop: 15, fontSize: 13, color: '#374151' }}>{message}</p>}
+
+      {hasKey && <LessonGenerator user={user} />}
     </div>
   );
 }
