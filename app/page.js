@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { User, Heart, MessageCircle, Newspaper } from 'lucide-react';
+import { User, Heart, MessageCircle, Newspaper, Trophy } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import ProfileTab from '../components/ProfileTab';
 import MatchesTab from '../components/MatchesTab';
@@ -9,6 +9,7 @@ import ChatsTab from '../components/ChatsTab';
 import ChatWindow from '../components/ChatWindow';
 import NewsTab from '../components/NewsTab';
 import UserProfileView from '../components/UserProfileView';
+import AwardsTab from '../components/AwardsTab';
 import InfoModal from '../components/InfoModal';
 
 export default function Home() {
@@ -81,6 +82,7 @@ export default function Home() {
     { id: 'profile', label: 'Profile', Icon: User },
     { id: 'matches', label: 'Matches', Icon: Heart },
     { id: 'news', label: 'News', Icon: Newspaper },
+    { id: 'awards', label: 'Awards', Icon: Trophy },
     { id: 'chats', label: 'Chats', Icon: MessageCircle },
   ];
 
@@ -107,6 +109,7 @@ export default function Home() {
               />
             )}
             {activeTab === 'news' && <NewsTab user={user} />}
+            {activeTab === 'awards' && <AwardsTab user={user} />}
             {activeTab === 'chats' && <ChatsTab user={user} onOpenChat={(person) => setChatWithUser(person)} />}
           </>
         )}
@@ -140,10 +143,10 @@ export default function Home() {
                 gap: 2,
                 color: activeTab === id ? '#2D6A4F' : '#9ca3af',
                 fontWeight: activeTab === id ? 700 : 400,
-                fontSize: 11,
+                fontSize: 10,
               }}
             >
-              <Icon size={20} strokeWidth={activeTab === id ? 2.5 : 2} />
+              <Icon size={18} strokeWidth={activeTab === id ? 2.5 : 2} />
               {label}
             </button>
           ))}
