@@ -23,7 +23,7 @@ function MyBadges({ userId }) {
 
   if (loading) return <p style={{ fontSize: 13, color: '#9ca3af' }}>Loading...</p>;
 
-  const cardWidth = 96 + 8;
+  const cardWidth = 84 + 8;
 
   return (
     <div>
@@ -36,7 +36,7 @@ function MyBadges({ userId }) {
             if (!badge) return null;
             return (
               <div key={badge_id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: cardWidth }} title={badge.description}>
-                <BadgeIcon badge={badge} size={96} />
+                <BadgeIcon badge={badge} size={84} />
                 <p
                   style={{
                     fontSize: 13,
