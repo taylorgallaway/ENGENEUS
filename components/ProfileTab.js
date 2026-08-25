@@ -287,6 +287,25 @@ export default function ProfileTab({ user }) {
         if (accountAgeDays >= 365) {
           await awardBadge('one_year');
         }
+
+        // Daily streak: same day = no change, exactly one day later = +1,
+        // any bigger gap (or first-ever visit) = reset to 1.
+        const todayStr = new Date().toISOString().slice(0, 10);
+        const yesterdayStr = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+        if (data.last_active_date !== todayStr) {
+          const newStreak = data.last_active_date === yesterdayStr ? (data.current_streak || 0) + 1 : 1;
+          await supabase
+            .from('profiles')
+            .update({ last_active_date: todayStr, current_streak: newStreak })
+            .eq('id', user.id);
+
+          const streakThresholds = [3, 7, 30, 100, 365];
+          for (const t of streakThresholds) {
+            if (newStreak >= t) {
+              await awardBadge(`streak_${t}`);
+            }
+          }
+        }
       }
       setLoading(false);
     }
