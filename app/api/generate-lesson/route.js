@@ -2,6 +2,10 @@ import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
+// Generating a full lesson can take longer than Vercel's default timeout —
+// this raises the ceiling so a slower Gemini response doesn't get cut off.
+export const maxDuration = 60;
+
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
