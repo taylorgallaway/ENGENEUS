@@ -3,19 +3,17 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
-function LessonGenerator({ user }) {
+function LessonGenerator({ user, onLessonReady }) {
   const [songName, setSongName] = useState('');
   const [artist, setArtist] = useState('');
   const [lyrics, setLyrics] = useState('');
   const [generating, setGenerating] = useState(false);
-  const [lesson, setLesson] = useState(null);
   const [error, setError] = useState('');
 
   const handleGenerate = async () => {
     if (!lyrics.trim()) return;
     setGenerating(true);
     setError('');
-    setLesson(null);
 
     try {
       const res = await fetch('/api/generate-lesson', {
@@ -27,7 +25,7 @@ function LessonGenerator({ user }) {
       if (!res.ok) {
         setError(data.error || 'Something went wrong generating the lesson.');
       } else {
-        setLesson(data.lesson);
+        onLessonReady(data.lesson);
       }
     } catch (e) {
       setError('Network error — try again.');
@@ -39,7 +37,7 @@ function LessonGenerator({ user }) {
 
   return (
     <div style={{ marginTop: 32, paddingTop: 24, borderTop: '1px solid #eee' }}>
-      <p style={{ fontSize: 20, fontWeight: 900, color: '#1B4332', marginBottom: 16 }}>Try generating a lesson</p>
+      <p style={{ fontSize: 20, fontWeight: 900, color: '#1B4332', marginBottom: 16 }}>Generate a lesson</p>
 
       <label style={{ fontSize: 14 }}>Song Name (optional)</label>
       <input value={songName} onChange={(e) => setSongName(e.target.value)} style={inputStyle} />
@@ -69,43 +67,14 @@ function LessonGenerator({ user }) {
       </button>
 
       {error && <p style={{ marginTop: 15, fontSize: 13, color: '#dc2626' }}>{error}</p>}
-
-      {lesson && (
-        <div style={{ marginTop: 20 }}>
-          <p style={{ fontSize: 16, fontWeight: 800, color: '#1B4332' }}>
-            {lesson.songName || songName} — {lesson.artist || artist}
-          </p>
-          {(lesson.lines || []).map((line, i) => (
-            <div key={i} style={{ border: '1px solid #f3f4f6', borderRadius: 10, padding: 12, marginTop: 10 }}>
-              <p style={{ fontWeight: 700, margin: 0, color: '#1B4332' }}>{line.korean}</p>
-              <p style={{ fontSize: 13, color: '#666', margin: '4px 0 0' }}>{line.english}</p>
-              {line.skipReason && (
-                <p style={{ fontSize: 11, color: '#9ca3af', margin: '4px 0 0' }}>(skipped: {line.skipReason})</p>
-              )}
-              {line.words && line.words.length > 0 && (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
-                  {line.words.map((w, wi) => (
-                    <span
-                      key={wi}
-                      style={{ fontSize: 11, background: '#2D6A4F1A', color: '#1B4332', padding: '3px 8px', borderRadius: 999 }}
-                      title={`${w.romanization} — ${w.english}`}
-                    >
-                      {w.korean}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
 
-export default function StudioTab({ user }) {
+export default function StudioTab({ user, onLessonReady }) {
   const [loading, setLoading] = useState(true);
   const [hasKey, setHasKey] = useState(false);
+  const [showKeySetup, setShowKeySetup] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
@@ -133,8 +102,9 @@ export default function StudioTab({ user }) {
 
     if (res.ok) {
       setHasKey(true);
+      setShowKeySetup(false);
       setApiKeyInput('');
-      setMessage('Connected! You\'re all set for whenever lesson generation goes live.');
+      setMessage('Connected!');
     } else {
       const data = await res.json();
       setMessage(`Error: ${data.error || 'something went wrong'}${data.code ? ` (code: ${data.code})` : ''}${data.hint ? ` — hint: ${data.hint}` : ''}`);
@@ -172,7 +142,7 @@ export default function StudioTab({ user }) {
             color: '#1B4332',
             padding: '14px 16px',
             borderRadius: 12,
-            marginBottom: 24,
+            marginBottom: hasKey && !showKeySetup ? 8 : 24,
             fontSize: 13,
             fontWeight: 600,
           }}
@@ -181,64 +151,89 @@ export default function StudioTab({ user }) {
         </div>
       )}
 
-      <p style={{ fontSize: 13, color: '#4b5563', lineHeight: 1.6, marginBottom: 16 }}>
-        Turning lyrics into lessons uses AI. Connect your own free Google account — Google's AI (Gemini) gives you a completely free daily allowance that resets automatically every day. Follow the directions below to enable your free API key.
-      </p>
+      {hasKey && !showKeySetup && (
+        <button
+          onClick={() => setShowKeySetup(true)}
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            color: '#84A98C',
+            fontSize: 12,
+            fontWeight: 700,
+            padding: 0,
+            marginBottom: 24,
+            WebkitAppearance: 'none',
+            appearance: 'none',
+            fontFamily: 'inherit',
+          }}
+        >
+          Update API key
+        </button>
+      )}
 
-      <a
-        href="https://aistudio.google.com/apikey"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          display: 'inline-block',
-          padding: '10px 20px',
-          background: '#2D6A4F',
-          color: 'white',
-          borderRadius: 8,
-          textDecoration: 'none',
-          fontSize: 13,
-          fontWeight: 700,
-          marginBottom: 10,
-        }}
-      >
-        Get a free API key →
-      </a>
+      {(!hasKey || showKeySetup) && (
+        <>
+          <p style={{ fontSize: 13, color: '#4b5563', lineHeight: 1.6, marginBottom: 16 }}>
+            Turning lyrics into lessons uses AI. Connect your own free Google account — Google's AI (Gemini) gives you a completely free daily allowance that resets automatically every day. Follow the directions below to enable your free API key.
+          </p>
 
-      <ol style={{ fontSize: 13, color: '#4b5563', lineHeight: 1.8, paddingLeft: 20, marginBottom: 24 }}>
-        <li>Sign in with any Google account at the link above</li>
-        <li>Click "Create API key"</li>
-        <li>Copy the key it gives you</li>
-        <li>Paste it below</li>
-      </ol>
+          <a
+            href="https://aistudio.google.com/apikey"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-block',
+              padding: '10px 20px',
+              background: '#2D6A4F',
+              color: 'white',
+              borderRadius: 8,
+              textDecoration: 'none',
+              fontSize: 13,
+              fontWeight: 700,
+              marginBottom: 10,
+            }}
+          >
+            Get a free API key →
+          </a>
 
-      <label style={{ fontSize: 14 }}>{hasKey ? 'Update your API key' : 'Paste your API key'}</label>
-      <input
-        type="password"
-        value={apiKeyInput}
-        onChange={(e) => setApiKeyInput(e.target.value)}
-        placeholder="AIza..."
-        style={inputStyle}
-      />
-      <button
-        onClick={handleSave}
-        disabled={saving || !apiKeyInput.trim()}
-        style={{
-          padding: '10px 20px',
-          background: '#2D6A4F',
-          color: 'white',
-          border: 'none',
-          borderRadius: 8,
-          cursor: 'pointer',
-          opacity: saving || !apiKeyInput.trim() ? 0.5 : 1,
-          WebkitAppearance: 'none',
-          appearance: 'none',
-        }}
-      >
-        {saving ? 'Saving...' : 'Save'}
-      </button>
-      {message && <p style={{ marginTop: 15, fontSize: 13, color: '#374151' }}>{message}</p>}
+          <ol style={{ fontSize: 13, color: '#4b5563', lineHeight: 1.8, paddingLeft: 20, marginBottom: 24 }}>
+            <li>Sign in with any Google account at the link above</li>
+            <li>Click "Create API key"</li>
+            <li>Copy the key it gives you</li>
+            <li>Paste it below</li>
+          </ol>
 
-      {hasKey && <LessonGenerator user={user} />}
+          <label style={{ fontSize: 14 }}>{hasKey ? 'Update your API key' : 'Paste your API key'}</label>
+          <input
+            type="password"
+            value={apiKeyInput}
+            onChange={(e) => setApiKeyInput(e.target.value)}
+            placeholder="AIza..."
+            style={inputStyle}
+          />
+          <button
+            onClick={handleSave}
+            disabled={saving || !apiKeyInput.trim()}
+            style={{
+              padding: '10px 20px',
+              background: '#2D6A4F',
+              color: 'white',
+              border: 'none',
+              borderRadius: 8,
+              cursor: 'pointer',
+              opacity: saving || !apiKeyInput.trim() ? 0.5 : 1,
+              WebkitAppearance: 'none',
+              appearance: 'none',
+            }}
+          >
+            {saving ? 'Saving...' : 'Save'}
+          </button>
+          {message && <p style={{ marginTop: 15, fontSize: 13, color: '#374151' }}>{message}</p>}
+        </>
+      )}
+
+      {hasKey && <LessonGenerator user={user} onLessonReady={onLessonReady} />}
     </div>
   );
 }
