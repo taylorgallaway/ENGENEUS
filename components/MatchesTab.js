@@ -95,7 +95,22 @@ export default function MatchesTab({ user, onMessage, onViewProfile }) {
         <div key={person.id} style={{ border: '1px solid #eee', borderRadius: 12, padding: 15, marginTop: 15 }}>
           <button
             onClick={() => onViewProfile(person)}
-            style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'none', border: 'none', cursor: 'pointer', padding: 0, width: '100%', textAlign: 'left' }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              margin: 0,
+              width: '100%',
+              textAlign: 'left',
+              WebkitAppearance: 'none',
+              appearance: 'none',
+              color: '#111827',
+              fontFamily: 'inherit',
+            }}
           >
             <div
               style={{
@@ -112,7 +127,7 @@ export default function MatchesTab({ user, onMessage, onViewProfile }) {
                 <img src={person.avatar_url} alt={person.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               )}
             </div>
-            <p style={{ fontWeight: 'bold', fontSize: 24, letterSpacing: '0.03em', margin: 0, display: 'flex', alignItems: 'center', gap: 7 }}>
+            <p style={{ fontWeight: 'bold', fontSize: 24, letterSpacing: '0.03em', margin: 0, color: '#111827', display: 'flex', alignItems: 'center', gap: 7 }}>
               {person.bias_sticker && <StickerImg emoji={person.bias_sticker} size={14} />}
               {person.username}
             </p>
@@ -129,6 +144,8 @@ export default function MatchesTab({ user, onMessage, onViewProfile }) {
               borderRadius: 8,
               cursor: 'pointer',
               fontSize: 13,
+              WebkitAppearance: 'none',
+              appearance: 'none',
             }}
           >
             Message
