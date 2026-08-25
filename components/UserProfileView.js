@@ -95,7 +95,7 @@ export default function UserProfileView({ profile, onBack }) {
       </p>
 
       <p style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 8px' }}>Following</p>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, margin: 0, padding: 0 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, margin: 0, marginLeft: -2, padding: 0 }}>
         {(profile.followed_artists || []).length === 0 && (
           <span style={{ fontSize: 12, color: '#9ca3af' }}>Not following anyone yet.</span>
         )}
