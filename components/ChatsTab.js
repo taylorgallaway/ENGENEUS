@@ -43,24 +43,10 @@ export default function ChatsTab({ user, onOpenChat }) {
     load();
   }, [user.id]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p style={{ fontSize: 13, color: '#9ca3af' }}>Loading...</p>;
 
   return (
     <div>
-      <h1
-        style={{
-          color: '#1B4332',
-          marginTop: 16,
-          marginBottom: 20,
-          fontSize: 36,
-          fontWeight: 900,
-          textTransform: 'uppercase',
-          WebkitTextStroke: '1px #1B4332',
-        }}
-      >
-        Chats
-      </h1>
-
       {conversations.length === 0 && (
         <p style={{ fontSize: 13, color: '#9ca3af' }}>
           No conversations yet — send a message from the Matches tab to start one.
@@ -83,6 +69,10 @@ export default function ChatsTab({ user, onOpenChat }) {
             padding: 12,
             marginBottom: 10,
             cursor: 'pointer',
+            WebkitAppearance: 'none',
+            appearance: 'none',
+            fontFamily: 'inherit',
+            color: '#111827',
           }}
         >
           <div
