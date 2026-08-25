@@ -79,11 +79,11 @@ export default function StudioTab({ user }) {
       )}
 
       <p style={{ fontSize: 13, color: '#4b5563', lineHeight: 1.6, marginBottom: 16 }}>
-        Turning lyrics into lessons uses AI, which costs a small amount to run. Instead of that cost falling on ENGENEUS (or on you through a subscription), you connect your own free Anthropic account — you're only ever billed for what you personally use, and it stays free to keep using ENGENEUS itself.
+        Turning lyrics into lessons uses AI. Instead of that cost falling on ENGENEUS, you connect your own free Google account — Google's AI (Gemini) gives everyone a genuinely free daily allowance, no credit card, no charges. It just resets automatically every day.
       </p>
 
       <a
-        href="https://console.anthropic.com/"
+        href="https://aistudio.google.com/apikey"
         target="_blank"
         rel="noopener noreferrer"
         style={{
@@ -102,9 +102,9 @@ export default function StudioTab({ user }) {
       </a>
 
       <ol style={{ fontSize: 13, color: '#4b5563', lineHeight: 1.8, paddingLeft: 20, marginBottom: 24 }}>
-        <li>Create a free account at the link above</li>
-        <li>Find "API Keys" in the account settings</li>
-        <li>Click "Create Key," give it any name, and copy it</li>
+        <li>Sign in with any Google account at the link above</li>
+        <li>Click "Create API key"</li>
+        <li>Copy the key it gives you</li>
         <li>Paste it below</li>
       </ol>
 
@@ -113,7 +113,7 @@ export default function StudioTab({ user }) {
         type="password"
         value={apiKeyInput}
         onChange={(e) => setApiKeyInput(e.target.value)}
-        placeholder="sk-ant-..."
+        placeholder="AIza..."
         style={inputStyle}
       />
       <button
