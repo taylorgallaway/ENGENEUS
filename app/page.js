@@ -5,8 +5,9 @@ import { User, Heart, MessageCircle, Newspaper, Trophy } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import ProfileTab from '../components/ProfileTab';
 import MatchesTab from '../components/MatchesTab';
-import ChatsTab from '../components/ChatsTab';
+import ChatsSection from '../components/ChatsSection';
 import ChatWindow from '../components/ChatWindow';
+import FandomChatWindow from '../components/FandomChatWindow';
 import NewsTab from '../components/NewsTab';
 import UserProfileView from '../components/UserProfileView';
 import AwardsTab from '../components/AwardsTab';
@@ -17,6 +18,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('profile');
   const [chatWithUser, setChatWithUser] = useState(null);
+  const [fandomRoom, setFandomRoom] = useState(null);
   const [viewingProfile, setViewingProfile] = useState(null);
 
   useEffect(() => {
@@ -86,7 +88,7 @@ export default function Home() {
     { id: 'chats', label: 'Chats', Icon: MessageCircle },
   ];
 
-  const overlayActive = !!chatWithUser || !!viewingProfile;
+  const overlayActive = !!chatWithUser || !!fandomRoom || !!viewingProfile;
 
   return (
     <div style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: 'white', paddingBottom: 80 }}>
@@ -96,6 +98,8 @@ export default function Home() {
       <div style={{ maxWidth: 500, margin: '0 auto', padding: '10px 20px 30px' }}>
         {chatWithUser ? (
           <ChatWindow currentUser={user} otherUser={chatWithUser} onBack={() => setChatWithUser(null)} />
+        ) : fandomRoom ? (
+          <FandomChatWindow currentUser={user} artist={fandomRoom} onBack={() => setFandomRoom(null)} />
         ) : viewingProfile ? (
           <UserProfileView profile={viewingProfile} onBack={() => setViewingProfile(null)} />
         ) : (
@@ -110,7 +114,13 @@ export default function Home() {
             )}
             {activeTab === 'news' && <NewsTab user={user} />}
             {activeTab === 'awards' && <AwardsTab user={user} />}
-            {activeTab === 'chats' && <ChatsTab user={user} onOpenChat={(person) => setChatWithUser(person)} />}
+            {activeTab === 'chats' && (
+              <ChatsSection
+                user={user}
+                onOpenChat={(person) => setChatWithUser(person)}
+                onOpenFandomRoom={(artist) => setFandomRoom(artist)}
+              />
+            )}
           </>
         )}
       </div>
