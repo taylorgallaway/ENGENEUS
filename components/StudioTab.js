@@ -166,6 +166,7 @@ export default function StudioTab({ user }) {
         <div
           style={{
             width: '100%',
+            margin: 0,
             boxSizing: 'border-box',
             background: '#2D6A4F1A',
             color: '#1B4332',
