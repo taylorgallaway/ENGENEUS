@@ -30,7 +30,7 @@ function MyBadges({ userId }) {
       {earned.length === 0 ? (
         <p style={{ fontSize: 13, color: '#9ca3af' }}>No badges earned yet — keep using ENGENEUS to unlock some!</p>
       ) : (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, justifyContent: 'center' }}>
           {earned.map(({ badge_id }) => {
             const badge = BADGES[badge_id];
             if (!badge) return null;
@@ -163,7 +163,7 @@ function TopStreaksBoard() {
             )}
           </div>
           <p style={{ fontSize: 14, fontWeight: 700, color: '#1B4332', margin: 0, flex: 1 }}>{person.username}</p>
-          <p style={{ fontSize: 13, fontWeight: 700, color: '#2D6A4F', margin: 0 }}>{person.current_streak}🔥</p>
+          <p style={{ fontSize: 13, fontWeight: 700, color: '#2D6A4F', margin: 0 }}>{person.current_streak} 🔥</p>
         </div>
       ))}
     </div>
@@ -194,17 +194,17 @@ function Leaderboard() {
 
   return (
     <div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 20, justifyContent: 'center' }}>
         {LEADERBOARDS.map((b) => (
           <button
             key={b.id}
             onClick={() => setBoard(b.id)}
             style={{
-              padding: '6px 12px',
+              padding: '9px 16px',
               borderRadius: 999,
               border: 'none',
               cursor: 'pointer',
-              fontSize: 12,
+              fontSize: 13,
               fontWeight: 700,
               background: board === b.id ? '#2D6A4F' : '#f3f4f6',
               color: board === b.id ? 'white' : '#6b7280',
