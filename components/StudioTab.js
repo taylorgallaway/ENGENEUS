@@ -79,7 +79,7 @@ export default function StudioTab({ user }) {
       )}
 
       <p style={{ fontSize: 13, color: '#4b5563', lineHeight: 1.6, marginBottom: 16 }}>
-        Turning lyrics into lessons uses AI. Instead of that cost falling on ENGENEUS, you connect your own free Google account — Google's AI (Gemini) gives everyone a genuinely free daily allowance, no credit card, no charges. It just resets automatically every day.
+        Turning lyrics into lessons uses AI. Connect your own free Google account — Google's AI (Gemini) gives you a completely free daily allowance that resets automatically every day. Follow the directions below to enable your free API key.
       </p>
 
       <a
@@ -95,7 +95,7 @@ export default function StudioTab({ user }) {
           textDecoration: 'none',
           fontSize: 13,
           fontWeight: 700,
-          marginBottom: 20,
+          marginBottom: 10,
         }}
       >
         Get a free API key →
