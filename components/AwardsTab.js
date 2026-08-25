@@ -23,20 +23,20 @@ function MyBadges({ userId }) {
 
   if (loading) return <p style={{ fontSize: 13, color: '#9ca3af' }}>Loading...</p>;
 
-  const cardWidth = 84 + 8;
+  const cardWidth = 96 + 8;
 
   return (
     <div>
       {earned.length === 0 ? (
         <p style={{ fontSize: 13, color: '#9ca3af' }}>No badges earned yet — keep using ENGENEUS to unlock some!</p>
       ) : (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, marginLeft: -8 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20 }}>
           {earned.map(({ badge_id }) => {
             const badge = BADGES[badge_id];
             if (!badge) return null;
             return (
               <div key={badge_id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: cardWidth }} title={badge.description}>
-                <BadgeIcon badge={badge} size={84} />
+                <BadgeIcon badge={badge} size={96} />
                 <p
                   style={{
                     fontSize: 13,
@@ -116,6 +116,60 @@ function MostFollowedBoard() {
   );
 }
 
+function TopStreaksBoard() {
+  const [loading, setLoading] = useState(true);
+  const [ranked, setRanked] = useState([]);
+
+  useEffect(() => {
+    async function load() {
+      const { data } = await supabase.from('profiles').select('*');
+      const sorted = (data || [])
+        .filter((p) => (p.current_streak || 0) > 0)
+        .sort((a, b) => (b.current_streak || 0) - (a.current_streak || 0))
+        .slice(0, 20);
+      setRanked(sorted);
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  if (loading) return <p style={{ fontSize: 13, color: '#9ca3af' }}>Loading...</p>;
+
+  if (ranked.length === 0) {
+    return <p style={{ fontSize: 13, color: '#9ca3af' }}>No active streaks yet — come back daily to start one!</p>;
+  }
+
+  return (
+    <div>
+      {ranked.map((person, i) => (
+        <div
+          key={person.id}
+          style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid #f3f4f6' }}
+        >
+          <span style={{ fontSize: 13, fontWeight: 800, color: i < 3 ? '#2D6A4F' : '#9ca3af', width: 24 }}>#{i + 1}</span>
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: '50%',
+              background: '#f3f4f6',
+              border: '1px solid #e5e7eb',
+              overflow: 'hidden',
+              flexShrink: 0,
+            }}
+          >
+            {person.avatar_url && (
+              <img src={person.avatar_url} alt={person.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            )}
+          </div>
+          <p style={{ fontSize: 14, fontWeight: 700, color: '#1B4332', margin: 0, flex: 1 }}>{person.username}</p>
+          <p style={{ fontSize: 13, fontWeight: 700, color: '#2D6A4F', margin: 0 }}>{person.current_streak}🔥</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function ComingSoonBoard({ needs }) {
   return (
     <div style={{ padding: '20px 0', textAlign: 'center' }}>
@@ -129,7 +183,7 @@ function ComingSoonBoard({ needs }) {
 const LEADERBOARDS = [
   { id: 'most_followed', label: 'Most Followed', kind: 'real' },
   { id: 'top_learners', label: 'Top Learners', kind: 'soon', needs: 'the Lyric Studio' },
-  { id: 'top_streaks', label: 'Top Streaks', kind: 'soon', needs: 'daily streak tracking' },
+  { id: 'top_streaks', label: 'Top Streaks', kind: 'streaks' },
   { id: 'top_fandoms', label: 'Top Fandoms', kind: 'soon', needs: 'Fandom Chats' },
   { id: 'top_donators', label: 'Top Donators', kind: 'soon', needs: 'the Ko-fi integration' },
 ];
@@ -168,7 +222,9 @@ function Leaderboard() {
         {active.label}
       </p>
 
-      {active.kind === 'real' ? <MostFollowedBoard /> : <ComingSoonBoard needs={active.needs} />}
+      {active.kind === 'real' && <MostFollowedBoard />}
+      {active.kind === 'streaks' && <TopStreaksBoard />}
+      {active.kind === 'soon' && <ComingSoonBoard needs={active.needs} />}
     </div>
   );
 }
