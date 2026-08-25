@@ -37,7 +37,7 @@ export default function StudioTab({ user }) {
       setMessage('Connected! You\'re all set for whenever lesson generation goes live.');
     } else {
       const data = await res.json();
-      setMessage(`Error: ${data.error || 'something went wrong'}`);
+      setMessage(`Error: ${data.error || 'something went wrong'}${data.code ? ` (code: ${data.code})` : ''}${data.hint ? ` — hint: ${data.hint}` : ''}`);
     }
     setSaving(false);
   };
