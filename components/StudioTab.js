@@ -118,20 +118,6 @@ export default function StudioTab({ user, onLessonReady }) {
 
   return (
     <div>
-      <h1
-        style={{
-          color: '#1B4332',
-          marginTop: 16,
-          marginBottom: 20,
-          fontSize: 36,
-          fontWeight: 900,
-          textTransform: 'uppercase',
-          WebkitTextStroke: '1px #1B4332',
-        }}
-      >
-        Studio
-      </h1>
-
       {hasKey && (
         <div
           style={{
