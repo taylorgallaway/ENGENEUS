@@ -69,7 +69,7 @@ export default function FandomChatWindow({ currentUser, artist, onBack }) {
         <p style={{ fontWeight: 700, margin: 0, color: '#1B4332' }}>{artist} — Fandom Chat</p>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '14px 0', display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ flex: 1, overflowY: 'auto', paddingTop: 24, paddingBottom: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
         {loading ? (
           <p style={{ color: '#9ca3af', fontSize: 13 }}>Loading...</p>
         ) : messages.length === 0 ? (
@@ -89,7 +89,7 @@ export default function FandomChatWindow({ currentUser, artist, onBack }) {
                   style={{
                     background: isMine ? '#2D6A4F' : '#f3f4f6',
                     color: isMine ? 'white' : '#374151',
-                    padding: '8px 12px',
+                    padding: '10px 14px',
                     borderRadius: 14,
                     borderBottomRightRadius: isMine ? 4 : 14,
                     borderBottomLeftRadius: isMine ? 14 : 4,
