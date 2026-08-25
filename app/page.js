@@ -12,6 +12,7 @@ import NewsTab from '../components/NewsTab';
 import UserProfileView from '../components/UserProfileView';
 import AwardsTab from '../components/AwardsTab';
 import StudioTab from '../components/StudioTab';
+import LessonView from '../components/LessonView';
 import InfoModal from '../components/InfoModal';
 
 export default function Home() {
@@ -20,6 +21,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('profile');
   const [chatWithUser, setChatWithUser] = useState(null);
   const [fandomRoom, setFandomRoom] = useState(null);
+  const [activeLesson, setActiveLesson] = useState(null);
   const [viewingProfile, setViewingProfile] = useState(null);
 
   useEffect(() => {
@@ -90,7 +92,7 @@ export default function Home() {
     { id: 'chats', label: 'Chats', Icon: MessageCircle },
   ];
 
-  const overlayActive = !!chatWithUser || !!fandomRoom || !!viewingProfile;
+  const overlayActive = !!chatWithUser || !!fandomRoom || !!viewingProfile || !!activeLesson;
 
   return (
     <div style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: 'white', paddingBottom: 80 }}>
@@ -104,10 +106,12 @@ export default function Home() {
           <FandomChatWindow currentUser={user} artist={fandomRoom} onBack={() => setFandomRoom(null)} />
         ) : viewingProfile ? (
           <UserProfileView profile={viewingProfile} onBack={() => setViewingProfile(null)} />
+        ) : activeLesson ? (
+          <LessonView lesson={activeLesson} onBack={() => setActiveLesson(null)} />
         ) : (
           <>
             {activeTab === 'profile' && <ProfileTab user={user} />}
-            {activeTab === 'studio' && <StudioTab user={user} />}
+            {activeTab === 'studio' && <StudioTab user={user} onLessonReady={(lesson) => setActiveLesson(lesson)} />}
             {activeTab === 'matches' && (
               <MatchesTab
                 user={user}
