@@ -51,12 +51,11 @@ export default function MyVocabulary({ user }) {
           }}
         >
           <div>
-            <p style={{ fontWeight: 700, margin: 0, color: '#1B4332' }}>
-              {w.korean} <span style={{ fontSize: 12, color: '#84A98C', fontWeight: 600 }}>{w.romanization}</span>
-            </p>
-            <p style={{ fontSize: 13, color: '#666', margin: '2px 0 0' }}>{w.english}</p>
+            <p style={{ fontWeight: 700, fontSize: 16, margin: 0, color: '#1B4332' }}>{w.korean}</p>
+            <p style={{ fontSize: 13, color: '#84A98C', fontWeight: 600, margin: '6px 0 0' }}>{w.romanization}</p>
+            <p style={{ fontSize: 13, color: '#666', margin: '6px 0 0' }}>{w.english}</p>
             {w.song_name && (
-              <p style={{ fontSize: 11, color: '#9ca3af', margin: '2px 0 0' }}>
+              <p style={{ fontSize: 11, color: '#9ca3af', margin: '6px 0 0' }}>
                 from {w.song_name}{w.artist ? ` — ${w.artist}` : ''}
               </p>
             )}
