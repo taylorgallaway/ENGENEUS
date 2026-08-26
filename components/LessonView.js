@@ -55,13 +55,6 @@ export default function LessonView({ lesson, user, onBack }) {
     (async () => {
       const artist = lesson.artist || '';
 
-      const { data: priorArtist } = await supabase
-        .from('completed_lessons')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('artist', artist)
-        .limit(1);
-
       // If they've already completed this exact song before, the database's
       // unique rule quietly rejects the duplicate — the count below still only
       // reflects genuinely distinct songs, not repeat playthroughs.
@@ -81,10 +74,6 @@ export default function LessonView({ lesson, user, onBack }) {
         const { error } = await supabase.from('user_badges').insert({ user_id: user.id, badge_id: badgeId });
         if (!error) earned.push(badgeId);
       };
-
-      if (!priorArtist || priorArtist.length === 0) {
-        await tryAward('new_artist');
-      }
 
       const thresholds = [
         [1, 'first_song'],
