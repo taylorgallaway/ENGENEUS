@@ -2,15 +2,13 @@
 
 import { useState, useRef, useEffect } from 'react';
 
-export default function SayItStep({ vocabulary, onComplete }) {
-  const [index, setIndex] = useState(0);
+export default function SayItStep({ word, onComplete }) {
   const [attempts, setAttempts] = useState(0);
   const [heard, setHeard] = useState('');
   const [listening, setListening] = useState(false);
   const [supported, setSupported] = useState(true);
+  const [errorMsg, setErrorMsg] = useState('');
   const recognitionRef = useRef(null);
-
-  const word = vocabulary[index];
 
   useEffect(() => {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -37,35 +35,35 @@ export default function SayItStep({ vocabulary, onComplete }) {
       setHeard(transcript);
       setAttempts((prev) => prev + 1);
       setListening(false);
+      setErrorMsg('');
     };
-    recognition.onerror = () => setListening(false);
+    recognition.onerror = (event) => {
+      setListening(false);
+      setErrorMsg(`Recognition error: ${event.error}`);
+    };
     recognition.onend = () => setListening(false);
 
     recognitionRef.current = recognition;
     setListening(true);
     setHeard('');
-    recognition.start();
+    setErrorMsg('');
+    try {
+      recognition.start();
+    } catch (e) {
+      setErrorMsg(`Could not start: ${e.message}`);
+      setListening(false);
+    }
   };
 
   const normalize = (s) => (s || '').replace(/\s/g, '');
   const isCloseMatch = heard && normalize(heard).includes(normalize(word.korean));
-
-  const handleNext = () => {
-    setAttempts(0);
-    setHeard('');
-    if (index + 1 >= vocabulary.length) {
-      onComplete();
-    } else {
-      setIndex(index + 1);
-    }
-  };
 
   const readyForNext = attempts >= 2 || !supported;
 
   return (
     <div>
       <p style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textAlign: 'center', marginBottom: 16 }}>
-        Say It · {index + 1} / {vocabulary.length} {supported ? `(${Math.min(attempts, 2)}/2 attempts)` : ''}
+        Say It {supported ? `· ${Math.min(attempts, 2)}/2 attempts` : ''}
       </p>
 
       <div style={{ border: '1px solid #f3f4f6', borderRadius: 16, padding: 32, textAlign: 'center', marginBottom: 20 }}>
@@ -105,6 +103,10 @@ export default function SayItStep({ vocabulary, onComplete }) {
         </p>
       )}
 
+      {errorMsg && (
+        <p style={{ fontSize: 12, color: '#dc2626', textAlign: 'center', marginBottom: 12 }}>{errorMsg}</p>
+      )}
+
       {heard && (
         <p style={{ fontSize: 13, textAlign: 'center', color: isCloseMatch ? '#2D6A4F' : '#374151', marginBottom: 12 }}>
           You said: "{heard}" {isCloseMatch ? '✓' : ''}
@@ -112,7 +114,7 @@ export default function SayItStep({ vocabulary, onComplete }) {
       )}
 
       <button
-        onClick={handleNext}
+        onClick={onComplete}
         disabled={!readyForNext}
         style={{
           display: 'block', width: '100%', padding: 12,
@@ -122,7 +124,7 @@ export default function SayItStep({ vocabulary, onComplete }) {
           WebkitAppearance: 'none', appearance: 'none', fontFamily: 'inherit',
         }}
       >
-        {index + 1 >= vocabulary.length ? 'Continue →' : 'Next word →'}
+        Next →
       </button>
     </div>
   );
