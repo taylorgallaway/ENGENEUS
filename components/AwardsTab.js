@@ -170,6 +170,89 @@ function TopStreaksBoard() {
   );
 }
 
+function TopLearnersBoard() {
+  const [loading, setLoading] = useState(true);
+  const [ranked, setRanked] = useState([]);
+
+  useEffect(() => {
+    async function load() {
+      const { data } = await supabase.from('completed_lessons').select('user_id');
+      const counts = {};
+      (data || []).forEach((row) => {
+        counts[row.user_id] = (counts[row.user_id] || 0) + 1;
+      });
+      const userIds = Object.keys(counts);
+      if (userIds.length === 0) {
+        setLoading(false);
+        return;
+      }
+      const { data: profiles } = await supabase.from('profiles').select('*').in('id', userIds);
+      const combined = (profiles || [])
+        .map((p) => ({ ...p, count: counts[p.id] || 0 }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 20);
+      setRanked(combined);
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  if (loading) return <p style={{ fontSize: 13, color: '#9ca3af' }}>Loading...</p>;
+  if (ranked.length === 0) return <p style={{ fontSize: 13, color: '#9ca3af' }}>No lessons completed yet — be the first!</p>;
+
+  return (
+    <div>
+      {ranked.map((person, i) => (
+        <div key={person.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid #f3f4f6' }}>
+          <span style={{ fontSize: 13, fontWeight: 800, color: i < 3 ? '#2D6A4F' : '#9ca3af', width: 24 }}>#{i + 1}</span>
+          <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#f3f4f6', border: '1px solid #e5e7eb', overflow: 'hidden', flexShrink: 0 }}>
+            {person.avatar_url && <img src={person.avatar_url} alt={person.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+          </div>
+          <p style={{ fontSize: 14, fontWeight: 700, color: '#1B4332', margin: 0, flex: 1 }}>{person.username}</p>
+          <p style={{ fontSize: 13, fontWeight: 700, color: '#2D6A4F', margin: 0 }}>{person.count} songs</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TopFandomsBoard() {
+  const [loading, setLoading] = useState(true);
+  const [ranked, setRanked] = useState([]);
+
+  useEffect(() => {
+    async function load() {
+      const { data } = await supabase.from('fandom_messages').select('artist');
+      const counts = {};
+      (data || []).forEach((row) => {
+        counts[row.artist] = (counts[row.artist] || 0) + 1;
+      });
+      const sorted = Object.entries(counts)
+        .map(([artist, count]) => ({ artist, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 20);
+      setRanked(sorted);
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  if (loading) return <p style={{ fontSize: 13, color: '#9ca3af' }}>Loading...</p>;
+  if (ranked.length === 0) return <p style={{ fontSize: 13, color: '#9ca3af' }}>No fandom chat activity yet.</p>;
+
+  return (
+    <div>
+      {ranked.map((row, i) => (
+        <div key={row.artist} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid #f3f4f6' }}>
+          <span style={{ fontSize: 13, fontWeight: 800, color: i < 3 ? '#2D6A4F' : '#9ca3af', width: 24 }}>#{i + 1}</span>
+          <p style={{ fontSize: 14, fontWeight: 700, color: '#1B4332', margin: 0, flex: 1 }}>{row.artist}</p>
+          <p style={{ fontSize: 13, fontWeight: 700, color: '#2D6A4F', margin: 0 }}>{row.count} messages</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function ComingSoonBoard({ needs }) {
   return (
     <div style={{ padding: '20px 0', textAlign: 'center' }}>
@@ -182,9 +265,9 @@ function ComingSoonBoard({ needs }) {
 
 const LEADERBOARDS = [
   { id: 'most_followed', label: 'Most Followed', kind: 'real' },
-  { id: 'top_learners', label: 'Top Learners', kind: 'soon', needs: 'the Lyric Studio' },
+  { id: 'top_learners', label: 'Top Learners', kind: 'learners' },
   { id: 'top_streaks', label: 'Top Streaks', kind: 'streaks' },
-  { id: 'top_fandoms', label: 'Top Fandoms', kind: 'soon', needs: 'Fandom Chats' },
+  { id: 'top_fandoms', label: 'Top Fandoms', kind: 'fandoms' },
   { id: 'top_donators', label: 'Top Donators', kind: 'soon', needs: 'the Ko-fi integration' },
 ];
 
@@ -224,6 +307,8 @@ function Leaderboard() {
 
       {active.kind === 'real' && <MostFollowedBoard />}
       {active.kind === 'streaks' && <TopStreaksBoard />}
+      {active.kind === 'learners' && <TopLearnersBoard />}
+      {active.kind === 'fandoms' && <TopFandomsBoard />}
       {active.kind === 'soon' && <ComingSoonBoard needs={active.needs} />}
     </div>
   );
