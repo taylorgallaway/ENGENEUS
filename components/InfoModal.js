@@ -53,7 +53,7 @@ export default function InfoModal() {
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ color: '#1B4332', fontWeight: 900, fontSize: 20, margin: 0 }}>About ENGENEUS</h2>
+              <h2 style={{ color: '#1B4332', fontWeight: 900, fontSize: 20, margin: 0 }}>Community Rules &amp; Guidelines</h2>
               <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af' }}>
                 <X size={18} />
               </button>
@@ -68,7 +68,7 @@ export default function InfoModal() {
                 <a href="https://ko-fi.com/engeneus" target="_blank" rel="noopener noreferrer" style={{ color: '#2D6A4F', fontWeight: 600 }}>
                   Buy us a coffee!
                 </a>{' '}
-                Every tip helps keep our platform alive and accessible for fans.
+                Every tip helps keep our platform alive and accessible for fans. Include your ENGENEUS username in the message so we can say thanks with a badge!
               </p>
               <p>
                 Not enjoying the site? Feel free to reach out to{' '}
