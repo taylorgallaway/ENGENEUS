@@ -285,8 +285,17 @@ export default function ProfileTab({ user }) {
         await awardBadge('welcome');
 
         const accountAgeDays = (Date.now() - new Date(data.created_at).getTime()) / (1000 * 60 * 60 * 24);
-        if (accountAgeDays >= 365) {
-          await awardBadge('one_year');
+        const anniversaryThresholds = [
+          [365, 'one_year'],
+          [1825, 'five_year'],
+          [3650, 'ten_year'],
+          [7300, 'twenty_year'],
+          [10950, 'thirty_year'],
+        ];
+        for (const [days, badgeId] of anniversaryThresholds) {
+          if (accountAgeDays >= days) {
+            await awardBadge(badgeId);
+          }
         }
 
         // Daily streak: same day = no change, exactly one day later = +1,
