@@ -3,13 +3,21 @@
 import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import LearnWordsStep from './LearnWordsStep';
+import SayItStep from './SayItStep';
+import MatchStep from './MatchStep';
+import DrawItStep from './DrawItStep';
+
+const PHASES = ['words', 'say-it', 'match', 'draw-it', 'lyrics'];
 
 export default function LessonView({ lesson, user, onBack }) {
   const hasVocab = lesson.vocabulary && lesson.vocabulary.length > 0;
-  const [phase, setPhase] = useState(hasVocab ? 'words' : 'lyrics');
+  const [phaseIndex, setPhaseIndex] = useState(hasVocab ? 0 : PHASES.length - 1);
 
   const vocabByKorean = {};
   (lesson.vocabulary || []).forEach((w) => { vocabByKorean[w.korean] = w; });
+
+  const advance = () => setPhaseIndex((i) => Math.min(i + 1, PHASES.length - 1));
+  const phase = PHASES[phaseIndex];
 
   return (
     <div>
@@ -41,26 +49,31 @@ export default function LessonView({ lesson, user, onBack }) {
         {lesson.artist || 'Unknown artist'}
       </p>
 
-      {phase === 'words' ? (
+      {phase === 'words' && (
         <LearnWordsStep
           vocabulary={lesson.vocabulary}
           user={user}
           songName={lesson.songName}
           artist={lesson.artist}
-          onComplete={() => setPhase('lyrics')}
+          onComplete={advance}
         />
-      ) : (
+      )}
+
+      {phase === 'say-it' && <SayItStep vocabulary={lesson.vocabulary} onComplete={advance} />}
+
+      {phase === 'match' && <MatchStep vocabulary={lesson.vocabulary} onComplete={advance} />}
+
+      {phase === 'draw-it' && <DrawItStep vocabulary={lesson.vocabulary} onComplete={advance} />}
+
+      {phase === 'lyrics' && (
         <>
           <p style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>
-            Lyrics
+            Lyrics Review
           </p>
           {(lesson.lines || []).map((line, i) => (
             <div key={i} style={{ border: '1px solid #f3f4f6', borderRadius: 10, padding: 12, marginBottom: 10 }}>
               <p style={{ fontWeight: 700, margin: 0, color: '#1B4332' }}>{line.korean}</p>
               <p style={{ fontSize: 13, color: '#666', margin: '4px 0 0' }}>{line.english}</p>
-              {line.skipReason && (
-                <p style={{ fontSize: 11, color: '#9ca3af', margin: '4px 0 0' }}>(skipped: {line.skipReason})</p>
-              )}
               {(line.wordKoreans || []).length > 0 && (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
                   {line.wordKoreans.map((kw) => {
@@ -79,8 +92,8 @@ export default function LessonView({ lesson, user, onBack }) {
               )}
             </div>
           ))}
-          <p style={{ fontSize: 12, color: '#9ca3af', marginTop: 20, textAlign: 'center' }}>
-            More interactive steps (Say It, Match, Draw It) are coming in future updates.
+          <p style={{ fontSize: 13, color: '#2D6A4F', fontWeight: 700, marginTop: 20, textAlign: 'center' }}>
+            🎉 Lesson complete!
           </p>
         </>
       )}
