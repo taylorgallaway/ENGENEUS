@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../lib/supabaseClient';
 import BadgeCelebration from './BadgeCelebration';
+import { getActiveDateBadges } from '../lib/dateBadges';
 
 const STICKER_OPTIONS = [
   { emoji: '🐱', label: 'Cat' }, { emoji: '🐯', label: 'Tiger' }, { emoji: '🦁', label: 'Lion' },
@@ -305,6 +306,10 @@ export default function ProfileTab({ user }) {
               await awardBadge(`streak_${t}`);
             }
           }
+        }
+
+        for (const badgeId of getActiveDateBadges()) {
+          await awardBadge(badgeId);
         }
       }
       setLoading(false);
