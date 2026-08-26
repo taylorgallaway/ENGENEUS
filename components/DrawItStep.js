@@ -2,16 +2,30 @@
 
 import { useRef, useEffect, useState } from 'react';
 
+const MIN_DRAW_MS = 2000;
+
 export default function DrawItStep({ word, onComplete }) {
   const canvasRef = useRef(null);
   const drawingRef = useRef(false);
-  const [hasDrawn, setHasDrawn] = useState(false);
+  const startTimeRef = useRef(null);
+  const [canProceed, setCanProceed] = useState(false);
 
   useEffect(() => {
     clearCanvas();
-    setHasDrawn(false);
+    startTimeRef.current = null;
+    setCanProceed(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [word]);
+
+  useEffect(() => {
+    if (canProceed) return;
+    const interval = setInterval(() => {
+      if (startTimeRef.current && Date.now() - startTimeRef.current >= MIN_DRAW_MS) {
+        setCanProceed(true);
+      }
+    }, 200);
+    return () => clearInterval(interval);
+  }, [canProceed]);
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
@@ -37,7 +51,7 @@ export default function DrawItStep({ word, onComplete }) {
 
   const startDraw = (e) => {
     drawingRef.current = true;
-    setHasDrawn(true);
+    if (!startTimeRef.current) startTimeRef.current = Date.now();
     const { x, y } = getPos(e);
     const ctx = canvasRef.current.getContext('2d');
     ctx.beginPath();
@@ -84,6 +98,12 @@ export default function DrawItStep({ word, onComplete }) {
         onTouchEnd={endDraw}
       />
 
+      {!canProceed && (
+        <p style={{ fontSize: 11, color: '#9ca3af', textAlign: 'center', marginTop: 10 }}>
+          Keep tracing for a couple seconds...
+        </p>
+      )}
+
       <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
         <button
           onClick={clearCanvas}
@@ -97,11 +117,11 @@ export default function DrawItStep({ word, onComplete }) {
         </button>
         <button
           onClick={onComplete}
-          disabled={!hasDrawn}
+          disabled={!canProceed}
           style={{
             flex: 1, padding: 12, background: '#2D6A4F', color: 'white', border: 'none',
             borderRadius: 10, cursor: 'pointer', fontWeight: 700,
-            opacity: hasDrawn ? 1 : 0.5,
+            opacity: canProceed ? 1 : 0.5,
             WebkitAppearance: 'none', appearance: 'none', fontFamily: 'inherit',
           }}
         >
