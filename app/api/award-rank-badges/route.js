@@ -66,5 +66,19 @@ export async function POST() {
     }
   }
 
+  // --- Top Donator: top 5 users by total donation amount ---
+  const { data: donations } = await supabaseAdmin.from('donations').select('user_id, amount');
+  const donationTotals = {};
+  (donations || []).forEach((row) => {
+    donationTotals[row.user_id] = (donationTotals[row.user_id] || 0) + Number(row.amount || 0);
+  });
+  const topDonators = Object.entries(donationTotals)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([userId]) => userId);
+  for (const userId of topDonators) {
+    await award(userId, 'top_donator');
+  }
+
   return NextResponse.json({ success: true, totalUsers });
 }
