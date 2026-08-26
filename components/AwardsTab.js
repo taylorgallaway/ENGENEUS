@@ -275,6 +275,13 @@ function Leaderboard() {
   const [board, setBoard] = useState('most_followed');
   const active = LEADERBOARDS.find((b) => b.id === board);
 
+  useEffect(() => {
+    // Rank-based badges (Top Five, Top Fandom, 1% Contributor) get checked
+    // whenever someone actually looks at the leaderboard, rather than on a
+    // schedule — no extra infrastructure needed for that.
+    fetch('/api/award-rank-badges', { method: 'POST' }).catch(() => {});
+  }, []);
+
   return (
     <div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 20, justifyContent: 'center' }}>
