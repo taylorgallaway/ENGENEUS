@@ -1,18 +1,15 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 
-export default function DrawItStep({ vocabulary, onComplete }) {
-  const [index, setIndex] = useState(0);
+export default function DrawItStep({ word, onComplete }) {
   const canvasRef = useRef(null);
   const drawingRef = useRef(false);
-
-  const word = vocabulary[index];
 
   useEffect(() => {
     clearCanvas();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index]);
+  }, [word]);
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
@@ -60,18 +57,10 @@ export default function DrawItStep({ vocabulary, onComplete }) {
     drawingRef.current = false;
   };
 
-  const handleNext = () => {
-    if (index + 1 >= vocabulary.length) {
-      onComplete();
-    } else {
-      setIndex(index + 1);
-    }
-  };
-
   return (
     <div>
       <p style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textAlign: 'center', marginBottom: 16 }}>
-        Draw It · {index + 1} / {vocabulary.length}
+        Draw It
       </p>
 
       <p style={{ fontSize: 13, color: '#666', textAlign: 'center', marginBottom: 12 }}>
@@ -104,14 +93,14 @@ export default function DrawItStep({ vocabulary, onComplete }) {
           Clear
         </button>
         <button
-          onClick={handleNext}
+          onClick={onComplete}
           style={{
             flex: 1, padding: 12, background: '#2D6A4F', color: 'white', border: 'none',
             borderRadius: 10, cursor: 'pointer', fontWeight: 700,
             WebkitAppearance: 'none', appearance: 'none', fontFamily: 'inherit',
           }}
         >
-          {index + 1 >= vocabulary.length ? 'Finish lesson →' : 'Next word →'}
+          Next →
         </button>
       </div>
     </div>
