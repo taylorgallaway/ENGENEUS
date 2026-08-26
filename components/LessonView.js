@@ -7,17 +7,32 @@ import SayItStep from './SayItStep';
 import MatchStep from './MatchStep';
 import DrawItStep from './DrawItStep';
 
-const PHASES = ['words', 'say-it', 'match', 'draw-it', 'lyrics'];
+const WORD_PHASES = ['learn', 'say-it', 'draw-it'];
 
 export default function LessonView({ lesson, user, onBack }) {
-  const hasVocab = lesson.vocabulary && lesson.vocabulary.length > 0;
-  const [phaseIndex, setPhaseIndex] = useState(hasVocab ? 0 : PHASES.length - 1);
+  const vocabulary = lesson.vocabulary || [];
+  const hasVocab = vocabulary.length > 0;
+
+  const [wordIndex, setWordIndex] = useState(0);
+  const [wordPhaseIndex, setWordPhaseIndex] = useState(0);
+  const [stage, setStage] = useState(hasVocab ? 'words' : 'match'); // 'words' -> 'match' -> 'lyrics'
 
   const vocabByKorean = {};
-  (lesson.vocabulary || []).forEach((w) => { vocabByKorean[w.korean] = w; });
+  vocabulary.forEach((w) => { vocabByKorean[w.korean] = w; });
 
-  const advance = () => setPhaseIndex((i) => Math.min(i + 1, PHASES.length - 1));
-  const phase = PHASES[phaseIndex];
+  const advanceWithinWord = () => {
+    if (wordPhaseIndex + 1 < WORD_PHASES.length) {
+      setWordPhaseIndex(wordPhaseIndex + 1);
+    } else if (wordIndex + 1 < vocabulary.length) {
+      setWordIndex(wordIndex + 1);
+      setWordPhaseIndex(0);
+    } else {
+      setStage('match');
+    }
+  };
+
+  const currentWord = vocabulary[wordIndex];
+  const currentWordPhase = WORD_PHASES[wordPhaseIndex];
 
   return (
     <div>
@@ -45,27 +60,38 @@ export default function LessonView({ lesson, user, onBack }) {
       <p style={{ fontSize: 20, fontWeight: 900, color: '#1B4332', margin: '0 0 4px' }}>
         {lesson.songName || 'Untitled'}
       </p>
-      <p style={{ fontSize: 13, color: '#84A98C', fontWeight: 600, marginBottom: 24 }}>
+      <p style={{ fontSize: 13, color: '#84A98C', fontWeight: 600, marginBottom: 20 }}>
         {lesson.artist || 'Unknown artist'}
       </p>
 
-      {phase === 'words' && (
-        <LearnWordsStep
-          vocabulary={lesson.vocabulary}
-          user={user}
-          songName={lesson.songName}
-          artist={lesson.artist}
-          onComplete={advance}
-        />
+      {stage === 'words' && (
+        <>
+          <p style={{ fontSize: 11, color: '#9ca3af', textAlign: 'center', marginBottom: 4 }}>
+            Word {wordIndex + 1} / {vocabulary.length}
+          </p>
+          {currentWordPhase === 'learn' && (
+            <LearnWordsStep
+              word={currentWord}
+              user={user}
+              songName={lesson.songName}
+              artist={lesson.artist}
+              onComplete={advanceWithinWord}
+            />
+          )}
+          {currentWordPhase === 'say-it' && (
+            <SayItStep word={currentWord} onComplete={advanceWithinWord} />
+          )}
+          {currentWordPhase === 'draw-it' && (
+            <DrawItStep word={currentWord} onComplete={advanceWithinWord} />
+          )}
+        </>
       )}
 
-      {phase === 'say-it' && <SayItStep vocabulary={lesson.vocabulary} onComplete={advance} />}
+      {stage === 'match' && (
+        <MatchStep vocabulary={vocabulary} onComplete={() => setStage('lyrics')} />
+      )}
 
-      {phase === 'match' && <MatchStep vocabulary={lesson.vocabulary} onComplete={advance} />}
-
-      {phase === 'draw-it' && <DrawItStep vocabulary={lesson.vocabulary} onComplete={advance} />}
-
-      {phase === 'lyrics' && (
+      {stage === 'lyrics' && (
         <>
           <p style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>
             Lyrics Review
