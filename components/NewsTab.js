@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import BadgeCelebration from './BadgeCelebration';
 
 function timeAgo(dateStr) {
   const diffMs = Date.now() - new Date(dateStr).getTime();
@@ -11,10 +12,21 @@ function timeAgo(dateStr) {
   return `${Math.floor(diffHrs / 24)}d ago`;
 }
 
+const COMEBACK_KEYWORDS = [
+  'comeback', 'returns with', 'makes a return', 'new mini album',
+  'new album', 'title track', 'makes a comeback',
+];
+
+function looksLikeComeback(title) {
+  const lower = title.toLowerCase();
+  return COMEBACK_KEYWORDS.some((kw) => lower.includes(kw));
+}
+
 export default function NewsTab({ user }) {
   const [loading, setLoading] = useState(true);
   const [newsItems, setNewsItems] = useState([]);
   const [message, setMessage] = useState('');
+  const [newBadges, setNewBadges] = useState([]);
 
   useEffect(() => {
     async function load() {
@@ -47,6 +59,38 @@ export default function NewsTab({ user }) {
           return lowerArtists.some((a) => cats.includes(a) || titleLower.includes(a));
         });
         setNewsItems(matched);
+
+        // Comeback detection — check matched articles for comeback language,
+        // log any new ones, and award badges based on how many they've seen.
+        const comebackMatches = matched.filter((item) => looksLikeComeback(item.title));
+        let newlyLogged = false;
+        for (const item of comebackMatches) {
+          const { error } = await supabase.from('comeback_sightings').insert({
+            user_id: user.id,
+            artist: item.categories?.[0] || 'Unknown',
+            article_link: item.link,
+          });
+          if (!error) newlyLogged = true;
+        }
+
+        if (newlyLogged) {
+          const earned = [];
+          const tryAward = async (badgeId) => {
+            const { error } = await supabase.from('user_badges').insert({ user_id: user.id, badge_id: badgeId });
+            if (!error) earned.push(badgeId);
+          };
+          await tryAward('comeback');
+
+          const { count } = await supabase
+            .from('comeback_sightings')
+            .select('id', { count: 'exact', head: true })
+            .eq('user_id', user.id);
+
+          if ((count || 0) >= 5) await tryAward('comeback_veteran');
+          if ((count || 0) >= 10) await tryAward('comeback_historian');
+
+          if (earned.length > 0) setNewBadges(earned);
+        }
       } catch (e) {
         setMessage('Could not load news right now — try again later.');
       }
@@ -97,6 +141,8 @@ export default function NewsTab({ user }) {
           <p style={{ fontSize: 12, color: '#666', margin: 0 }}>{item.excerpt}</p>
         </a>
       ))}
+
+      <BadgeCelebration badgeIds={newBadges} onDismiss={() => setNewBadges([])} />
     </div>
   );
 }
