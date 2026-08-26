@@ -17,7 +17,7 @@ function looseMatch(target, heard) {
       pool.splice(idx, 1);
     }
   }
-  return common / t.length >= 0.4;
+  return common / t.length >= 0.25;
 }
 
 export default function SayItStep({ word, onComplete }) {
