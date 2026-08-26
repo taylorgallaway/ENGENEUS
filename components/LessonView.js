@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import LearnWordsStep from './LearnWordsStep';
 import SayItStep from './SayItStep';
@@ -9,49 +9,82 @@ import DrawItStep from './DrawItStep';
 
 const WORD_PHASES = ['learn', 'say-it', 'draw-it'];
 
+// Groups of 4 — if only 1 word would be left dangling at the end, it merges
+// into the previous group instead of getting its own lonely match round.
+function computeGroups(vocab) {
+  const groups = [];
+  let i = 0;
+  while (i < vocab.length) {
+    const remaining = vocab.length - i;
+    let size = Math.min(4, remaining);
+    if (remaining - size === 1) size = remaining;
+    groups.push(vocab.slice(i, i + size));
+    i += size;
+  }
+  return groups;
+}
+
 export default function LessonView({ lesson, user, onBack }) {
   const vocabulary = lesson.vocabulary || [];
-  const hasVocab = vocabulary.length > 0;
+  const groups = useMemo(() => computeGroups(vocabulary), [vocabulary]);
+  const hasVocab = groups.length > 0;
 
-  const [wordIndex, setWordIndex] = useState(0);
+  // mode: 'learning' (first pass: learn/say/draw each word, then match its group)
+  //       'review'   (second pass: replay match for every group again, cumulative)
+  //       'lyrics'   (final recap)
+  const [mode, setMode] = useState(hasVocab ? 'learning' : 'lyrics');
+  const [groupIndex, setGroupIndex] = useState(0);
+  const [groupStage, setGroupStage] = useState('words'); // 'words' | 'match'
+  const [wordIndexInGroup, setWordIndexInGroup] = useState(0);
   const [wordPhaseIndex, setWordPhaseIndex] = useState(0);
-  const [stage, setStage] = useState(hasVocab ? 'words' : 'match'); // 'words' -> 'match' -> 'lyrics'
 
   const vocabByKorean = {};
   vocabulary.forEach((w) => { vocabByKorean[w.korean] = w; });
 
+  const currentGroup = groups[groupIndex] || [];
+  const currentWord = currentGroup[wordIndexInGroup];
+  const currentWordPhase = WORD_PHASES[wordPhaseIndex];
+
   const advanceWithinWord = () => {
     if (wordPhaseIndex + 1 < WORD_PHASES.length) {
       setWordPhaseIndex(wordPhaseIndex + 1);
-    } else if (wordIndex + 1 < vocabulary.length) {
-      setWordIndex(wordIndex + 1);
+    } else if (wordIndexInGroup + 1 < currentGroup.length) {
+      setWordIndexInGroup(wordIndexInGroup + 1);
       setWordPhaseIndex(0);
     } else {
-      setStage('match');
+      setGroupStage('match');
     }
   };
 
-  const currentWord = vocabulary[wordIndex];
-  const currentWordPhase = WORD_PHASES[wordPhaseIndex];
+  const advanceAfterGroupMatch = () => {
+    if (groupIndex + 1 < groups.length) {
+      setGroupIndex(groupIndex + 1);
+      setWordIndexInGroup(0);
+      setWordPhaseIndex(0);
+      setGroupStage('words');
+    } else {
+      // learning pass done — start the cumulative review pass
+      setMode('review');
+      setGroupIndex(0);
+    }
+  };
+
+  const advanceReview = () => {
+    if (groupIndex + 1 < groups.length) {
+      setGroupIndex(groupIndex + 1);
+    } else {
+      setMode('lyrics');
+    }
+  };
 
   return (
     <div>
       <button
         onClick={onBack}
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          color: '#6b7280',
-          fontSize: 13,
-          marginBottom: 16,
-          padding: 0,
-          WebkitAppearance: 'none',
-          appearance: 'none',
-          fontFamily: 'inherit',
+          display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none',
+          cursor: 'pointer', color: '#6b7280', fontSize: 13, marginBottom: 16, padding: 0,
+          WebkitAppearance: 'none', appearance: 'none', fontFamily: 'inherit',
         }}
       >
         <ArrowLeft size={16} /> Back
@@ -64,10 +97,10 @@ export default function LessonView({ lesson, user, onBack }) {
         {lesson.artist || 'Unknown artist'}
       </p>
 
-      {stage === 'words' && (
+      {mode === 'learning' && groupStage === 'words' && currentWord && (
         <>
           <p style={{ fontSize: 11, color: '#9ca3af', textAlign: 'center', marginBottom: 4 }}>
-            Word {wordIndex + 1} / {vocabulary.length}
+            Group {groupIndex + 1} / {groups.length} · Word {wordIndexInGroup + 1} / {currentGroup.length}
           </p>
           {currentWordPhase === 'learn' && (
             <LearnWordsStep
@@ -78,20 +111,30 @@ export default function LessonView({ lesson, user, onBack }) {
               onComplete={advanceWithinWord}
             />
           )}
-          {currentWordPhase === 'say-it' && (
-            <SayItStep word={currentWord} onComplete={advanceWithinWord} />
-          )}
-          {currentWordPhase === 'draw-it' && (
-            <DrawItStep word={currentWord} onComplete={advanceWithinWord} />
-          )}
+          {currentWordPhase === 'say-it' && <SayItStep word={currentWord} onComplete={advanceWithinWord} />}
+          {currentWordPhase === 'draw-it' && <DrawItStep word={currentWord} onComplete={advanceWithinWord} />}
         </>
       )}
 
-      {stage === 'match' && (
-        <MatchStep vocabulary={vocabulary} onComplete={() => setStage('lyrics')} />
+      {mode === 'learning' && groupStage === 'match' && (
+        <>
+          <p style={{ fontSize: 11, color: '#9ca3af', textAlign: 'center', marginBottom: 4 }}>
+            Group {groupIndex + 1} / {groups.length} review
+          </p>
+          <MatchStep vocabulary={currentGroup} onComplete={advanceAfterGroupMatch} />
+        </>
       )}
 
-      {stage === 'lyrics' && (
+      {mode === 'review' && (
+        <>
+          <p style={{ fontSize: 11, color: '#9ca3af', textAlign: 'center', marginBottom: 4 }}>
+            Final Review · Group {groupIndex + 1} / {groups.length}
+          </p>
+          <MatchStep vocabulary={groups[groupIndex]} onComplete={advanceReview} />
+        </>
+      )}
+
+      {mode === 'lyrics' && (
         <>
           <p style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>
             Lyrics Review
