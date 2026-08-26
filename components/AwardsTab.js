@@ -253,6 +253,52 @@ function TopFandomsBoard() {
   );
 }
 
+function TopDonatorsBoard() {
+  const [loading, setLoading] = useState(true);
+  const [ranked, setRanked] = useState([]);
+
+  useEffect(() => {
+    async function load() {
+      const { data } = await supabase.from('donations').select('user_id, amount');
+      const totals = {};
+      (data || []).forEach((row) => {
+        totals[row.user_id] = (totals[row.user_id] || 0) + Number(row.amount || 0);
+      });
+      const userIds = Object.keys(totals);
+      if (userIds.length === 0) {
+        setLoading(false);
+        return;
+      }
+      const { data: profiles } = await supabase.from('profiles').select('*').in('id', userIds);
+      const combined = (profiles || [])
+        .map((p) => ({ ...p, total: totals[p.id] || 0 }))
+        .sort((a, b) => b.total - a.total)
+        .slice(0, 20);
+      setRanked(combined);
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  if (loading) return <p style={{ fontSize: 13, color: '#9ca3af' }}>Loading...</p>;
+  if (ranked.length === 0) return <p style={{ fontSize: 13, color: '#9ca3af' }}>No donations yet.</p>;
+
+  return (
+    <div>
+      {ranked.map((person, i) => (
+        <div key={person.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid #f3f4f6' }}>
+          <span style={{ fontSize: 13, fontWeight: 800, color: i < 3 ? '#2D6A4F' : '#9ca3af', width: 24 }}>#{i + 1}</span>
+          <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#f3f4f6', border: '1px solid #e5e7eb', overflow: 'hidden', flexShrink: 0 }}>
+            {person.avatar_url && <img src={person.avatar_url} alt={person.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+          </div>
+          <p style={{ fontSize: 14, fontWeight: 700, color: '#1B4332', margin: 0, flex: 1 }}>{person.username}</p>
+          <p style={{ fontSize: 13, fontWeight: 700, color: '#2D6A4F', margin: 0 }}>${person.total.toFixed(2)}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function ComingSoonBoard({ needs }) {
   return (
     <div style={{ padding: '20px 0', textAlign: 'center' }}>
@@ -268,7 +314,7 @@ const LEADERBOARDS = [
   { id: 'top_learners', label: 'Top Learners', kind: 'learners' },
   { id: 'top_streaks', label: 'Top Streaks', kind: 'streaks' },
   { id: 'top_fandoms', label: 'Top Fandoms', kind: 'fandoms' },
-  { id: 'top_donators', label: 'Top Donators', kind: 'soon', needs: 'the Ko-fi integration' },
+  { id: 'top_donators', label: 'Top Donators', kind: 'donators' },
 ];
 
 function Leaderboard() {
@@ -316,6 +362,7 @@ function Leaderboard() {
       {active.kind === 'streaks' && <TopStreaksBoard />}
       {active.kind === 'learners' && <TopLearnersBoard />}
       {active.kind === 'fandoms' && <TopFandomsBoard />}
+      {active.kind === 'donators' && <TopDonatorsBoard />}
       {active.kind === 'soon' && <ComingSoonBoard needs={active.needs} />}
     </div>
   );
