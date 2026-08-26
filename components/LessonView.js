@@ -62,6 +62,9 @@ export default function LessonView({ lesson, user, onBack }) {
         .eq('artist', artist)
         .limit(1);
 
+      // If they've already completed this exact song before, the database's
+      // unique rule quietly rejects the duplicate — the count below still only
+      // reflects genuinely distinct songs, not repeat playthroughs.
       await supabase.from('completed_lessons').insert({
         user_id: user.id,
         song_name: lesson.songName,
