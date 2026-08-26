@@ -46,7 +46,10 @@ export default function LearnWordsStep({ word, user, songName, artist, onComplet
             WebkitAppearance: 'none', appearance: 'none', fontFamily: 'inherit',
           }}
         >
-          {saved ? '★ Saved' : '☆ Save to remember'}
+          <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <span>{saved ? '★' : '☆'}</span>
+            <span>{saved ? 'Saved' : 'Save to remember'}</span>
+          </span>
         </button>
         <button
           onClick={onComplete}
