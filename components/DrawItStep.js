@@ -34,10 +34,20 @@ export default function DrawItStep({ word, onComplete }) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.font = '90px sans-serif';
-    ctx.fillStyle = '#e5e7eb';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#e5e7eb';
+
+    // Shrink the font until the word actually fits inside the canvas with padding,
+    // instead of always using one fixed size regardless of how long the word is.
+    const maxWidth = canvas.width - 40;
+    let fontSize = 90;
+    ctx.font = `${fontSize}px sans-serif`;
+    while (ctx.measureText(word.korean).width > maxWidth && fontSize > 24) {
+      fontSize -= 4;
+      ctx.font = `${fontSize}px sans-serif`;
+    }
+
     ctx.fillText(word.korean, canvas.width / 2, canvas.height / 2);
   };
 
