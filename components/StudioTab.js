@@ -37,7 +37,7 @@ function LessonGenerator({ user, onLessonReady }) {
 
   return (
     <div style={{ marginTop: 32, paddingTop: 24, borderTop: '1px solid #eee' }}>
-      <p style={{ fontSize: 20, fontWeight: 900, color: '#1B4332', marginBottom: 16 }}>Generate a lesson</p>
+      <p style={{ fontSize: 20, fontWeight: 900, color: '#1B4332', marginBottom: 16 }}>Generate a Lesson</p>
 
       <label style={{ fontSize: 14 }}>Song Name</label>
       <input value={songName} onChange={(e) => setSongName(e.target.value)} style={inputStyle} />
