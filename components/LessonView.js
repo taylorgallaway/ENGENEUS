@@ -98,6 +98,23 @@ export default function LessonView({ lesson, user, onBack }) {
         if ((count || 0) >= n) await tryAward(id);
       }
 
+      const { data: allCompleted } = await supabase
+        .from('completed_lessons')
+        .select('artist')
+        .eq('user_id', user.id);
+      const distinctArtists = new Set((allCompleted || []).map((r) => r.artist)).size;
+
+      const artistThresholds = [
+        [1, 'artist_explorer_1'],
+        [5, 'artist_collector_5'],
+        [10, 'artist_connoisseur_10'],
+        [20, 'artist_legend_20'],
+        [50, 'ultimate_explorer_50'],
+      ];
+      for (const [n, id] of artistThresholds) {
+        if (distinctArtists >= n) await tryAward(id);
+      }
+
       if (earned.length > 0) setNewBadges(earned);
     })();
   }, [mode]);
