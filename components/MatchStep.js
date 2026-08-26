@@ -12,23 +12,16 @@ function shuffle(arr) {
 }
 
 export default function MatchStep({ vocabulary, onComplete }) {
-  const [round, setRound] = useState(0);
-  const [roundWords, setRoundWords] = useState([]);
   const [englishOrder, setEnglishOrder] = useState([]);
   const [selectedKorean, setSelectedKorean] = useState(null);
   const [matched, setMatched] = useState(new Set());
   const [wrongFlash, setWrongFlash] = useState(null);
 
-  const totalRounds = 3;
-
   useEffect(() => {
-    const pool = vocabulary.length >= 4 ? vocabulary : [...vocabulary, ...vocabulary, ...vocabulary].slice(0, 4);
-    const picked = shuffle(pool).slice(0, Math.min(4, pool.length));
-    setRoundWords(picked);
-    setEnglishOrder(shuffle(picked));
+    setEnglishOrder(shuffle(vocabulary));
     setSelectedKorean(null);
     setMatched(new Set());
-  }, [round, vocabulary]);
+  }, [vocabulary]);
 
   const handleKoreanTap = (korean) => {
     if (matched.has(korean)) return;
@@ -42,14 +35,8 @@ export default function MatchStep({ vocabulary, onComplete }) {
       next.add(word.korean);
       setMatched(next);
       setSelectedKorean(null);
-      if (next.size === roundWords.length) {
-        setTimeout(() => {
-          if (round + 1 >= totalRounds) {
-            onComplete();
-          } else {
-            setRound(round + 1);
-          }
-        }, 700);
+      if (next.size === vocabulary.length) {
+        setTimeout(onComplete, 700);
       }
     } else {
       setWrongFlash(word.korean);
@@ -58,7 +45,7 @@ export default function MatchStep({ vocabulary, onComplete }) {
     }
   };
 
-  if (roundWords.length === 0) return null;
+  if (vocabulary.length === 0) return null;
 
   const btnBase = {
     display: 'block', width: '100%', padding: 12, marginBottom: 8, borderRadius: 10,
@@ -69,11 +56,11 @@ export default function MatchStep({ vocabulary, onComplete }) {
   return (
     <div>
       <p style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textAlign: 'center', marginBottom: 16 }}>
-        Match · Round {round + 1} / {totalRounds}
+        Match
       </p>
       <div style={{ display: 'flex', gap: 16 }}>
         <div style={{ flex: 1 }}>
-          {roundWords.map((w) => (
+          {vocabulary.map((w) => (
             <button
               key={w.korean}
               onClick={() => handleKoreanTap(w.korean)}
