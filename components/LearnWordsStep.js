@@ -3,28 +3,15 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
-export default function LearnWordsStep({ vocabulary, user, songName, artist, onComplete }) {
-  const [index, setIndex] = useState(0);
-  const [savedWords, setSavedWords] = useState(new Set());
+export default function LearnWordsStep({ word, user, songName, artist, onComplete }) {
+  const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
-
-  if (!vocabulary || vocabulary.length === 0) {
-    onComplete();
-    return null;
-  }
-
-  const word = vocabulary[index];
-  const isSaved = savedWords.has(word.korean);
 
   const handleSaveToggle = async () => {
     setSaving(true);
-    if (isSaved) {
+    if (saved) {
       await supabase.from('saved_vocabulary').delete().eq('user_id', user.id).eq('korean', word.korean);
-      setSavedWords((prev) => {
-        const next = new Set(prev);
-        next.delete(word.korean);
-        return next;
-      });
+      setSaved(false);
     } else {
       await supabase.from('saved_vocabulary').insert({
         user_id: user.id,
@@ -34,23 +21,15 @@ export default function LearnWordsStep({ vocabulary, user, songName, artist, onC
         song_name: songName,
         artist: artist,
       });
-      setSavedWords((prev) => new Set(prev).add(word.korean));
+      setSaved(true);
     }
     setSaving(false);
-  };
-
-  const handleNext = () => {
-    if (index + 1 >= vocabulary.length) {
-      onComplete();
-    } else {
-      setIndex(index + 1);
-    }
   };
 
   return (
     <div>
       <p style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textAlign: 'center', marginBottom: 16 }}>
-        Learn Words · {index + 1} / {vocabulary.length}
+        Learn It
       </p>
       <div style={{ border: '1px solid #f3f4f6', borderRadius: 16, padding: 32, textAlign: 'center', marginBottom: 20 }}>
         <p style={{ fontSize: 32, fontWeight: 900, color: '#1B4332', margin: 0 }}>{word.korean}</p>
@@ -62,38 +41,22 @@ export default function LearnWordsStep({ vocabulary, user, songName, artist, onC
           onClick={handleSaveToggle}
           disabled={saving}
           style={{
-            flex: 1,
-            padding: 12,
-            background: isSaved ? '#2D6A4F' : 'white',
-            color: isSaved ? 'white' : '#2D6A4F',
-            border: '1px solid #2D6A4F',
-            borderRadius: 10,
-            cursor: 'pointer',
-            fontWeight: 700,
-            WebkitAppearance: 'none',
-            appearance: 'none',
-            fontFamily: 'inherit',
+            flex: 1, padding: 12, background: saved ? '#2D6A4F' : 'white', color: saved ? 'white' : '#2D6A4F',
+            border: '1px solid #2D6A4F', borderRadius: 10, cursor: 'pointer', fontWeight: 700,
+            WebkitAppearance: 'none', appearance: 'none', fontFamily: 'inherit',
           }}
         >
-          {isSaved ? '★ Saved' : '☆ Save to remember'}
+          {saved ? '★ Saved' : '☆ Save to remember'}
         </button>
         <button
-          onClick={handleNext}
+          onClick={onComplete}
           style={{
-            flex: 1,
-            padding: 12,
-            background: '#2D6A4F',
-            color: 'white',
-            border: 'none',
-            borderRadius: 10,
-            cursor: 'pointer',
-            fontWeight: 700,
-            WebkitAppearance: 'none',
-            appearance: 'none',
-            fontFamily: 'inherit',
+            flex: 1, padding: 12, background: '#2D6A4F', color: 'white', border: 'none',
+            borderRadius: 10, cursor: 'pointer', fontWeight: 700,
+            WebkitAppearance: 'none', appearance: 'none', fontFamily: 'inherit',
           }}
         >
-          {index + 1 >= vocabulary.length ? 'Continue to lyrics →' : 'Next word →'}
+          Next →
         </button>
       </div>
     </div>
