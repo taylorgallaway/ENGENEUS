@@ -1,13 +1,15 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
 export default function DrawItStep({ word, onComplete }) {
   const canvasRef = useRef(null);
   const drawingRef = useRef(false);
+  const [hasDrawn, setHasDrawn] = useState(false);
 
   useEffect(() => {
     clearCanvas();
+    setHasDrawn(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [word]);
 
@@ -35,6 +37,7 @@ export default function DrawItStep({ word, onComplete }) {
 
   const startDraw = (e) => {
     drawingRef.current = true;
+    setHasDrawn(true);
     const { x, y } = getPos(e);
     const ctx = canvasRef.current.getContext('2d');
     ctx.beginPath();
@@ -94,9 +97,11 @@ export default function DrawItStep({ word, onComplete }) {
         </button>
         <button
           onClick={onComplete}
+          disabled={!hasDrawn}
           style={{
             flex: 1, padding: 12, background: '#2D6A4F', color: 'white', border: 'none',
             borderRadius: 10, cursor: 'pointer', fontWeight: 700,
+            opacity: hasDrawn ? 1 : 0.5,
             WebkitAppearance: 'none', appearance: 'none', fontFamily: 'inherit',
           }}
         >
