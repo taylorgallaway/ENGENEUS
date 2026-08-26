@@ -11,7 +11,7 @@ function LessonGenerator({ user, onLessonReady }) {
   const [error, setError] = useState('');
 
   const handleGenerate = async () => {
-    if (!lyrics.trim()) return;
+    if (!lyrics.trim() || !songName.trim() || !artist.trim()) return;
     setGenerating(true);
     setError('');
 
@@ -37,12 +37,12 @@ function LessonGenerator({ user, onLessonReady }) {
 
   return (
     <div style={{ marginTop: 32, paddingTop: 24, borderTop: '1px solid #eee' }}>
-      <p style={{ fontSize: 20, fontWeight: 900, color: '#1B4332', marginBottom: 16 }}>Generate a Lesson</p>
+      <p style={{ fontSize: 20, fontWeight: 900, color: '#1B4332', marginBottom: 16 }}>Generate a lesson</p>
 
-      <label style={{ fontSize: 14 }}>Song Name (optional)</label>
+      <label style={{ fontSize: 14 }}>Song Name</label>
       <input value={songName} onChange={(e) => setSongName(e.target.value)} style={inputStyle} />
 
-      <label style={{ fontSize: 14 }}>Artist (optional)</label>
+      <label style={{ fontSize: 14 }}>Artist</label>
       <input value={artist} onChange={(e) => setArtist(e.target.value)} style={inputStyle} />
 
       <label style={{ fontSize: 14 }}>Paste Lyrics</label>
@@ -50,7 +50,7 @@ function LessonGenerator({ user, onLessonReady }) {
 
       <button
         onClick={handleGenerate}
-        disabled={generating || !lyrics.trim()}
+        disabled={generating || !lyrics.trim() || !songName.trim() || !artist.trim()}
         style={{
           padding: '10px 20px',
           background: '#2D6A4F',
@@ -58,7 +58,7 @@ function LessonGenerator({ user, onLessonReady }) {
           border: 'none',
           borderRadius: 8,
           cursor: 'pointer',
-          opacity: generating || !lyrics.trim() ? 0.5 : 1,
+          opacity: generating || !lyrics.trim() || !songName.trim() || !artist.trim() ? 0.5 : 1,
           WebkitAppearance: 'none',
           appearance: 'none',
         }}
