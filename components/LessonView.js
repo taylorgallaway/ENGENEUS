@@ -8,6 +8,11 @@ import MatchStep from './MatchStep';
 import DrawItStep from './DrawItStep';
 
 const WORD_PHASES = ['learn', 'say-it', 'draw-it'];
+const MATCH_PAIR_TYPES = [
+  ['romanization', 'english'],
+  ['romanization', 'korean'],
+  ['korean', 'english'],
+];
 
 // Groups of 4 — if only 1 word would be left dangling at the end, it merges
 // into the previous group instead of getting its own lonely match round.
@@ -29,14 +34,15 @@ export default function LessonView({ lesson, user, onBack }) {
   const groups = useMemo(() => computeGroups(vocabulary), [vocabulary]);
   const hasVocab = groups.length > 0;
 
-  // mode: 'learning' (first pass: learn/say/draw each word, then match its group)
-  //       'review'   (second pass: replay match for every group again, cumulative)
+  // mode: 'learning' (learn/say/draw each word, then 3 match rounds for its group)
+  //       'review'   (replay the 3 match rounds for every group again, cumulative)
   //       'lyrics'   (final recap)
   const [mode, setMode] = useState(hasVocab ? 'learning' : 'lyrics');
   const [groupIndex, setGroupIndex] = useState(0);
   const [groupStage, setGroupStage] = useState('words'); // 'words' | 'match'
   const [wordIndexInGroup, setWordIndexInGroup] = useState(0);
   const [wordPhaseIndex, setWordPhaseIndex] = useState(0);
+  const [matchRoundIndex, setMatchRoundIndex] = useState(0);
 
   const vocabByKorean = {};
   vocabulary.forEach((w) => { vocabByKorean[w.korean] = w; });
@@ -53,27 +59,35 @@ export default function LessonView({ lesson, user, onBack }) {
       setWordPhaseIndex(0);
     } else {
       setGroupStage('match');
+      setMatchRoundIndex(0);
     }
   };
 
-  const advanceAfterGroupMatch = () => {
-    if (groupIndex + 1 < groups.length) {
-      setGroupIndex(groupIndex + 1);
-      setWordIndexInGroup(0);
-      setWordPhaseIndex(0);
-      setGroupStage('words');
-    } else {
-      // learning pass done — start the cumulative review pass
-      setMode('review');
-      setGroupIndex(0);
+  const advanceMatchRound = () => {
+    if (matchRoundIndex + 1 < MATCH_PAIR_TYPES.length) {
+      setMatchRoundIndex(matchRoundIndex + 1);
+      return;
     }
-  };
-
-  const advanceReview = () => {
-    if (groupIndex + 1 < groups.length) {
-      setGroupIndex(groupIndex + 1);
+    // finished all 3 pair-types for this group
+    if (mode === 'learning') {
+      if (groupIndex + 1 < groups.length) {
+        setGroupIndex(groupIndex + 1);
+        setWordIndexInGroup(0);
+        setWordPhaseIndex(0);
+        setGroupStage('words');
+      } else {
+        setMode('review');
+        setGroupIndex(0);
+        setMatchRoundIndex(0);
+      }
     } else {
-      setMode('lyrics');
+      // review mode
+      if (groupIndex + 1 < groups.length) {
+        setGroupIndex(groupIndex + 1);
+        setMatchRoundIndex(0);
+      } else {
+        setMode('lyrics');
+      }
     }
   };
 
@@ -119,18 +133,26 @@ export default function LessonView({ lesson, user, onBack }) {
       {mode === 'learning' && groupStage === 'match' && (
         <>
           <p style={{ fontSize: 11, color: '#9ca3af', textAlign: 'center', marginBottom: 4 }}>
-            Group {groupIndex + 1} / {groups.length} review
+            Group {groupIndex + 1} / {groups.length} · Match {matchRoundIndex + 1} / 3
           </p>
-          <MatchStep vocabulary={currentGroup} onComplete={advanceAfterGroupMatch} />
+          <MatchStep
+            vocabulary={currentGroup}
+            pairType={MATCH_PAIR_TYPES[matchRoundIndex]}
+            onComplete={advanceMatchRound}
+          />
         </>
       )}
 
       {mode === 'review' && (
         <>
           <p style={{ fontSize: 11, color: '#9ca3af', textAlign: 'center', marginBottom: 4 }}>
-            Final Review · Group {groupIndex + 1} / {groups.length}
+            Final Review · Group {groupIndex + 1} / {groups.length} · Match {matchRoundIndex + 1} / 3
           </p>
-          <MatchStep vocabulary={groups[groupIndex]} onComplete={advanceReview} />
+          <MatchStep
+            vocabulary={groups[groupIndex]}
+            pairType={MATCH_PAIR_TYPES[matchRoundIndex]}
+            onComplete={advanceMatchRound}
+          />
         </>
       )}
 
