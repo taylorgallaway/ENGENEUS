@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { supabase } from '../lib/supabaseClient';
 import LearnWordsStep from './LearnWordsStep';
 import SayItStep from './SayItStep';
 import MatchStep from './MatchStep';
 import DrawItStep from './DrawItStep';
+import BadgeCelebration from './BadgeCelebration';
 
 const WORD_PHASES = ['learn', 'say-it', 'draw-it'];
 const MATCH_PAIR_TYPES = [
@@ -43,6 +45,59 @@ export default function LessonView({ lesson, user, onBack }) {
   const [wordIndexInGroup, setWordIndexInGroup] = useState(0);
   const [wordPhaseIndex, setWordPhaseIndex] = useState(0);
   const [matchRoundIndex, setMatchRoundIndex] = useState(0);
+  const [newBadges, setNewBadges] = useState([]);
+  const completionLoggedRef = useRef(false);
+
+  useEffect(() => {
+    if (mode !== 'lyrics' || completionLoggedRef.current) return;
+    completionLoggedRef.current = true;
+
+    (async () => {
+      const artist = lesson.artist || '';
+
+      const { data: priorArtist } = await supabase
+        .from('completed_lessons')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('artist', artist)
+        .limit(1);
+
+      await supabase.from('completed_lessons').insert({
+        user_id: user.id,
+        song_name: lesson.songName,
+        artist,
+      });
+
+      const { count } = await supabase
+        .from('completed_lessons')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+
+      const earned = [];
+      const tryAward = async (badgeId) => {
+        const { error } = await supabase.from('user_badges').insert({ user_id: user.id, badge_id: badgeId });
+        if (!error) earned.push(badgeId);
+      };
+
+      if (!priorArtist || priorArtist.length === 0) {
+        await tryAward('new_artist');
+      }
+
+      const thresholds = [
+        [1, 'first_song'],
+        [10, 'songs_10'],
+        [20, 'songs_20'],
+        [50, 'songs_50'],
+        [100, 'songs_100'],
+        [1000, 'songs_1000'],
+      ];
+      for (const [n, id] of thresholds) {
+        if ((count || 0) >= n) await tryAward(id);
+      }
+
+      if (earned.length > 0) setNewBadges(earned);
+    })();
+  }, [mode]);
 
   const vocabByKorean = {};
   vocabulary.forEach((w) => { vocabByKorean[w.korean] = w; });
@@ -188,6 +243,8 @@ export default function LessonView({ lesson, user, onBack }) {
           </p>
         </>
       )}
+
+      <BadgeCelebration badgeIds={newBadges} onDismiss={() => setNewBadges([])} />
     </div>
   );
 }
