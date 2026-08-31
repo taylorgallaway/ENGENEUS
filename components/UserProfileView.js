@@ -3,12 +3,12 @@
 import BadgesSection from './BadgesSection';
 
 function fallbackSearchUrl(artist) {
-  return `https://www.google.com/search?q=${encodeURIComponent(artist + ' K-pop profile')}`;
+  return `https://www.google.com/search?q=${encodeURIComponent(artist + ' kpopping kpop profile')}`;
 }
 
-async function openArtistPage(artist) {
+export async function openArtistPage(artist) {
   try {
-    const res = await fetch(`/api/artist-lookup?name=${encodeURIComponent(artist)}`);
+    const res = await fetch(`/api/kpopping-lookup?name=${encodeURIComponent(artist)}`);
     const data = await res.json();
     if (data.url) {
       window.open(data.url, '_blank', 'noopener,noreferrer');
