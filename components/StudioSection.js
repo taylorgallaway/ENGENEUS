@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import StudioTab from './StudioTab';
 import MyVocabulary from './MyVocabulary';
+import ArtistDirectoryTab from './ArtistDirectoryTab';
 
 export default function StudioSection({ user, onLessonReady }) {
   const [subTab, setSubTab] = useState('lessons');
@@ -27,6 +28,7 @@ export default function StudioSection({ user, onLessonReady }) {
         {[
           { id: 'lessons', label: 'Lessons' },
           { id: 'vocabulary', label: 'My Vocabulary' },
+          { id: 'directory', label: 'Directory' },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -53,6 +55,7 @@ export default function StudioSection({ user, onLessonReady }) {
 
       {subTab === 'lessons' && <StudioTab user={user} onLessonReady={onLessonReady} />}
       {subTab === 'vocabulary' && <MyVocabulary user={user} />}
+      {subTab === 'directory' && <ArtistDirectoryTab />}
     </div>
   );
 }
