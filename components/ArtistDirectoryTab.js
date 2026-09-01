@@ -4,6 +4,41 @@ import { useState, useMemo } from 'react';
 import { ARTIST_DIRECTORY } from '../lib/artistDirectory';
 import { openArtistPage } from './UserProfileView';
 
+// Filenames of the photos we actually have — matched against artist names by
+// stripping spaces/punctuation/case, so small formatting differences in the
+// directory data don't cause a missed match.
+const PHOTO_FILENAMES = [
+  '82major', 'aespa', 'alpha_drive_one', 'ateez', 'babymonster', 'big_ocean',
+  'bigbang', 'blackpink', 'blitzers', 'boynextdoor', 'bts', 'close_your_eyes',
+  'cortis', 'cravity', 'dreamcatcher', 'enhypen', 'epex', 'evnne', 'exo',
+  'fifty_fifty', 'girlset', 'hearts2hearts', 'illit', 'itzy', 'ive', 'katseye',
+  'kep1er', 'kickflip', 'kiiikiii', 'kiss_of_life', 'le_sserafim', 'lngshot',
+  'loona', 'meovv', 'modyssey', 'nct', 'nct_127', 'nct_dream', 'nct_wish',
+  'newbeat', 'newjeans', 'nexz', 'nmixx', 'one_pact', 'oneus', 'p1harmony',
+  'plave', 'red_velvet', 'riize', 'seventeen', 'stayc', 'stray_kids',
+  'the_boyz', 'tomorrow_x_together', 'treasure', 'tuide', 'twice', 'tws',
+  'wayf_boyz', 'wayv', 'xikers', 'xlov', 'zerobaseone',
+];
+// (G)I-DLE special case: normalizeForMatch strips the parentheses, so
+// 'gidle.jpg' matches '(G)I-DLE' naturally once normalized. Included above
+// via the explicit alias below since 'gidle' itself isn't a real artist name.
+PHOTO_FILENAMES.push('gidle');
+// Photos now live at /public/artist-photos-wide/ as 640x360 landscape crops.
+
+function normalizeForMatch(s) {
+  return s.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+const PHOTO_MAP = {};
+PHOTO_FILENAMES.forEach((fname) => {
+  PHOTO_MAP[normalizeForMatch(fname.replace(/_/g, ' '))] = fname;
+});
+
+function getPhotoFor(name) {
+  const key = normalizeForMatch(name);
+  return PHOTO_MAP[key] ? `/artist-photos-wide/${PHOTO_MAP[key]}.jpg` : null;
+}
+
 const TYPE_OPTIONS = [
   { id: 'all', label: 'All Types' },
   { id: 'girl group', label: 'Girl Group' },
@@ -30,13 +65,21 @@ export default function ArtistDirectoryTab() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return ARTIST_DIRECTORY.filter((a) => {
+    const matches = ARTIST_DIRECTORY.filter((a) => {
       if (q && !a.name.toLowerCase().includes(q)) return false;
       if (typeFilter !== 'all' && a.type !== typeFilter) return false;
       if (genFilter !== 'all' && a.gen !== genFilter) return false;
       if (globalOnly && !a.global) return false;
       if (virtualOnly && !a.virtualFictional) return false;
       return true;
+    });
+    // Most well-known first — unranked artists fall back to alphabetical,
+    // sorted after every ranked one.
+    return matches.sort((a, b) => {
+      const ap = a.popularity ?? Infinity;
+      const bp = b.popularity ?? Infinity;
+      if (ap !== bp) return ap - bp;
+      return a.name.localeCompare(b.name);
     });
   }, [search, typeFilter, genFilter, globalOnly, virtualOnly]);
 
@@ -108,27 +151,35 @@ export default function ArtistDirectoryTab() {
             key={a.name}
             onClick={() => openArtistPage(a.name)}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
+              display: 'block',
               width: '100%',
               textAlign: 'left',
               background: 'white',
               border: '1px solid #f3f4f6',
-              borderRadius: 10,
-              padding: '10px 14px',
-              marginBottom: 6,
+              borderRadius: 12,
+              overflow: 'hidden',
+              marginBottom: 10,
               cursor: 'pointer',
               WebkitAppearance: 'none',
               appearance: 'none',
               fontFamily: 'inherit',
               color: '#1B4332',
+              padding: 0,
             }}
           >
-            <span style={{ fontSize: 14, fontWeight: 700 }}>{a.name}</span>
-            <span style={{ fontSize: 11, color: '#84A98C' }}>
-              {a.type}{a.gen ? ` · ${a.gen}th gen` : ''}
-            </span>
+            {getPhotoFor(a.name) && (
+              <img
+                src={getPhotoFor(a.name)}
+                alt={a.name}
+                style={{ width: '100%', height: 110, objectFit: 'cover', display: 'block' }}
+              />
+            )}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px' }}>
+              <span style={{ fontSize: 17, fontWeight: 700 }}>{a.name}</span>
+              <span style={{ fontSize: 13, color: '#84A98C', fontWeight: 600, background: '#2D6A4F1A', padding: '4px 10px', borderRadius: 999 }}>
+                {a.type}{a.gen ? ` · ${a.gen}th gen` : ''}
+              </span>
+            </div>
           </button>
         ))}
         {filtered.length === 0 && (
