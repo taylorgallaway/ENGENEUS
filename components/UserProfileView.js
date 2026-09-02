@@ -14,8 +14,10 @@ export async function openArtistPage(artist) {
       window.open(data.url, '_blank', 'noopener,noreferrer');
       return;
     }
+    // TEMPORARY debugging — remove once we know why the direct lookup isn't working
+    alert(`Kpopping lookup debug: ${data.debug || 'no debug info'}`);
   } catch (e) {
-    // fall through to the backup search below
+    alert(`Kpopping lookup exception: ${e.message}`);
   }
   window.open(fallbackSearchUrl(artist), '_blank', 'noopener,noreferrer');
 }
