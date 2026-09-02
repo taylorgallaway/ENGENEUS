@@ -4,6 +4,7 @@
 // popularity: lower = more well-known, null = unranked
 
 export const ARTIST_DIRECTORY = [
+  { name: 'PLAVE', type: 'boy group', gen: 5, global: false, virtualFictional: true, popularity: null },
   { name: 'Saja Boys', type: 'boy group', gen: null, global: false, virtualFictional: true, popularity: null },
   { name: 'MAVE:', type: 'girl group', gen: 5, global: false, virtualFictional: true, popularity: null },
   { name: 'HUNTR/X', type: 'girl group', gen: null, global: false, virtualFictional: true, popularity: null },
@@ -17,7 +18,7 @@ export const ARTIST_DIRECTORY = [
   { name: 'KATSEYE', type: 'girl group', gen: 5, global: true, virtualFictional: false, popularity: 26 },
   { name: 'Santos Bravos', type: 'boy group', gen: 5, global: true, virtualFictional: false, popularity: null },
   { name: 'aoen', type: 'boy group', gen: 5, global: true, virtualFictional: false, popularity: null },
-  { name: 'Girlset', type: 'girl group', gen: 5, global: true, virtualFictional: false, popularity: null },
+  { name: 'GIRLSET', type: 'girl group', gen: 5, global: true, virtualFictional: false, popularity: null },
   { name: 'WayV', type: 'boy group', gen: 5, global: false, virtualFictional: false, popularity: null },
   { name: 'Hori7on', type: 'boy group', gen: 5, global: true, virtualFictional: false, popularity: null },
   { name: 'NiziU', type: 'girl group', gen: 4, global: true, virtualFictional: false, popularity: null },
