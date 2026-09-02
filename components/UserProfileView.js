@@ -7,18 +7,35 @@ function fallbackSearchUrl(artist) {
 }
 
 export async function openArtistPage(artist) {
+  let res;
   try {
-    const res = await fetch(`/api/kpopping-lookup?name=${encodeURIComponent(artist)}`);
-    const data = await res.json();
-    if (data.url) {
+    res = await fetch(`/api/kpopping-lookup?name=${encodeURIComponent(artist)}`);
+  } catch (e) {
+    alert(`STEP 1 (fetch) failed: ${e.message}`);
+    window.open(fallbackSearchUrl(artist), '_blank', 'noopener,noreferrer');
+    return;
+  }
+
+  let data;
+  try {
+    data = await res.json();
+  } catch (e) {
+    alert(`STEP 2 (parsing response) failed: ${e.message} — status was ${res.status}`);
+    window.open(fallbackSearchUrl(artist), '_blank', 'noopener,noreferrer');
+    return;
+  }
+
+  if (data.url) {
+    try {
       window.open(data.url, '_blank', 'noopener,noreferrer');
       return;
+    } catch (e) {
+      alert(`STEP 3 (opening found url) failed: ${e.message} — url was ${data.url}`);
     }
-    // TEMPORARY debugging — remove once we know why the direct lookup isn't working
-    alert(`Kpopping lookup debug: ${data.debug || 'no debug info'}`);
-  } catch (e) {
-    alert(`Kpopping lookup exception: ${e.message}`);
+  } else {
+    alert(`No direct match — debug info: ${data.debug || 'none'}`);
   }
+
   window.open(fallbackSearchUrl(artist), '_blank', 'noopener,noreferrer');
 }
 
