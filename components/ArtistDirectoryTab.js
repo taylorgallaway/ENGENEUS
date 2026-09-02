@@ -157,7 +157,7 @@ export default function ArtistDirectoryTab() {
         {filtered.map((a) => (
           <button
             key={a.name}
-            onClick={() => openArtistPage(a.name)}
+            onClick={() => openArtistPage(a.name, a.type)}
             style={{
               display: 'block',
               width: '100%',
