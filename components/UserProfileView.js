@@ -7,17 +7,24 @@ function fallbackSearchUrl(artist) {
 }
 
 // Kpopping actively blocks direct requests from our own server (confirmed via
-// a 403), but a real browser tap works fine — Kpopping formats group pages as
-// kpopping.com/profiles/group/ExactName (capitalization preserved, spaces
-// become hyphens). Solos almost certainly live under a different path we
-// don't know, so they go straight to the safer search instead of guessing.
-export async function openArtistPage(artist, type) {
-  if (type === 'solo') {
-    window.open(fallbackSearchUrl(artist), '_blank', 'noopener,noreferrer');
-    return;
+// a 403), but a real browser tap works fine. Confirmed real formats:
+//   groups: kpopping.com/profiles/group/ExactName  (BTS)
+//   solos:  kpopping.com/profiles/idol/ExactName    (Babylon)
+// Both preserve capitalization and turn spaces into hyphens — EXCEPT names
+// containing a period, which Kpopping strips to plain lowercase letters
+// (e.g. our 'A.De' becomes their 'ade').
+function buildKpoppingSlug(name) {
+  const trimmed = name.trim();
+  if (trimmed.includes('.')) {
+    return trimmed.replace(/\./g, '').replace(/\s+/g, '-').toLowerCase();
   }
-  const slug = artist.trim().replace(/\s+/g, '-');
-  const directUrl = `https://kpopping.com/profiles/group/${encodeURIComponent(slug)}`;
+  return trimmed.replace(/\s+/g, '-');
+}
+
+export async function openArtistPage(artist, type) {
+  const slug = encodeURIComponent(buildKpoppingSlug(artist));
+  const path = type === 'solo' ? 'idol' : 'group';
+  const directUrl = `https://kpopping.com/profiles/${path}/${slug}`;
   window.open(directUrl, '_blank', 'noopener,noreferrer');
 }
 
