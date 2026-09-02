@@ -6,11 +6,19 @@ function fallbackSearchUrl(artist) {
   return `https://www.google.com/search?q=${encodeURIComponent(artist + ' kpopping kpop profile')}`;
 }
 
-// Kpopping actively blocks direct requests from our server (confirmed via a
-// 403 response), so we go straight to a Kpopping-scoped search instead of
-// wasting a round-trip attempting something that will never succeed.
-export async function openArtistPage(artist) {
-  window.open(fallbackSearchUrl(artist), '_blank', 'noopener,noreferrer');
+// Kpopping actively blocks direct requests from our own server (confirmed via
+// a 403), but a real browser tap works fine — Kpopping formats group pages as
+// kpopping.com/profiles/group/ExactName (capitalization preserved, spaces
+// become hyphens). Solos almost certainly live under a different path we
+// don't know, so they go straight to the safer search instead of guessing.
+export async function openArtistPage(artist, type) {
+  if (type === 'solo') {
+    window.open(fallbackSearchUrl(artist), '_blank', 'noopener,noreferrer');
+    return;
+  }
+  const slug = artist.trim().replace(/\s+/g, '-');
+  const directUrl = `https://kpopping.com/profiles/group/${encodeURIComponent(slug)}`;
+  window.open(directUrl, '_blank', 'noopener,noreferrer');
 }
 
 function toCodePoint(emoji) {
