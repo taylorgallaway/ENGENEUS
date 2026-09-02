@@ -5,7 +5,7 @@ export async function GET(request) {
   const name = searchParams.get('name');
 
   if (!name) {
-    return NextResponse.json({ url: null });
+    return NextResponse.json({ url: null, debug: 'no name provided' });
   }
 
   try {
@@ -18,15 +18,26 @@ export async function GET(request) {
 
     if (res.ok) {
       const html = await res.text();
-      // Sanity check: a real profile page should actually mention the artist
-      // name somewhere — this avoids false-positive matches on a generic page.
-      if (html.toLowerCase().includes(name.toLowerCase().slice(0, 4))) {
+      const matched = html.toLowerCase().includes(name.toLowerCase().slice(0, 4));
+      if (matched) {
         return NextResponse.json({ url: candidateUrl });
       }
+      return NextResponse.json({
+        url: null,
+        debug: `fetched OK but content check failed for "${name}"`,
+        candidateUrl,
+      });
     }
 
-    return NextResponse.json({ url: null });
+    return NextResponse.json({
+      url: null,
+      debug: `fetch returned status ${res.status}`,
+      candidateUrl,
+    });
   } catch (error) {
-    return NextResponse.json({ url: null });
+    return NextResponse.json({
+      url: null,
+      debug: `exception: ${error.message}`,
+    });
   }
 }
