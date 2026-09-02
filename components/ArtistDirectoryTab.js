@@ -73,9 +73,12 @@ export default function ArtistDirectoryTab() {
       if (virtualOnly && !a.virtualFictional) return false;
       return true;
     });
-    // Most well-known first — unranked artists fall back to alphabetical,
-    // sorted after every ranked one.
+    // Artists with a real photo always come first, then most well-known,
+    // then everyone else alphabetically.
     return matches.sort((a, b) => {
+      const aHasPhoto = getPhotoFor(a.name) ? 0 : 1;
+      const bHasPhoto = getPhotoFor(b.name) ? 0 : 1;
+      if (aHasPhoto !== bHasPhoto) return aHasPhoto - bHasPhoto;
       const ap = a.popularity ?? Infinity;
       const bp = b.popularity ?? Infinity;
       if (ap !== bp) return ap - bp;
@@ -171,11 +174,11 @@ export default function ArtistDirectoryTab() {
               <img
                 src={getPhotoFor(a.name)}
                 alt={a.name}
-                style={{ width: '100%', height: 110, objectFit: 'cover', display: 'block' }}
+                style={{ width: '100%', height: 220, objectFit: 'cover', display: 'block' }}
               />
             )}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px' }}>
-              <span style={{ fontSize: 17, fontWeight: 700 }}>{a.name}</span>
+              <span style={{ fontSize: 15, fontWeight: 700 }}>{a.name}</span>
               <span style={{ fontSize: 13, color: '#84A98C', fontWeight: 600, background: '#2D6A4F1A', padding: '4px 10px', borderRadius: 999 }}>
                 {a.type}{a.gen ? ` · ${a.gen}th gen` : ''}
               </span>
