@@ -8,16 +8,17 @@ import { openArtistPage } from './UserProfileView';
 // stripping spaces/punctuation/case, so small formatting differences in the
 // directory data don't cause a missed match.
 const PHOTO_FILENAMES = [
-  '82major', 'aespa', 'alpha_drive_one', 'ateez', 'babymonster', 'big_ocean',
-  'bigbang', 'blackpink', 'blitzers', 'boynextdoor', 'bts', 'close_your_eyes',
-  'cortis', 'cravity', 'dreamcatcher', 'enhypen', 'epex', 'evnne', 'exo',
-  'fifty_fifty', 'girlset', 'hearts2hearts', 'illit', 'itzy', 'ive', 'katseye',
-  'kep1er', 'kickflip', 'kiiikiii', 'kiss_of_life', 'le_sserafim', 'lngshot',
-  'loona', 'meovv', 'modyssey', 'nct', 'nct_127', 'nct_dream', 'nct_wish',
+  '82major', 'aespa', 'alpha_drive_one', 'and_team', 'ateez', 'babymonster',
+  'big_ocean', 'bigbang', 'blackpink', 'blitzers', 'boynextdoor', 'bts',
+  'close_your_eyes', 'cortis', 'cravity', 'dreamcatcher', 'enhypen', 'epex',
+  'evnne', 'everglow', 'exo', 'fifty_fifty', 'gfriend', 'girlset', 'got7',
+  'hearts2hearts', 'illit', 'itzy', 'ive', 'katseye', 'kep1er', 'kickflip',
+  'kiiikiii', 'kiss_of_life', 'le_sserafim', 'lngshot', 'loona', 'mamamoo',
+  'meovv', 'modyssey', 'monsta_x', 'nct', 'nct_127', 'nct_dream', 'nct_wish',
   'newbeat', 'newjeans', 'nexz', 'nmixx', 'one_pact', 'oneus', 'p1harmony',
-  'plave', 'red_velvet', 'riize', 'seventeen', 'stayc', 'stray_kids',
+  'plave', 'red_velvet', 'riize', 'seventeen', 'shinee', 'stayc', 'stray_kids',
   'the_boyz', 'tomorrow_x_together', 'treasure', 'tuide', 'twice', 'tws',
-  'wayf_boyz', 'wayv', 'xikers', 'xlov', 'zerobaseone',
+  'wayf_boyz', 'wayv', 'xg', 'xikers', 'xlov', 'zerobaseone',
 ];
 // (G)I-DLE special case: normalizeForMatch strips the parentheses, so
 // 'gidle.jpg' matches '(G)I-DLE' naturally once normalized. Included above
@@ -33,6 +34,10 @@ const PHOTO_MAP = {};
 PHOTO_FILENAMES.forEach((fname) => {
   PHOTO_MAP[normalizeForMatch(fname.replace(/_/g, ' '))] = fname;
 });
+// &TEAM special case: normalizeForMatch strips '&' entirely rather than
+// turning it into 'and', so '&TEAM' normalizes to 'team' while our filename
+// 'and_team' normalizes to 'andteam' — they would not match automatically.
+PHOTO_MAP['team'] = 'and_team';
 
 function getPhotoFor(name) {
   const key = normalizeForMatch(name);
