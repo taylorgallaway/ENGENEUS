@@ -9,7 +9,7 @@ export const ARTIST_DIRECTORY = [
   { name: 'MAVE:', type: 'girl group', gen: 5, global: false, virtualFictional: true, popularity: null },
   { name: 'HUNTR/X', type: 'girl group', gen: null, global: false, virtualFictional: true, popularity: null },
   { name: 'Isegye Idol', type: 'girl group', gen: null, global: false, virtualFictional: true, popularity: null },
-  { name: 'Msg Wannabe', type: 'boy group', gen: null, global: false, virtualFictional: false, popularity: null },
+  { name: 'MSG Wannabe', type: 'boy group', gen: null, global: false, virtualFictional: false, popularity: null },
   { name: 'Ssak3', type: 'coed group', gen: null, global: false, virtualFictional: false, popularity: null },
   { name: 'Refund Sisters', type: 'girl group', gen: null, global: false, virtualFictional: false, popularity: null },
   { name: 'Oort Boys', type: 'boy group', gen: 5, global: false, virtualFictional: false, popularity: null },
