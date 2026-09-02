@@ -27,8 +27,8 @@ export default function StudioSection({ user, onLessonReady }) {
       <div style={{ display: 'flex', gap: 8, marginBottom: 24, borderBottom: '1px solid #f3f4f6' }}>
         {[
           { id: 'lessons', label: 'Lessons' },
-          { id: 'vocabulary', label: 'My Vocabulary' },
-          { id: 'directory', label: 'Directory' },
+          { id: 'vocabulary', label: 'Vocabulary' },
+          { id: 'directory', label: 'Artist Directory' },
         ].map((tab) => (
           <button
             key={tab.id}
