@@ -6,36 +6,10 @@ function fallbackSearchUrl(artist) {
   return `https://www.google.com/search?q=${encodeURIComponent(artist + ' kpopping kpop profile')}`;
 }
 
+// Kpopping actively blocks direct requests from our server (confirmed via a
+// 403 response), so we go straight to a Kpopping-scoped search instead of
+// wasting a round-trip attempting something that will never succeed.
 export async function openArtistPage(artist) {
-  let res;
-  try {
-    res = await fetch(`/api/kpopping-lookup?name=${encodeURIComponent(artist)}`);
-  } catch (e) {
-    alert(`STEP 1 (fetch) failed: ${e.message}`);
-    window.open(fallbackSearchUrl(artist), '_blank', 'noopener,noreferrer');
-    return;
-  }
-
-  let data;
-  try {
-    data = await res.json();
-  } catch (e) {
-    alert(`STEP 2 (parsing response) failed: ${e.message} — status was ${res.status}`);
-    window.open(fallbackSearchUrl(artist), '_blank', 'noopener,noreferrer');
-    return;
-  }
-
-  if (data.url) {
-    try {
-      window.open(data.url, '_blank', 'noopener,noreferrer');
-      return;
-    } catch (e) {
-      alert(`STEP 3 (opening found url) failed: ${e.message} — url was ${data.url}`);
-    }
-  } else {
-    alert(`No direct match — debug info: ${data.debug || 'none'}`);
-  }
-
   window.open(fallbackSearchUrl(artist), '_blank', 'noopener,noreferrer');
 }
 
