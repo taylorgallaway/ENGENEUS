@@ -139,7 +139,11 @@ export default function NewsTab({ user }) {
         >
           <p style={{ fontSize: 11, color: '#2D6A4F', fontWeight: 700, margin: 0 }}>{timeAgo(item.pubDate)}</p>
           <p style={{ fontWeight: 700, margin: '4px 0', fontSize: 14, color: '#1B4332' }}>{item.title}</p>
-          <p style={{ fontSize: 12, color: '#666', margin: 0 }}>{item.excerpt}</p>
+          <p style={{ fontSize: 12, color: '#666', margin: 0 }}>
+            {item.excerpt}
+            {' '}
+            <span style={{ color: '#2D6A4F', fontWeight: 700 }}>...click here to read more.</span>
+          </p>
         </a>
       ))}
 
