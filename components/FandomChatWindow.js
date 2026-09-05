@@ -4,38 +4,37 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 
-export default function FandomChatWindow({ currentUser, artist, onBack }) {
+export default function ChatWindow({ currentUser, otherUser, onBack }) {
   const [messages, setMessages] = useState([]);
-  const [profiles, setProfiles] = useState({});
   const [loading, setLoading] = useState(true);
   const [newMessage, setNewMessage] = useState('');
   const [sending, setSending] = useState(false);
   const bottomRef = useRef(null);
 
   const loadMessages = async () => {
-    const { data: msgs } = await supabase
-      .from('fandom_messages')
+    const { data } = await supabase
+      .from('messages')
       .select('*')
-      .eq('artist', artist)
+      .or(
+        `and(sender_id.eq.${currentUser.id},recipient_id.eq.${otherUser.id}),and(sender_id.eq.${otherUser.id},recipient_id.eq.${currentUser.id})`
+      )
       .order('created_at', { ascending: true });
-
-    const list = msgs || [];
-    setMessages(list);
-
-    const senderIds = [...new Set(list.map((m) => m.sender_id))];
-    if (senderIds.length > 0) {
-      const { data: profs } = await supabase.from('profiles').select('*').in('id', senderIds);
-      const map = {};
-      (profs || []).forEach((p) => { map[p.id] = p; });
-      setProfiles(map);
-    }
+    setMessages(data || []);
     setLoading(false);
   };
 
   useEffect(() => {
     loadMessages();
+    markAsRead();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [artist]);
+  }, [otherUser.id]);
+
+  const markAsRead = async () => {
+    await supabase.from('message_reads').upsert(
+      { user_id: currentUser.id, other_user_id: otherUser.id, last_read_at: new Date().toISOString() },
+      { onConflict: 'user_id,other_user_id' }
+    );
+  };
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -45,14 +44,24 @@ export default function FandomChatWindow({ currentUser, artist, onBack }) {
     const text = newMessage.trim();
     if (!text) return;
     setSending(true);
-    const { error } = await supabase.from('fandom_messages').insert({
-      artist,
+    const { error } = await supabase.from('messages').insert({
       sender_id: currentUser.id,
+      recipient_id: otherUser.id,
       content: text,
     });
     if (!error) {
       setNewMessage('');
       await loadMessages();
+      // Fire-and-forget — a failed email notification shouldn't block sending
+      fetch('/api/notify-dm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipientId: otherUser.id,
+          senderUsername: currentUser.user_metadata?.username || 'Someone',
+          messagePreview: text.slice(0, 100),
+        }),
+      }).catch(() => {});
     }
     setSending(false);
   };
@@ -60,44 +69,51 @@ export default function FandomChatWindow({ currentUser, artist, onBack }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 80px)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 0 14px', borderBottom: '1px solid #f3f4f6' }}>
-        <button
-          onClick={onBack}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', display: 'flex', WebkitAppearance: 'none', appearance: 'none' }}
-        >
+        <button onClick={onBack} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', display: 'flex' }}>
           <ArrowLeft size={20} />
         </button>
-        <p style={{ fontWeight: 700, margin: 0, color: '#1B4332' }}>{artist} — Fandom Chat</p>
+        <div
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: '50%',
+            background: '#f3f4f6',
+            border: '1px solid #e5e7eb',
+            overflow: 'hidden',
+            flexShrink: 0,
+          }}
+        >
+          {otherUser.avatar_url && (
+            <img src={otherUser.avatar_url} alt={otherUser.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          )}
+        </div>
+        <p style={{ fontWeight: 700, margin: 0 }}>{otherUser.username}</p>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', paddingTop: 24, paddingBottom: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ flex: 1, overflowY: 'auto', paddingTop: 24, paddingBottom: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
         {loading ? (
           <p style={{ color: '#9ca3af', fontSize: 13 }}>Loading...</p>
         ) : messages.length === 0 ? (
-          <p style={{ color: '#9ca3af', fontSize: 13 }}>No messages yet — be the first to say something!</p>
+          <p style={{ color: '#9ca3af', fontSize: 13 }}>No messages yet — say hi!</p>
         ) : (
           messages.map((m) => {
             const isMine = m.sender_id === currentUser.id;
-            const sender = profiles[m.sender_id];
             return (
-              <div key={m.id} style={{ display: 'flex', flexDirection: 'column', alignSelf: isMine ? 'flex-end' : 'flex-start', maxWidth: '80%' }}>
-                {!isMine && (
-                  <p style={{ fontSize: 11, fontWeight: 700, color: '#84A98C', margin: '0 0 2px 4px' }}>
-                    {sender?.username || 'Someone'}
-                  </p>
-                )}
-                <div
-                  style={{
-                    background: isMine ? '#2D6A4F' : '#f3f4f6',
-                    color: isMine ? 'white' : '#374151',
-                    padding: '10px 14px',
-                    borderRadius: 14,
-                    borderBottomRightRadius: isMine ? 4 : 14,
-                    borderBottomLeftRadius: isMine ? 14 : 4,
-                    fontSize: 13,
-                  }}
-                >
-                  {m.content}
-                </div>
+              <div
+                key={m.id}
+                style={{
+                  alignSelf: isMine ? 'flex-end' : 'flex-start',
+                  maxWidth: '75%',
+                  background: isMine ? '#2D6A4F' : '#f3f4f6',
+                  color: isMine ? 'white' : '#374151',
+                  padding: '10px 14px',
+                  borderRadius: 14,
+                  borderBottomRightRadius: isMine ? 4 : 14,
+                  borderBottomLeftRadius: isMine ? 14 : 4,
+                  fontSize: 13,
+                }}
+              >
+                {m.content}
               </div>
             );
           })
@@ -110,7 +126,7 @@ export default function FandomChatWindow({ currentUser, artist, onBack }) {
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && !sending && handleSend()}
-          placeholder={`Message the ${artist} fandom...`}
+          placeholder="Type a message..."
           style={{ flex: 1, padding: 10, borderRadius: 10, border: '1px solid #e5e7eb', boxSizing: 'border-box' }}
         />
         <button
@@ -124,8 +140,6 @@ export default function FandomChatWindow({ currentUser, artist, onBack }) {
             borderRadius: 10,
             cursor: 'pointer',
             opacity: sending || !newMessage.trim() ? 0.5 : 1,
-            WebkitAppearance: 'none',
-            appearance: 'none',
           }}
         >
           Send
