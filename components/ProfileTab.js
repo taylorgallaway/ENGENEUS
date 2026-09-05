@@ -525,7 +525,7 @@ export default function ProfileTab({ user }) {
       <label style={{ fontSize: 14 }}>Username</label>
       <input value={username} onChange={(e) => setUsername(e.target.value)} style={inputStyle} />
 
-      <label style={{ fontSize: 14, display: 'block', marginTop: 8 }}>Bias Sticker</label>
+      <label style={{ fontSize: 14, display: 'block', marginTop: 22 }}>Bias Sticker</label>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 5, marginBottom: 8 }}>
         <StickerImg emoji={biasSticker} size={24} />
         <span style={{ fontSize: 12, color: '#6b7280' }}>Current pick — search below to change</span>
@@ -577,16 +577,16 @@ export default function ProfileTab({ user }) {
         </div>
       )}
 
-      <label style={{ fontSize: 14, display: 'block', marginTop: 8 }}>Bio</label>
+      <label style={{ fontSize: 14, display: 'block', marginTop: 22 }}>Bio</label>
       <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} style={inputStyle} />
 
-      <label style={{ fontSize: 14, display: 'block', marginTop: 8 }}>Favorite Song</label>
+      <label style={{ fontSize: 14, display: 'block', marginTop: 22 }}>Favorite Song</label>
       <input value={favSong} onChange={(e) => setFavSong(e.target.value)} style={inputStyle} />
 
-      <label style={{ fontSize: 14, display: 'block', marginTop: 8 }}>Favorite Artist</label>
+      <label style={{ fontSize: 14, display: 'block', marginTop: 22 }}>Favorite Artist</label>
       <input value={favArtist} onChange={(e) => setFavArtist(e.target.value)} style={inputStyle} />
 
-      <label style={{ fontSize: 14, display: 'block', marginTop: 8 }}>Following</label>
+      <label style={{ fontSize: 14, display: 'block', marginTop: 22 }}>Following</label>
       <input
         value={artistInput}
         onChange={(e) => setArtistInput(e.target.value)}
