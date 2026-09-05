@@ -143,7 +143,7 @@ export default function Home() {
             borderTop: '1px solid #eee',
             display: 'flex',
             justifyContent: 'space-around',
-            padding: '10px 0',
+            padding: '10px 0 calc(10px + env(safe-area-inset-bottom))',
           }}
         >
           {tabs.map(({ id, label, Icon }) => (
