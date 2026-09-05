@@ -25,8 +25,16 @@ export default function ChatWindow({ currentUser, otherUser, onBack }) {
 
   useEffect(() => {
     loadMessages();
+    markAsRead();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [otherUser.id]);
+
+  const markAsRead = async () => {
+    await supabase.from('message_reads').upsert(
+      { user_id: currentUser.id, other_user_id: otherUser.id, last_read_at: new Date().toISOString() },
+      { onConflict: 'user_id,other_user_id' }
+    );
+  };
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -44,6 +52,16 @@ export default function ChatWindow({ currentUser, otherUser, onBack }) {
     if (!error) {
       setNewMessage('');
       await loadMessages();
+      // Fire-and-forget — a failed email notification shouldn't block sending
+      fetch('/api/notify-dm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipientId: otherUser.id,
+          senderUsername: currentUser.user_metadata?.username || 'Someone',
+          messagePreview: text.slice(0, 100),
+        }),
+      }).catch(() => {});
     }
     setSending(false);
   };
