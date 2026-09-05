@@ -59,18 +59,11 @@ export default function Home() {
           padding: '2rem',
         }}
       >
-        <h1
-          style={{
-            fontSize: '2.5rem',
-            fontWeight: 900,
-            margin: 0,
-            background: 'linear-gradient(90deg, #1B4332, #2D6A4F)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}
-        >
-          ENGENEUS
-        </h1>
+        <img
+          src="/logo-assets/splash_logo.png"
+          alt="ENGENEUS"
+          style={{ width: '100%', maxWidth: 320 }}
+        />
         <p style={{ color: '#84A98C', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', fontSize: '0.75rem', marginTop: '0.25rem' }}>
           Learn Through Music
         </p>
