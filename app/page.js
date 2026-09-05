@@ -140,8 +140,8 @@ export default function Home() {
             borderTop: '1px solid #eee',
             display: 'flex',
             justifyContent: 'center',
-            gap: 28,
-            padding: '10px 0',
+            gap: 36,
+            padding: '14px 0 20px',
           }}
         >
           {tabs.map(({ id, label, Icon }) => (
