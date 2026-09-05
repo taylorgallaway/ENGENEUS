@@ -1,10 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { User, Heart, MessageCircle, Newspaper, Trophy, Music } from 'lucide-react';
+import { User, MessageCircle, Newspaper, Trophy, Music } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
-import ProfileTab from '../components/ProfileTab';
-import MatchesTab from '../components/MatchesTab';
+import ProfileSection from '../components/ProfileSection';
 import ChatsSection from '../components/ChatsSection';
 import ChatWindow from '../components/ChatWindow';
 import FandomChatWindow from '../components/FandomChatWindow';
@@ -86,7 +85,6 @@ export default function Home() {
   const tabs = [
     { id: 'profile', label: 'Profile', Icon: User },
     { id: 'studio', label: 'Studio', Icon: Music },
-    { id: 'matches', label: 'Matches', Icon: Heart },
     { id: 'news', label: 'News', Icon: Newspaper },
     { id: 'awards', label: 'Awards', Icon: Trophy },
     { id: 'chats', label: 'Chats', Icon: MessageCircle },
@@ -110,15 +108,14 @@ export default function Home() {
           <LessonView lesson={activeLesson} user={user} onBack={() => setActiveLesson(null)} />
         ) : (
           <>
-            {activeTab === 'profile' && <ProfileTab user={user} />}
-            {activeTab === 'studio' && <StudioSection user={user} onLessonReady={(lesson) => setActiveLesson(lesson)} />}
-            {activeTab === 'matches' && (
-              <MatchesTab
+            {activeTab === 'profile' && (
+              <ProfileSection
                 user={user}
                 onMessage={(person) => setChatWithUser(person)}
                 onViewProfile={(person) => setViewingProfile(person)}
               />
             )}
+            {activeTab === 'studio' && <StudioSection user={user} onLessonReady={(lesson) => setActiveLesson(lesson)} />}
             {activeTab === 'news' && <NewsTab user={user} />}
             {activeTab === 'awards' && <AwardsTab user={user} />}
             {activeTab === 'chats' && (
