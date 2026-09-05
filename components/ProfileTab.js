@@ -515,7 +515,7 @@ export default function ProfileTab({ user }) {
             fontWeight: 700,
             padding: '6px 12px',
             borderRadius: 999,
-            marginBottom: 40,
+            marginBottom: 26,
           }}
         >
           🔥 {profile.current_streak} day{profile.current_streak === 1 ? '' : 's'} streak
