@@ -18,6 +18,7 @@ export default function ChatsSection({ user, onOpenChat, onOpenFandomRoom }) {
           fontWeight: 900,
           textTransform: 'uppercase',
           WebkitTextStroke: '1px #1B4332',
+          fontFamily: 'Helvetica Neue, Arial, sans-serif',
         }}
       >
         Chats
