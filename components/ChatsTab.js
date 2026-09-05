@@ -29,12 +29,27 @@ export default function ChatsTab({ user, onOpenChat }) {
       }
 
       const { data: profiles } = await supabase.from('profiles').select('*').in('id', otherIds);
+      const { data: reads } = await supabase
+        .from('message_reads')
+        .select('*')
+        .eq('user_id', user.id)
+        .in('other_user_id', otherIds);
+
+      const readMap = new Map((reads || []).map((r) => [r.other_user_id, r.last_read_at]));
 
       const convos = otherIds
-        .map((id) => ({
-          profile: (profiles || []).find((p) => p.id === id),
-          lastMessage: seen.get(id),
-        }))
+        .map((id) => {
+          const lastMessage = seen.get(id);
+          const lastReadAt = readMap.get(id);
+          const unread =
+            lastMessage.sender_id !== user.id &&
+            (!lastReadAt || new Date(lastMessage.created_at) > new Date(lastReadAt));
+          return {
+            profile: (profiles || []).find((p) => p.id === id),
+            lastMessage,
+            unread,
+          };
+        })
         .filter((c) => c.profile);
 
       setConversations(convos);
@@ -53,7 +68,7 @@ export default function ChatsTab({ user, onOpenChat }) {
         </p>
       )}
 
-      {conversations.map(({ profile, lastMessage }) => (
+      {conversations.map(({ profile, lastMessage, unread }) => (
         <button
           key={profile.id}
           onClick={() => onOpenChat(profile)}
@@ -75,27 +90,43 @@ export default function ChatsTab({ user, onOpenChat }) {
             color: '#111827',
           }}
         >
-          <div
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: '50%',
-              background: '#f3f4f6',
-              border: '1px solid #e5e7eb',
-              overflow: 'hidden',
-              flexShrink: 0,
-            }}
-          >
-            {profile.avatar_url && (
-              <img src={profile.avatar_url} alt={profile.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <div style={{ position: 'relative', flexShrink: 0 }}>
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: '50%',
+                background: '#f3f4f6',
+                border: '1px solid #e5e7eb',
+                overflow: 'hidden',
+              }}
+            >
+              {profile.avatar_url && (
+                <img src={profile.avatar_url} alt={profile.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              )}
+            </div>
+            {unread && (
+              <span
+                style={{
+                  position: 'absolute',
+                  top: -1,
+                  right: -1,
+                  width: 12,
+                  height: 12,
+                  borderRadius: '50%',
+                  background: '#22c55e',
+                  border: '2px solid white',
+                }}
+              />
             )}
           </div>
           <div style={{ overflow: 'hidden' }}>
-            <p style={{ fontWeight: 700, margin: 0, fontSize: 14 }}>{profile.username}</p>
+            <p style={{ fontWeight: unread ? 900 : 700, margin: 0, fontSize: 14 }}>{profile.username}</p>
             <p
               style={{
                 fontSize: 12,
-                color: '#9ca3af',
+                color: unread ? '#111827' : '#9ca3af',
+                fontWeight: unread ? 600 : 400,
                 margin: '2px 0 0',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
