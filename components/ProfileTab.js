@@ -72,7 +72,7 @@ function StickerImg({ emoji, size = 20 }) {
   );
 }
 
-export default function ProfileTab({ user }) {
+export default function ProfileTab({ user, subTabBar }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
@@ -339,6 +339,8 @@ export default function ProfileTab({ user }) {
           {uploading && <p style={{ fontSize: 12, color: '#9ca3af', margin: '4px 0 0' }}>Uploading...</p>}
         </div>
       </div>
+
+      {subTabBar}
 
       {profile.current_streak > 0 && (
         <div
