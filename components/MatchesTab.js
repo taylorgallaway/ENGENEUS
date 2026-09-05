@@ -26,7 +26,7 @@ function StickerImg({ emoji, size = 16 }) {
   );
 }
 
-export default function MatchesTab({ user, onMessage, onViewProfile }) {
+export default function MatchesTab({ user, onMessage, onViewProfile, subTabBar }) {
   const [loading, setLoading] = useState(true);
   const [matches, setMatches] = useState([]);
   const [message, setMessage] = useState('');
@@ -90,6 +90,9 @@ export default function MatchesTab({ user, onMessage, onViewProfile }) {
       >
         Fandom Matches
       </h1>
+
+      {subTabBar}
+
       {message && <p>{message}</p>}
       {matches.map((person) => (
         <div key={person.id} style={{ border: '1px solid #eee', borderRadius: 12, padding: 15, marginTop: 15 }}>
