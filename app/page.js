@@ -139,8 +139,9 @@ export default function Home() {
             background: 'white',
             borderTop: '1px solid #eee',
             display: 'flex',
-            justifyContent: 'space-around',
-            padding: '10px 0 calc(10px + env(safe-area-inset-bottom))',
+            justifyContent: 'center',
+            gap: 28,
+            padding: '10px 0',
           }}
         >
           {tabs.map(({ id, label, Icon }) => (
