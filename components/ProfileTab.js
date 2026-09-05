@@ -332,6 +332,7 @@ export default function ProfileTab({ user, subTabBar }) {
               fontWeight: 900,
               textTransform: 'uppercase',
               WebkitTextStroke: '1px #1B4332',
+              fontFamily: 'Helvetica Neue, Arial, sans-serif',
             }}
           >
             Edit Profile
