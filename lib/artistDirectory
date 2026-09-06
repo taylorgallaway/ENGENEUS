@@ -5,6 +5,7 @@
 
 export const ARTIST_DIRECTORY = [
   { name: 'PLAVE', type: 'boy group', gen: 5, global: false, virtualFictional: true, popularity: null },
+  { name: 'BIGBANG', type: 'boy group', gen: 2, global: false, virtualFictional: false, popularity: 82 },
   { name: 'Jeong Geon', type: 'solo', gen: 4, global: false, virtualFictional: false, popularity: null },
   { name: 'Saja Boys', type: 'boy group', gen: null, global: false, virtualFictional: true, popularity: null },
   { name: 'MAVE:', type: 'girl group', gen: 5, global: false, virtualFictional: true, popularity: null },
