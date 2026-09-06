@@ -2,12 +2,18 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { ARTIST_DIRECTORY } from '../../../lib/artistDirectory';
 
-// Visit this URL in your browser to run the import (once your env vars are set):
+// Prevents Next.js from trying to run this at build time (it would time out
+// building nearly 1,900 artists' worth of API calls before the site could
+// even deploy). This makes it run only when actually visited.
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
+
+// Visit this URL repeatedly in your browser to import songs in small
+// batches — each visit picks up automatically where the last one left off:
 //   https://engeneus.vercel.app/api/import-songs
-//
-// Heads up: this can take a while (1,866 artists, one Spotify lookup each)
-// and Vercel has a max function runtime — if it times out partway through,
-// just visit the URL again; already-imported songs won't be duplicated.
+// Keep visiting until the response says "allDone": true.
+
+const BATCH_SIZE = 15;
 
 async function getSpotifyToken() {
   const res = await fetch('https://accounts.spotify.com/api/token', {
@@ -53,18 +59,25 @@ async function getTracks(albumId, token) {
 export async function GET() {
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-  let token = await getSpotifyToken();
-  let tokenTime = Date.now();
+  // Read (or initialize) how far we've gotten so far
+  const { data: progressRow } = await supabase
+    .from('import_progress')
+    .select('*')
+    .eq('key', 'spotify_songs')
+    .maybeSingle();
+
+  const startIndex = progressRow?.last_index ?? 0;
+
+  if (startIndex >= ARTIST_DIRECTORY.length) {
+    return NextResponse.json({ allDone: true, message: 'Every artist has already been processed!' });
+  }
+
+  const token = await getSpotifyToken();
+  const batch = ARTIST_DIRECTORY.slice(startIndex, startIndex + BATCH_SIZE);
   const results = [];
 
-  for (const entry of ARTIST_DIRECTORY) {
-    if (Date.now() - tokenTime > 50 * 60 * 1000) {
-      token = await getSpotifyToken();
-      tokenTime = Date.now();
-    }
-
+  for (const entry of batch) {
     const artistName = entry.name;
-
     try {
       const artist = await searchArtist(artistName, token);
       if (!artist) {
@@ -100,5 +113,12 @@ export async function GET() {
     }
   }
 
-  return NextResponse.json({ done: true, results });
+  const newIndex = startIndex + batch.length;
+  await supabase.from('import_progress').upsert({ key: 'spotify_songs', last_index: newIndex });
+
+  return NextResponse.json({
+    allDone: newIndex >= ARTIST_DIRECTORY.length,
+    progress: `${newIndex} / ${ARTIST_DIRECTORY.length}`,
+    thisBatch: results,
+  });
 }
