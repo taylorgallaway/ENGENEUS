@@ -2,13 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { ARTIST_DIRECTORY } from '../lib/artistDirectory';
 
 function LessonGenerator({ user, onLessonReady }) {
   const [songName, setSongName] = useState('');
   const [artist, setArtist] = useState('');
+  const [artistSearch, setArtistSearch] = useState('');
+  const [showArtistResults, setShowArtistResults] = useState(false);
   const [lyrics, setLyrics] = useState('');
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState('');
+
+  const filteredArtists = artistSearch.trim()
+    ? ARTIST_DIRECTORY.filter((a) => a.name.toLowerCase().includes(artistSearch.toLowerCase())).slice(0, 8)
+    : [];
 
   const handleGenerate = async () => {
     if (!lyrics.trim() || !songName.trim() || !artist.trim()) return;
@@ -43,7 +50,87 @@ function LessonGenerator({ user, onLessonReady }) {
       <input value={songName} onChange={(e) => setSongName(e.target.value)} style={inputStyle} />
 
       <label style={{ fontSize: 14 }}>Artist</label>
-      <input value={artist} onChange={(e) => setArtist(e.target.value)} style={inputStyle} />
+      {artist ? (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 12px',
+            marginTop: 5,
+            marginBottom: 15,
+            border: '1px solid #e5e7eb',
+            borderRadius: 8,
+            background: '#2D6A4F1A',
+          }}
+        >
+          <span style={{ fontSize: 14, fontWeight: 700, color: '#1B4332' }}>{artist}</span>
+          <button
+            type="button"
+            onClick={() => {
+              setArtist('');
+              setArtistSearch('');
+            }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#1B4332', fontWeight: 900 }}
+          >
+            ×
+          </button>
+        </div>
+      ) : (
+        <div style={{ position: 'relative' }}>
+          <input
+            value={artistSearch}
+            onChange={(e) => {
+              setArtistSearch(e.target.value);
+              setShowArtistResults(true);
+            }}
+            onFocus={() => setShowArtistResults(true)}
+            placeholder="Search for an artist..."
+            style={inputStyle}
+          />
+          {showArtistResults && artistSearch.trim() && (
+            <div
+              style={{
+                border: '1px solid #f3f4f6',
+                borderRadius: 10,
+                marginTop: -10,
+                marginBottom: 15,
+                maxHeight: 200,
+                overflowY: 'auto',
+              }}
+            >
+              {filteredArtists.map((a) => (
+                <button
+                  key={a.name}
+                  type="button"
+                  onClick={() => {
+                    setArtist(a.name);
+                    setArtistSearch('');
+                    setShowArtistResults(false);
+                  }}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    textAlign: 'left',
+                    padding: '8px 12px',
+                    border: 'none',
+                    borderBottom: '1px solid #f9fafb',
+                    background: 'white',
+                    cursor: 'pointer',
+                    fontSize: 13,
+                    color: '#374151',
+                  }}
+                >
+                  {a.name}
+                </button>
+              ))}
+              {filteredArtists.length === 0 && (
+                <p style={{ fontSize: 12, color: '#9ca3af', padding: 8, margin: 0 }}>No matching artists found.</p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       <label style={{ fontSize: 14 }}>Paste Lyrics</label>
       <textarea value={lyrics} onChange={(e) => setLyrics(e.target.value)} rows={6} style={inputStyle} />
