@@ -384,7 +384,7 @@ export const ARTIST_DIRECTORY = [
   { name: 'BGH to', type: 'girl group', gen: 2, global: false, virtualFictional: false, popularity: null },
   { name: 'BGH4', type: 'girl group', gen: 2, global: false, virtualFictional: false, popularity: null },
   { name: 'Big Mama', type: 'girl group', gen: 2, global: false, virtualFictional: false, popularity: null },
-  { name: 'Big Ocean Jj', type: 'boy group', gen: 5, global: false, virtualFictional: false, popularity: null },
+  { name: 'Big Ocean JJ', type: 'boy group', gen: 5, global: false, virtualFictional: false, popularity: null },
   { name: 'Bijou', type: 'coed group', gen: 1, global: false, virtualFictional: false, popularity: null },
   { name: 'BIKINY', type: 'girl group', gen: 3, global: false, virtualFictional: false, popularity: null },
   { name: 'Billion', type: 'girl group', gen: 3, global: false, virtualFictional: false, popularity: null },
