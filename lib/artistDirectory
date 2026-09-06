@@ -100,7 +100,7 @@ export const ARTIST_DIRECTORY = [
   { name: '1/N', type: 'boy group', gen: 4, global: false, virtualFictional: false, popularity: null },
   { name: '1CHU', type: 'girl group', gen: 5, global: false, virtualFictional: false, popularity: null },
   { name: '1TEAM', type: 'boy group', gen: 4, global: false, virtualFictional: false, popularity: null },
-  { name: '1THW9', type: 'boy group', gen: 4, global: false, virtualFictional: false, popularity: null },
+  { name: '1THE9', type: 'boy group', gen: 4, global: false, virtualFictional: false, popularity: null },
   { name: '1TYM', type: 'boy group', gen: 1, global: false, virtualFictional: false, popularity: null },
   { name: '2AM', type: 'boy group', gen: 2, global: false, virtualFictional: false, popularity: null },
   { name: '2PM', type: 'boy group', gen: 2, global: false, virtualFictional: false, popularity: 67 },
