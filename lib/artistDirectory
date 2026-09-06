@@ -5,6 +5,12 @@
 
 export const ARTIST_DIRECTORY = [
   { name: 'PLAVE', type: 'boy group', gen: 5, global: false, virtualFictional: true, popularity: null },
+  { name: 'Till', type: 'solo', gen: null, global: false, virtualFictional: true, popularity: null },
+  { name: 'Ivan', type: 'solo', gen: null, global: false, virtualFictional: true, popularity: null },
+  { name: 'Mizi', type: 'solo', gen: null, global: false, virtualFictional: true, popularity: null },
+  { name: 'Sua', type: 'solo', gen: null, global: false, virtualFictional: true, popularity: null },
+  { name: 'Hyuna', type: 'solo', gen: null, global: false, virtualFictional: true, popularity: null },
+  { name: 'Luka', type: 'solo', gen: null, global: false, virtualFictional: true, popularity: null },
   { name: 'BIGBANG', type: 'boy group', gen: 2, global: false, virtualFictional: false, popularity: 82 },
   { name: 'Jeong Geon', type: 'solo', gen: 4, global: false, virtualFictional: false, popularity: null },
   { name: 'Saja Boys', type: 'boy group', gen: null, global: false, virtualFictional: true, popularity: null },
@@ -41,7 +47,7 @@ export const ARTIST_DIRECTORY = [
   { name: 'WOODZ', type: 'solo', gen: 4, global: false, virtualFictional: false, popularity: null },
   { name: 'Eric Nam', type: 'solo', gen: 3, global: false, virtualFictional: false, popularity: null },
   { name: 'CL', type: 'solo', gen: 2, global: false, virtualFictional: false, popularity: 81 },
-  { name: 'Hyuna', type: 'solo', gen: 2, global: false, virtualFictional: false, popularity: null },
+  { name: 'HyunA', type: 'solo', gen: 2, global: false, virtualFictional: false, popularity: null },
   { name: 'PSY', type: 'solo', gen: 1, global: false, virtualFictional: false, popularity: 74 },
   { name: 'Zico', type: 'solo', gen: 3, global: false, virtualFictional: false, popularity: 79 },
   { name: 'Crush', type: 'solo', gen: 3, global: false, virtualFictional: false, popularity: null },
