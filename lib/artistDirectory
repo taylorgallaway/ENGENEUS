@@ -120,7 +120,7 @@ export const ARTIST_DIRECTORY = [
   { name: '100%', type: 'boy group', gen: 3, global: false, virtualFictional: false, popularity: null },
   { name: '(M)IRROR', type: 'boy group', gen: 5, global: false, virtualFictional: false, popularity: null },
   { name: '+(KR)ystal Eyes', type: 'girl group', gen: 5, global: false, virtualFictional: false, popularity: null },
-  { name: '½', type: 'girl group', gen: 5, global: false, virtualFictional: false, popularity: null },
+  { name: '2NE1', type: 'girl group', gen: 2, global: false, virtualFictional: false, popularity: null },
   { name: '1NB', type: 'girl group', gen: 4, global: false, virtualFictional: false, popularity: null },
   { name: '1PS', type: 'girl group', gen: 3, global: false, virtualFictional: false, popularity: null },
   { name: '1PUNCH', type: 'boy group', gen: 3, global: false, virtualFictional: false, popularity: null },
