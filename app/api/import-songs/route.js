@@ -2,15 +2,13 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { ARTIST_DIRECTORY } from '../../../lib/artistDirectory';
 
-// Prevents Next.js from trying to run this at build time (it would time out
-// building nearly 1,900 artists' worth of API calls before the site could
-// even deploy). This makes it run only when actually visited.
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
 // Visit this URL repeatedly in your browser to import songs in small
-// batches — each visit picks up automatically where the last one left off:
-//   https://engeneus.vercel.app/api/import-songs
+// batches. Unlike the old version, this checks the database directly for
+// which artists still have zero songs — so it's safe even if the artist
+// list gets edited (artists added, renamed, reordered) between visits.
 // Keep visiting until the response says "allDone": true.
 
 const BATCH_SIZE = 15;
@@ -59,21 +57,19 @@ async function getTracks(albumId, token) {
 export async function GET() {
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-  // Read (or initialize) how far we've gotten so far
-  const { data: progressRow } = await supabase
-    .from('import_progress')
-    .select('*')
-    .eq('key', 'spotify_songs')
-    .maybeSingle();
+  // Find which artists we've already attempted (successfully or not) by
+  // checking a log table, rather than trusting array position at all.
+  const { data: attempted } = await supabase.from('import_attempted').select('artist');
+  const attemptedSet = new Set((attempted || []).map((a) => a.artist));
 
-  const startIndex = progressRow?.last_index ?? 0;
+  const remaining = ARTIST_DIRECTORY.filter((entry) => !attemptedSet.has(entry.name));
 
-  if (startIndex >= ARTIST_DIRECTORY.length) {
-    return NextResponse.json({ allDone: true, message: 'Every artist has already been processed!' });
+  if (remaining.length === 0) {
+    return NextResponse.json({ allDone: true, message: 'Every artist in the current list has been attempted!' });
   }
 
   const token = await getSpotifyToken();
-  const batch = ARTIST_DIRECTORY.slice(startIndex, startIndex + BATCH_SIZE);
+  const batch = remaining.slice(0, BATCH_SIZE);
   const results = [];
 
   for (const entry of batch) {
@@ -82,43 +78,45 @@ export async function GET() {
       const artist = await searchArtist(artistName, token);
       if (!artist) {
         results.push({ artist: artistName, status: 'no match found' });
-        continue;
-      }
+      } else {
+        const albums = await getAlbums(artist.id, token);
+        const rows = [];
 
-      const albums = await getAlbums(artist.id, token);
-      const rows = [];
+        for (const album of albums) {
+          const tracks = await getTracks(album.id, token);
+          for (const track of tracks) {
+            rows.push({
+              artist: artistName,
+              title: track.name,
+              album: album.name,
+              spotify_track_id: track.id,
+              album_art_url: album.images?.[0]?.url || null,
+              release_date: album.release_date?.length === 4 ? `${album.release_date}-01-01` : album.release_date,
+            });
+          }
+        }
 
-      for (const album of albums) {
-        const tracks = await getTracks(album.id, token);
-        for (const track of tracks) {
-          rows.push({
-            artist: artistName,
-            title: track.name,
-            album: album.name,
-            spotify_track_id: track.id,
-            album_art_url: album.images?.[0]?.url || null,
-            release_date: album.release_date?.length === 4 ? `${album.release_date}-01-01` : album.release_date,
-          });
+        if (rows.length > 0) {
+          const { error } = await supabase.from('songs').upsert(rows, { onConflict: 'spotify_track_id' });
+          results.push({ artist: artistName, status: error ? `error: ${error.message}` : `imported ${rows.length} tracks` });
+        } else {
+          results.push({ artist: artistName, status: 'no tracks found' });
         }
       }
 
-      if (rows.length > 0) {
-        const { error } = await supabase.from('songs').upsert(rows, { onConflict: 'spotify_track_id' });
-        results.push({ artist: artistName, status: error ? `error: ${error.message}` : `imported ${rows.length} tracks` });
-      } else {
-        results.push({ artist: artistName, status: 'no tracks found' });
-      }
+      // Mark as attempted regardless of outcome, so we don't retry forever —
+      // but this is a separate, cheap table, so re-adding an artist by name
+      // (even if the list order changes) just means it's simply not in this
+      // table yet, and gets picked up automatically.
+      await supabase.from('import_attempted').upsert({ artist: artistName });
     } catch (e) {
       results.push({ artist: artistName, status: `error: ${e.message}` });
     }
   }
 
-  const newIndex = startIndex + batch.length;
-  await supabase.from('import_progress').upsert({ key: 'spotify_songs', last_index: newIndex });
-
   return NextResponse.json({
-    allDone: newIndex >= ARTIST_DIRECTORY.length,
-    progress: `${newIndex} / ${ARTIST_DIRECTORY.length}`,
+    allDone: remaining.length <= batch.length,
+    remainingCount: remaining.length - batch.length,
     thisBatch: results,
   });
 }
