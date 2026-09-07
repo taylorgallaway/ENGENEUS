@@ -58,6 +58,13 @@ function normalizeForMatch(s) {
   return s.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
+function ordinal(n) {
+  if (n === 1) return '1st';
+  if (n === 2) return '2nd';
+  if (n === 3) return '3rd';
+  return `${n}th`;
+}
+
 const PHOTO_MAP = {};
 PHOTO_FILENAMES.forEach((fname) => {
   PHOTO_MAP[normalizeForMatch(fname.replace(/_/g, ' '))] = fname;
@@ -68,6 +75,11 @@ PHOTO_FILENAMES.forEach((fname) => {
 PHOTO_MAP['team'] = 'and_team';
 
 function getPhotoFor(name) {
+  // "Hyuna" (fictional singer) and "HyunA" (real artist) collide under
+  // normal loose matching since it ignores case — handle them explicitly.
+  if (name === 'Hyuna') return '/artist-photos-wide/hyuna.jpg';
+  if (name === 'HyunA') return null; // no photo yet for the real HyunA
+
   const key = normalizeForMatch(name);
   return PHOTO_MAP[key] ? `/artist-photos-wide/${PHOTO_MAP[key]}.jpg` : null;
 }
@@ -213,7 +225,7 @@ export default function ArtistDirectoryTab() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px' }}>
               <span style={{ fontSize: 15, fontWeight: 700 }}>{a.name}</span>
               <span style={{ fontSize: 13, color: '#84A98C', fontWeight: 600, background: '#2D6A4F1A', padding: '4px 10px', borderRadius: 999 }}>
-                {a.type}{a.gen ? ` · ${a.gen}th gen` : ''}
+                {a.type}{a.gen ? ` · ${ordinal(a.gen)} gen` : ''}
               </span>
             </div>
           </button>
