@@ -140,7 +140,7 @@ export const ARTIST_DIRECTORY = [
   { name: '4SOME', type: 'girl group', gen: 3, global: false, virtualFictional: false, popularity: null },
   { name: '4Tomorrow', type: 'girl group', gen: 2, global: false, virtualFictional: false, popularity: null },
   { name: '4X', type: 'girl group', gen: 3, global: false, virtualFictional: false, popularity: null },
-  { name: '4X4', type: 'girl group', gen: 4, global: false, virtualFictional: false, popularity: null },
+  { name: '4X4', type: 'girl group', gen: 5, global: false, virtualFictional: false, popularity: null },
   { name: '5but', type: 'boy group', gen: 4, global: false, virtualFictional: false, popularity: null },
   { name: '5TION', type: 'boy group', gen: 2, global: false, virtualFictional: false, popularity: null },
   { name: '7PRINCESSES', type: 'girl group', gen: 2, global: false, virtualFictional: false, popularity: null },
@@ -1863,8 +1863,8 @@ export const ARTIST_DIRECTORY = [
   { name: 'PARK BYEONG HOON', type: 'solo', gen: 4, global: false, virtualFictional: false, popularity: null },
   { name: 'Rubyeye', type: 'solo', gen: 4, global: false, virtualFictional: false, popularity: null },
   { name: 'C!naH', type: 'solo', gen: 4, global: false, virtualFictional: false, popularity: null },
-  { name: 'BL8M', type: 'solo', gen: 5, global: false, virtualFictional: false, popularity: null },
-  { name: '6FU', type: 'solo', gen: 4, global: false, virtualFictional: false, popularity: null },
+  { name: 'BL8M', type: 'solo', gen: 4, global: false, virtualFictional: false, popularity: null },
+  { name: '6FU', type: 'solo', gen: 5, global: false, virtualFictional: false, popularity: null },
   { name: 'Choi Hyun Soo', type: 'girl group', gen: 4, global: false, virtualFictional: false, popularity: null },
 
   // Newly added per your latest round of notes
