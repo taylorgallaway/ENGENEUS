@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import { ARTIST_DIRECTORY } from '../lib/artistDirectory';
-import { openArtistPage } from './UserProfileView';
+import { openArtistPage, buildKpoppingSlug } from './UserProfileView';
+import KpoppingEmbedModal from './KpoppingEmbedModal';
 
 // Filenames of the photos we actually have — matched against artist names by
 // stripping spaces/punctuation/case, so small formatting differences in the
@@ -107,6 +108,16 @@ export default function ArtistDirectoryTab() {
   const [genFilter, setGenFilter] = useState('all');
   const [globalOnly, setGlobalOnly] = useState(false);
   const [virtualOnly, setVirtualOnly] = useState(false);
+  const [embedModal, setEmbedModal] = useState(null);
+
+  const handleArtistTap = (artist) => {
+    if (artist.type === 'solo') {
+      openArtistPage(artist.name, artist.type);
+      return;
+    }
+    const slug = encodeURIComponent(buildKpoppingSlug(artist.name));
+    setEmbedModal({ url: `https://kpopping.com/profiles/group/${slug}`, name: artist.name });
+  };
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -202,7 +213,7 @@ export default function ArtistDirectoryTab() {
         {filtered.map((a) => (
           <button
             key={a.name}
-            onClick={() => openArtistPage(a.name, a.type)}
+            onClick={() => handleArtistTap(a)}
             style={{
               display: 'block',
               width: '100%',
@@ -239,6 +250,13 @@ export default function ArtistDirectoryTab() {
           <p style={{ fontSize: 13, color: '#9ca3af', textAlign: 'center' }}>No artists match those filters.</p>
         )}
       </div>
+      {embedModal && (
+        <KpoppingEmbedModal
+          url={embedModal.url}
+          artistName={embedModal.name}
+          onClose={() => setEmbedModal(null)}
+        />
+      )}
     </div>
   );
 }
