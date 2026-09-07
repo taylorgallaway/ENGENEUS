@@ -127,6 +127,11 @@ export default function ArtistDirectoryTab() {
       const ap = a.popularity ?? Infinity;
       const bp = b.popularity ?? Infinity;
       if (ap !== bp) return ap - bp;
+      // Among unranked artists, sort by generation descending (5th first),
+      // with no-generation entries pushed to the very end.
+      const ag = a.gen ?? -1;
+      const bg = b.gen ?? -1;
+      if (ag !== bg) return bg - ag;
       return a.name.localeCompare(b.name);
     });
   }, [search, typeFilter, genFilter, globalOnly, virtualOnly]);
