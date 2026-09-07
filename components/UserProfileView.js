@@ -13,7 +13,7 @@ function fallbackSearchUrl(artist) {
 // Both preserve capitalization and turn spaces into hyphens — EXCEPT names
 // containing a period, which Kpopping strips to plain lowercase letters
 // (e.g. our 'A.De' becomes their 'ade').
-function buildKpoppingSlug(name) {
+export function buildKpoppingSlug(name) {
   const trimmed = name.trim();
   if (trimmed.includes('.')) {
     return trimmed.replace(/\./g, '').replace(/\s+/g, '-').toLowerCase();
