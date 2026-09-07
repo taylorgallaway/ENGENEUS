@@ -224,7 +224,7 @@ export const ARTIST_DIRECTORY = [
   { name: 'Aesther', type: 'girl group', gen: null, global: false, virtualFictional: true, popularity: null },
   { name: 'AF Dream Girls', type: 'girl group', gen: 4, global: false, virtualFictional: false, popularity: null },
   { name: 'AFOS', type: 'boy group', gen: 3, global: false, virtualFictional: false, popularity: null },
-  { name: 'AFOTS', type: 'boy group', gen: 4, global: false, virtualFictional: true, popularity: null },
+  { name: 'AFOTS', type: 'boy group', gen: 5, global: false, virtualFictional: true, popularity: null },
   { name: 'AFuture', type: 'girl group', gen: 5, global: false, virtualFictional: false, popularity: null },
   { name: 'AGirls', type: 'girl group', gen: 3, global: false, virtualFictional: false, popularity: null },
   { name: 'Aila', type: 'girl group', gen: 4, global: false, virtualFictional: false, popularity: null },
