@@ -42,7 +42,7 @@ export const ARTIST_DIRECTORY = [
   { name: 'Bibi', type: 'solo', gen: 4, global: false, virtualFictional: false, popularity: null },
   { name: 'Heize', type: 'solo', gen: 3, global: false, virtualFictional: false, popularity: null },
   { name: 'Lee Hi', type: 'solo', gen: 3, global: false, virtualFictional: false, popularity: null },
-  { name: 'Alexa', type: 'solo', gen: 4, global: false, virtualFictional: false, popularity: null },
+  { name: 'AleXa', type: 'solo', gen: 4, global: false, virtualFictional: false, popularity: null },
   { name: 'WOODZ', type: 'solo', gen: 4, global: false, virtualFictional: false, popularity: null },
   { name: 'Eric Nam', type: 'solo', gen: 3, global: false, virtualFictional: false, popularity: null },
   { name: 'CL', type: 'solo', gen: 2, global: false, virtualFictional: false, popularity: 81 },
